@@ -37,9 +37,11 @@ In addition to the class library, there are also test tools:
 </ul>
 
 There are <a href='https://www.doxygen.nl' target='_blank'>Doxygen</a> comments in the source in order to provide
-documentation; there is also a Doxyfile available for building Doxygen-based documentation. If you want to generate
-documentation, you can simply run 'doxygen' from the cxWidgets directory, and it will output documentation into a
-'cxDocs' directory.
+documentation; there is also a Doxyfile available for building Doxygen-based documentation.
+<a href='https://ericoulashin.github.io/cxWidgets/html/index.html' target='_blank'>HTML documentation</a>
+for the C++ code has been added in the <a href='docs/html' target='_blank'>docs/html directory</a>.  If you want
+to generate documentation, you can simply run 'doxygen' from the cxWidgets directory, and it will
+output documentation into the 'docs' directory.
 
 There is also a KDevelop project file available if you wish to use KDevelop.
 
