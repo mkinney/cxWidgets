@@ -2317,14 +2317,14 @@ when the user presses the 'n' key.
        * @return Whether or not the key was added
        */
       virtual bool addQuitKey(int pKey, bool pRunOnLeaveFunction = true,
-                              bool pOverride = false);
+                              bool pOverride = false) override;
 
       /**
        * \brief Removes a quit key (but doesn't work for ESC)
        *
        * @param pKey The key to remove from the list of quit keys
        */
-      virtual void removeQuitKey(int pKey);
+      virtual void removeQuitKey(int pKey) override;
 
       /**
        * \brief Adds a key that will cause the form to quit and return
@@ -2343,14 +2343,14 @@ when the user presses the 'n' key.
        * @return Whether or not the key was added
        */
       virtual bool addExitKey(int pKey, bool pRunOnLeaveFunction = true,
-                              bool pOverride = false);
+                              bool pOverride = false) override;
 
       /**
        * \brief Removes an exit key
        *
        * @param pKey The key to remove from the list of exit keys
        */
-      virtual void removeExitKey(int pKey);
+      virtual void removeExitKey(int pKey) override;
 
       /**
        * \brief Sets a function to be run when focus is gained (at
@@ -2371,7 +2371,7 @@ when the user presses the 'n' key.
        */
       virtual void setOnFocusFunction(funcPtr4 pFuncPtr, void *p1, void *p2,
                            void *p3, void *p4, bool pUseVal = false,
-                           bool pExitAfterRun = false);
+                           bool pExitAfterRun = false) override;
 
       /**
        * \brief Sets a function to be run when focus is gained (at
@@ -2389,7 +2389,7 @@ when the user presses the 'n' key.
        *  loop won't be started).
        */
       virtual void setOnFocusFunction(funcPtr2 pFuncPtr, void *p1, void *p2,
-                           bool pUseVal = false, bool pExitAfterRun = false);
+                           bool pUseVal = false, bool pExitAfterRun = false) override;
 
       /**
        * \brief Sets a function to be run when focus is gained (at
@@ -2405,7 +2405,7 @@ when the user presses the 'n' key.
        *  loop won't be started).
        */
       virtual void setOnFocusFunction(funcPtr0 pFuncPtr, bool pUseVal = false,
-                                      bool pExitAfterRun = false);
+                                      bool pExitAfterRun = false) override;
 
       /**
        * \brief Sets a function to be run at the start of each
@@ -2437,7 +2437,7 @@ when the user presses the 'n' key.
        * @param p4 A pointer to the 4th argument
        */
       virtual void setOnLeaveFunction(funcPtr4 pFuncPtr, void *p1, void *p2,
-                           void *p3, void *p4);
+                           void *p3, void *p4) override;
 
       /**
        * \brief Sets a function to be run when focus is lost.
@@ -2448,7 +2448,7 @@ when the user presses the 'n' key.
        * @param p1 A pointer to the first argument
        * @param p2 A pointer to the 2nd argument
        */
-      virtual void setOnLeaveFunction(funcPtr2 pFuncPtr, void *p1, void *p2);
+      virtual void setOnLeaveFunction(funcPtr2 pFuncPtr, void *p1, void *p2) override;
 
       /**
        * \brief Sets a function to be run when focus is lost.
@@ -2459,7 +2459,7 @@ when the user presses the 'n' key.
        * @param p1 A pointer to the first argument
        * @param p2 A pointer to the 2nd argument
        */
-      virtual void setOnLeaveFunction(funcPtr0 pFuncPtr);
+      virtual void setOnLeaveFunction(funcPtr0 pFuncPtr) override;
 
       /**
        * \brief Shows (refreshes) all inputs
@@ -2539,7 +2539,7 @@ when the user presses the 'n' key.
        * \brief Brings the window to the top
        * @param pRefresh Whether to refresh the screen (defaults to true)
        */
-      virtual void bringToTop(bool pRefresh = true);
+      virtual void bringToTop(bool pRefresh = true) override;
 
       /**
        * \brief Returns whether or not any data on the form has changed.
@@ -2651,7 +2651,7 @@ when the user presses the 'n' key.
        * @param pDisableCursorOnShow Whether or not to disable
        *  the cursor when shown
        */
-      virtual void setDisableCursorOnShow(bool pDisableCursorOnShow);
+      virtual void setDisableCursorOnShow(bool pDisableCursorOnShow) override;
 
       /**
        * \brief Toggles whether or not the form should wait for

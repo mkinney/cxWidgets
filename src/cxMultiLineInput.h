@@ -240,14 +240,14 @@ class cxMultiLineInput : public cxWindow
        * @param pHideSubwindows Whether or not to also hide the subwindows
        *  (always uses false)
        */
-      void hide(bool pHideSubwindows = false);
+      void hide(bool pHideSubwindows = false) override;
 
       /**
        * Un-hides the window.
        * @param pUnhideSubwindows Whether or not to also unhide the subwindows
        *    (always uses false)
        */
-      void unhide(bool pUnhideSubwindows = false);
+      void unhide(bool pUnhideSubwindows = false) override;
 
       /**
        * \brief Erases the window
@@ -477,7 +477,7 @@ class cxMultiLineInput : public cxWindow
       virtual bool setKeyFunction(int pKey, funcPtr2 pFunction,
                                   void *p1, void *p2, bool pUseVal,
                                   bool pExitAfterRun = false,
-                                  bool pRunOnLeaveFunction = true);
+                                  bool pRunOnLeaveFunction = true) override;
 
       /**
        * \brief Just like the above function, but also lets you specify whether
@@ -526,7 +526,7 @@ class cxMultiLineInput : public cxWindow
       virtual bool setKeyFunction(int pKey, funcPtr0 pFunction,
                                   bool pUseVal,
                                   bool pExitAfterRun = false,
-                                  bool pRunOnLeaveFunction = true);
+                                  bool pRunOnLeaveFunction = true) override;
 
       /**
        * \brief Just like the above function, but also lets you specify whether
@@ -589,12 +589,12 @@ class cxMultiLineInput : public cxWindow
        *
        * @param pFunctionKey The hotkey to remove
        */
-      virtual void clearKeyFunction(int pFunctionKey);
+      virtual void clearKeyFunction(int pFunctionKey) override;
 
       /**
        * \brief Clears the list of external functions fired by hotkeys.
        */
-      virtual void clearKeyFunctions();
+      virtual void clearKeyFunctions() override;
 
       /**
        * \brief Sets the label color
@@ -968,14 +968,14 @@ class cxMultiLineInput : public cxWindow
        * @return Whether or not the key was added
        */
       virtual bool addQuitKey(int pKey, bool pRunOnLeaveFunction = true,
-                              bool pOverride = false);
+                                 bool pOverride = false) override;
 
       /**
        * \brief Removes a quit key (but doesn't work for ESC)
        *
        * @param pKey The key to remove from the list of quit keys
        */
-      virtual void removeQuitKey(int pKey);
+      virtual void removeQuitKey(int pKey) override;
 
       /**
        * \brief Adds a key that will cause the input to quit and return
@@ -992,14 +992,14 @@ class cxMultiLineInput : public cxWindow
        * @return Whether or not the key was added
        */
       virtual bool addExitKey(int pKey, bool pRunOnLeaveFunction = true,
-                              bool pOverride = false);
+                                 bool pOverride = false) override;
 
       /**
        * \brief Removes an exit key
        *
        * @param pKey The key to remove from the list of exit keys
        */
-      virtual void removeExitKey(int pKey);
+      virtual void removeExitKey(int pKey) override;
 
       /**
        * \brief Enables or disables the input loop.
@@ -2367,7 +2367,7 @@ class cxMultiLineInput : public cxWindow
 
       // Disable the use of setHotkeyHighlighting from the
       //  outside.
-      void setHotkeyHighlighting(bool pMessageUnderlines);
+      void setHotkeyHighlighting(bool pMessageUnderlines) override;
 
       // Fills mWindow with the current window text, but does not actually
       //  show it.

@@ -36,6 +36,7 @@ else
 	LIBS=-lmenu -lpanel -lncurses
 endif
 LIBDIR_OPT=-L$(LIBDIR) -L/usr/local/lib
+LIBS_OPT=$(LIBDIR_OPT) $(LIBS)
 
 # C++ standard for g++
 #CPP_STANDARD=c++98
@@ -56,9 +57,9 @@ else
       #CFLAGS=-fPIC -Wall -std=$(CPP_STANDARD) -pedantic -ansi $(INCDIR) $(LIBDIR_OPT)
 	  CFLAGS=-fPIC -Wall -std=$(CPP_STANDARD) -pedantic $(INCDIR) $(LIBDIR_OPT)
    else
-      #CFLAGS=-g -fPIC -DWANT_TIMEOUT -Wall -std=$(CPP_STANDARD) -pedantic -ansi $(INCDIR) $(LIBDIR_OPT)
-      #CFLAGS=-fPIC -DWANT_TIMEOUT -Wall -std=$(CPP_STANDARD) -pedantic -ansi $(INCDIR) $(LIBDIR_OPT) 
-	  CFLAGS=-fPIC -DWANT_TIMEOUT -Wall -std=$(CPP_STANDARD) -pedantic $(INCDIR) $(LIBDIR_OPT) 
+      #CFLAGS=-g -fPIC -DWANT_TIMEOUT -Wall -std=$(CPP_STANDARD) -pedantic -ansi $(INCDIR)
+      #CFLAGS=-fPIC -DWANT_TIMEOUT -Wall -std=$(CPP_STANDARD) -pedantic -ansi $(INCDIR) 
+	  CFLAGS=-fPIC -DWANT_TIMEOUT -Wall -std=$(CPP_STANDARD) -pedantic $(INCDIR) 
    endif
 endif
 
@@ -70,14 +71,14 @@ all: testApp keys
 # Library file targets
 $(DYNAMIC_LIB): $(WIDGETS_OBJS)
 ifeq ($(OS),Darwin)
-	$(CC) -dynamiclib -install_name $(DYNAMIC_LIB) -o $(DYNAMIC_LIB) $(CFLAGS) $(WIDGETS_OBJS) $(LIBS) -lc
+	$(CC) -dynamiclib -install_name $(DYNAMIC_LIB) -o $(DYNAMIC_LIB) $(CFLAGS) $(WIDGETS_OBJS) $(LIBS_OPT) -lc
 else
 ifeq ($(OS),AIX)
 	rm -f $(STATIC_LIB)
 	ar rvu $(STATIC_LIB) $(WIDGETS_OBJS)
 	ranlib $(STATIC_LIB)
 else
-	$(CC) -shared -Wl,-soname,$(DYNAMIC_LIB) -o $(DYNAMIC_LIB) $(WIDGETS_OBJS) -lc
+	$(CC) -shared -Wl,-soname,$(DYNAMIC_LIB) -o $(DYNAMIC_LIB) $(WIDGETS_OBJS) $(LIBS_OPT) -lc
 	# Create a static library for non-AIX too..
 	ar rvu $(STATIC_LIB) $(WIDGETS_OBJS)
 	ranlib $(STATIC_LIB)
@@ -172,7 +173,7 @@ cxTimer.o: cxTimer.h cxTimer.cpp cxFunction.o
 	$(CC) -c $(CFLAGS) -o cxTimer.o cxTimer.cpp
 
 cxUnitTest: cxUnitTest.cpp $(WIDGETS_OBJS)
-	$(CC) -o cxUnitTest $(CFLAGS) cxUnitTest.cpp $(WIDGETS_OBJS) $(LIBS)
+	$(CC) -o cxUnitTest $(CFLAGS) cxUnitTest.cpp $(WIDGETS_OBJS) $(LIBS_OPT)
 
 cxValidators.o: cxValidators.h cxValidators.cpp
 	$(CC) -c $(CFLAGS) -o cxValidators.o cxValidators.cpp
@@ -195,13 +196,13 @@ cxBorderStyles.o: cxBorderStyles.h cxBorderStyles.cpp
 # Programs
 
 keys: keys.cpp $(STATIC_LIB)
-	$(CC) -o keys $(CFLAGS) keys.cpp $(STATIC_LIB) $(LIBS)
+	$(CC) -o keys $(CFLAGS) keys.cpp $(STATIC_LIB) $(LIBS_OPT)
 
 testApp: testApp.cpp $(STATIC_LIB) floatingPtInputWithRightLabel.o
-	$(CC) -o testApp $(CFLAGS) testApp.cpp floatingPtInputWithRightLabel.o $(STATIC_LIB) $(LIBS)
+	$(CC) -o testApp $(CFLAGS) testApp.cpp floatingPtInputWithRightLabel.o $(STATIC_LIB) $(LIBS_OPT)
 
 test1: test1.cpp $(STATIC_LIB)
-	$(CC) -o test1 $(CFLAGS) test1.cpp $(STATIC_LIB) $(LIBS)
+	$(CC) -o test1 $(CFLAGS) test1.cpp $(STATIC_LIB) $(LIBS_OPT)
 
 alltest:
 	+make testcxInput

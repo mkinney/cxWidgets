@@ -232,14 +232,14 @@ class cxComboBox : public cxMultiLineInput
        *
        * @return The total height of the combo box
        */
-      virtual int height() const;
+      virtual int height() const override;
 
       /**
        * \brief Returns the width of the combo box
        *
        * @return The width of the combo box
        */
-      virtual int width() const;
+      virtual int width() const override;
 
       /**
        * \brief Returns the height of the input portion of
@@ -360,14 +360,14 @@ class cxComboBox : public cxMultiLineInput
        * @param pRunValidatorFunction Whether or not the validator function
        *  should be used
        */
-      virtual void toggleValidatorFunction(bool pRunValidatorFunction);
+      virtual void toggleValidatorFunction(bool pRunValidatorFunction) override;
 
       /**
        * \brief Returns whether or not the validator function should be used.
        *
        * @return Whether or not the validator function will be used
        */
-      virtual bool getUseValidatorFunction() const;
+      virtual bool getUseValidatorFunction() const override;
 
       /**
        * \brief Sets whether or not to use the alternate text for all items on

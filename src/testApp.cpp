@@ -5930,7 +5930,7 @@ string storeSearch(void *theInput, void *unused)
       //  strip off the first part - Look for the last space and get the
       //  substring after that position.
       string storeNum = iSearchPanel.getSelectedItem();
-      unsigned spacePos = storeNum.rfind(' ');
+      auto spacePos = storeNum.rfind(' ');
       if (spacePos != string::npos)
       {
          storeNum = storeNum.substr(spacePos+1);

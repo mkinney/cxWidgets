@@ -1026,7 +1026,7 @@ class cxInput : public cxWindow
 
       // Disable the use of setHotkeyHighlighting from the
       //  outside.
-      void setHotkeyHighlighting(bool pMessageUnderlines);
+      virtual void setHotkeyHighlighting(bool pMessageUnderlines) override;
 
       // Fills mWindow with the current window text, but does not actually
       //  show it.

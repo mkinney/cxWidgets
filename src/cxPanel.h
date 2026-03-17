@@ -745,7 +745,7 @@ class cxPanel : public cxWindow
        *
        * @param pName The new name for the panel
        */
-      virtual void setName(const std::string& pName);
+      virtual void setName(const std::string& pName) override;
 
       /**
        * \brief Returns the top row of the window

@@ -907,7 +907,7 @@ bool cxMultiLineInput::getMasked()
    //  enabled.
    bool allInputsMasked = true;
 
-   cxInputPtrContainer::iterator iter;
+   //cxInputPtrContainer::iterator iter;
    for (const auto& input : mInputs)
    {
       // If this input has masking turned off, then

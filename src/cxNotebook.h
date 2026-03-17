@@ -549,7 +549,7 @@ class cxNotebook: public cxPanel
        * @return Whether or not the last mouse event occurred in the top row
        *  of the notebook
        */
-      virtual bool mouseEvtWasInTitle() const;
+      virtual bool mouseEvtWasInTitle() const override;
 
       /**
        * \brief Removes a panel from the notebook.  This returns a cxWindow
@@ -792,14 +792,14 @@ class cxNotebook: public cxPanel
 
       // Dis-allow some of cxPanel's methods from being called by users of
       //  this class
-      bool getExitOnLeaveLast() const;
-      void setExitOnLeaveLast(bool pExitOnLeaveLast);
-      bool getExitOnLeaveFirst() const;
-      void setExitOnLeaveFirst(bool pExitOnLeaveFirst);
-      bool windowIsInPanel(cxWindow *pWindow) const;
-      bool append(const std::shared_ptr<cxWindow>& pWindow);
-      bool append(const std::shared_ptr<cxWindow>& pWindow, int pRow, int pCol, bool pRefresh = false);
-      void setShowPanelWindow(bool pShowPanelWindow);
+      bool getExitOnLeaveLast() const override;
+      void setExitOnLeaveLast(bool pExitOnLeaveLast) override;
+      bool getExitOnLeaveFirst() const override;
+      void setExitOnLeaveFirst(bool pExitOnLeaveFirst) override;
+      bool windowIsInPanel(cxWindow *pWindow) const override;
+      bool append(const std::shared_ptr<cxWindow>& pWindow) override;
+      bool append(const std::shared_ptr<cxWindow>& pWindow, int pRow, int pCol, bool pRefresh = false) override;
+      void setShowPanelWindow(bool pShowPanelWindow) override;
 
       // Don't allow copy construction or assignment
       cxNotebook(const cxNotebook& pNotebook);

@@ -2941,7 +2941,6 @@ inline void cxMenu::useHelpAsStatus(bool pRefreshStatus)
 //  this window.
 void cxMenu::fitItemsToWidth()
 {
-   unsigned index = 0;  // Index for mItemTypes, etc.
    messageLineContainer::iterator iter = mMessageLines.begin();
    for (; iter != mMessageLines.end(); ++iter)
    {
@@ -2950,7 +2949,6 @@ void cxMenu::fitItemsToWidth()
       {
          *iter = iter->substr(0, mSubWinWidth);
       }
-      ++index;
    }
 } // fitItemsToWidth
 
