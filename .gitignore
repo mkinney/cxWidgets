@@ -64,7 +64,9 @@ devnotes.txt
 .idea/
 
 # Demo
-examples/snake/snake_demo
-examples/snake/snake_demo.dSYM
-examples/flashcard/flashcard_demo
-examples/flashcard/flashcard_demo.dSYM
+snake_demo
+snake_demo.dSYM
+flashcard_demo
+flashcard_demo.dSYM
+centipede_demo
+centipede_demo.dSYM
