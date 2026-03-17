@@ -73,9 +73,9 @@ public:
    // Control row layout: [<]  [MonthCombo]  [>]   [Year____]
    static constexpr int COL_CAL          = 2;  // left edge of calendar area
    static constexpr int COL_PREV_BTN     = 2;  // [<] button column
-   static constexpr int NAV_BTN_W        = 4;  // nav button width (incl. border)
+   static constexpr int NAV_BTN_W        = 3;  // nav button width (incl. border)
    static constexpr int NAV_BTN_H        = 3;  // nav button height (incl. border)
-   static constexpr int COL_MONTH_COMBO  = 7;  // month combo box column
+   static constexpr int COL_MONTH_COMBO  = 6;  // month combo box column
    static constexpr int MONTH_COMBO_W    = 13; // month combo box width
    static constexpr int MONTH_COMBO_H    = 10; // month combo box height (1 input + 9 menu)
    static constexpr int COL_NEXT_BTN     = 21; // [>] button column

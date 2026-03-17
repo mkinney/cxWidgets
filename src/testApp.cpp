@@ -19,6 +19,7 @@
 #include "cxMultiForm.h"
 #include "cxComboBox.h"
 #include "cxDatePicker.h"
+#include "cxOpenFileDialog.h"
 #include "cxDate.h"
 #include "cxPanel.h"
 #include "cxSearchPanel.h"
@@ -184,7 +185,8 @@ enum menuItemIDs
    cxMultiLineInputOverrideOnKeypressCode,
    cxWindowAddMessageLinesAboveCode,
    cxWindowBorderStyles,
-   cxDatePickerTestCode
+   cxDatePickerTestCode,
+   cxOpenFileDialogTestCode
    // Note: When adding IDs to this list, also add it to getMenuItemIDStr() to
    //  return a string representation of the code - this is useful for
    //  debugging.
@@ -592,6 +594,9 @@ void cxWindowVariousBorderStyles();
 
 // Demonstrates the cxDatePicker dialog
 void cxDatePickerTest();
+
+// Demonstrates the cxOpenFileDialog
+void cxOpenFileDialogTest();
 
 // Functions for use with forms & fields
 string someFunction(int& int1, int& int2);
@@ -1095,6 +1100,7 @@ void doMenu()
    mainMenu.appendWithPullRight("&Notebook tests", &notebookSubMenu, "Test cxNotebook stuff", true);
    mainMenu.append("&File viewer", fileViewerCode, "", cxITEM_NORMAL, true);
    mainMenu.append("&Date picker", cxDatePickerTestCode, "Show the cxDatePicker dialog", cxITEM_NORMAL, true);
+   mainMenu.append("&Open file dialog", cxOpenFileDialogTestCode, "Show the cxOpenFileDialog", cxITEM_NORMAL, true);
    mainMenu.append("&Attributes", attributesSetterCode, "", cxITEM_NORMAL, true);
    mainMenu.append("E&xit", exitCode, "Exit this application", cxITEM_NORMAL, true);
 
@@ -1541,6 +1547,9 @@ void doMenu()
             break;
          case cxDatePickerTestCode:
             cxDatePickerTest();
+            break;
+         case cxOpenFileDialogTestCode:
+            cxOpenFileDialogTest();
             break;
          case someItem: // do nuthin...
          default: // do nuthin...
@@ -4375,6 +4384,9 @@ string getMenuItemIDStr(long pMenuItemID)
       case cxDatePickerTestCode:
          menuItemIDStr = "cxDatePickerTestCode";
          break;
+      case cxOpenFileDialogTestCode:
+         menuItemIDStr = "cxOpenFileDialogTestCode";
+         break;
    }
 
    return(menuItemIDStr);
@@ -6363,3 +6375,25 @@ void cxDatePickerTest()
       cxBase::messageBox("Date selection was cancelled.");
    }
 } // cxDatePickerTest
+
+void cxOpenFileDialogTest()
+{
+   cxBase::messageBox("cxOpenFileDialog: Use Tab to move between controls. "
+                      "Arrow keys navigate directory/file lists. "
+                      "Enter on a directory enters it; Enter on a file confirms. "
+                      "Left/Right on File type cycles filters.");
+
+   cxOpenFileDialog dlg(nullptr);
+   dlg.addFilter("C/C++ Source (*.cpp;*.c;*.h)", "*.cpp;*.c;*.h");
+   dlg.addFilter("Text Files (*.txt)", "*.txt");
+
+   long result = dlg.showModal();
+   if (result == cxID_OK)
+   {
+      cxBase::messageBox("Selected file: " + dlg.getSelectedFilePath());
+   }
+   else
+   {
+      cxBase::messageBox("File selection was cancelled.");
+   }
+} // cxOpenFileDialogTest

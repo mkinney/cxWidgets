@@ -62,7 +62,7 @@ else
    endif
 endif
 
-WIDGETS_OBJS = cxApp.o cxBase.o cxButton.o cxComboBox.o cxDate.o cxDatePicker.o cxDialog.o cxFileViewer.o cxForm.o cxFunction.o cxInput.o cxMenu.o cxMessageDialog.o cxMultiForm.o cxMultiLineInput.o cxNotebook.o cxObject.o cxPanel.o cxScrolledWindow.o cxSearchPanel.o cxStringUtils.o cxTextValidator.o cxTimer.o cxValidators.o cxWidgetsException.o cxWindow.o cxBorderChars.o cxBorderStyles.o
+WIDGETS_OBJS = cxApp.o cxBase.o cxButton.o cxComboBox.o cxDate.o cxDatePicker.o cxDialog.o cxFileViewer.o cxForm.o cxFunction.o cxInput.o cxMenu.o cxMessageDialog.o cxMultiForm.o cxMultiLineInput.o cxNotebook.o cxObject.o cxOpenFileDialog.o cxPanel.o cxScrolledWindow.o cxSearchPanel.o cxStringUtils.o cxTextValidator.o cxTimer.o cxValidators.o cxWidgetsException.o cxWindow.o cxBorderChars.o cxBorderStyles.o
 STATIC_LIB = libcxWidgets.a
 
 all: testApp keys
@@ -117,6 +117,9 @@ cxDatePicker.o: cxDatePicker.h cxDatePicker.cpp cxWindow.o cxButton.o cxComboBox
 
 cxDialog.o: cxDialog.h cxDialog.cpp cxWindow.o
 	$(CC) -c $(CFLAGS) -o cxDialog.o cxDialog.cpp
+
+cxOpenFileDialog.o: cxOpenFileDialog.h cxOpenFileDialog.cpp cxWindow.o cxInput.o
+	$(CC) -c $(CFLAGS) -o cxOpenFileDialog.o cxOpenFileDialog.cpp
 
 cxFileViewer.o: cxFileViewer.h cxFileViewer.cpp cxScrolledWindow.o cxBase.o cxStringUtils.o
 	$(CC) -c $(CFLAGS) -o cxFileViewer.o cxFileViewer.cpp
