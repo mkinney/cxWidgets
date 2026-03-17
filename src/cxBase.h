@@ -34,7 +34,8 @@
 /** \namespace cxBase
  * \brief Contains some miscellaneous cxWidgets helper functions.
  */
-namespace cxBase {
+namespace cxBase
+{
 
    /**
     * \brief Initializes the cxWidgets library.  This must be called before
@@ -629,12 +630,12 @@ namespace cxBase {
    void getAttrs(e_WidgetItems pItem, std::set<attr_t>& pAttrs);
 
 
-   /** 
+   /**
     * @brief Determine if the widget has an attribute "set"
-    * 
+    *
     * @param pItem The item type to check (see e_WidgetItems)
     * @param pAttr The attribute. (i.e., A_NORMAL, etc.)
-    * 
+    *
     * @return true if the widget has that attribute
     */
    bool hasAttr(e_WidgetItems pItem, attr_t pAttr);
@@ -708,13 +709,13 @@ namespace cxBase {
     */
    int getMenuClearKeywordKey();
 
-   /** 
+   /**
     * @brief dump the contents to the screen to a file
-    * 
-    * @param pFancy - print fields that have underlines 
+    *
+    * @param pFancy - print fields that have underlines
     *     as underscores '_'.
     * @param pFilename to write to
-    * 
+    *
     * @return string "" on success otherwise message
     */
    std::string dump(bool pFancy=false, const std::string& pFilename="");
@@ -747,28 +748,28 @@ namespace cxBase {
     */
    void removeNavKey(int pKey);
 
-   /** 
+   /**
     * @brief Get the contents of the screen (for debugging/testing)
-    * 
-    * @param pRow the starting row 
+    *
+    * @param pRow the starting row
     * @param pCol the starting column
     * @param pNumber number of characters to get
     * @param pWin A pointer to an ncurses window structure to get contents
     *  from.  If this is nullptr, curscr will be used.
-    * 
+    *
     * @return the "string" value of the screen
     */
    std::string getString(int pRow, int pCol, int pNumber, WINDOW *pWin = nullptr);
 
-   /** 
+   /**
     * @brief Look for a string on the screen (for debugging/testing)
-    * 
+    *
     * @param pSearch string to search for
     * @param pRow the row it was found on
     * @param pCol the column it was found on
     * @param pWin A pointer to an ncurses window structure to get contents
     *  from.  If this is nullptr, curscr will be used.
-    * 
+    *
     * @return bool true if we were able to find the string, false otherwise
     */
    bool findString(const std::string& pSearch, int& pRow, int& pCol, WINDOW *pWin = nullptr);

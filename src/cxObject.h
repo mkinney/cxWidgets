@@ -37,7 +37,8 @@ typedef std::vector<std::string>::iterator stringContainerIterator;
  * \version $Revision: 1.9 $
  * \date $Date: 2007/12/04 00:23:46 $
  */
-class cxObject {
+class cxObject
+{
    public:
       /**
        * Default constructor for cxObject

@@ -6,7 +6,8 @@
 //  cxMenuItemType, which is used by cxMenu for
 //  different tyeps of menu items.
 
-enum cxMenuItemType {
+enum cxMenuItemType
+{
    cxITEM_NORMAL = 0,
    cxITEM_SUBMENU,
    cxITEM_POPUPMENU,

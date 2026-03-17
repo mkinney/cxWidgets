@@ -42,34 +42,42 @@ cxButton::cxButton(const cxButton& pButton)
    copyOnClickFunction(pButton);
 } // copy constructor
 
-cxButton::~cxButton() {
+cxButton::~cxButton()
+{
 } // destructor
 
-cxButton& cxButton::operator =(const cxButton& pButton) {
-   if (&pButton != this) {
+cxButton& cxButton::operator =(const cxButton& pButton)
+{
+   if (&pButton != this)
+   {
       copyCxWinStuff(&pButton, true);
       copyOnClickFunction(pButton);
    }
    return(*this);
 } // operator =
 
-string cxButton::cxTypeStr() const {
+string cxButton::cxTypeStr() const
+{
    return("cxButton");
 } // cxTypeStr
 
-long cxButton::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows) {
-   if (isEnabled()) {
+long cxButton::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows)
+{
+   if (isEnabled())
+   {
       // Run the onFocus function.  If runOnFocusFunction() returns true, that
       //  means we should exit.. so only do the input loop if it returns false.
       //  Also, check to make sure that getLeaveNow() returns false, in case
       //  the onFocus function called exitNow() or quitNow().
-      if (!runOnFocusFunction() && !getLeaveNow()) {
+      if (!runOnFocusFunction() && !getLeaveNow())
+      {
          // This is a loop that will stay in here as long as the user keeps pressing
          //  enter, which should run the button's event function rather than let
          //  the button lose focus.  Also, check mLeaveNow - this could be set false
          //  by a call to exitNow() or quitNow().
          bool doShowModal = true;
-         while (doShowModal && !getLeaveNow()) {
+         while (doShowModal && !getLeaveNow())
+         {
             // Visual cue: Before showing the button, apply reverse video to the message
             //  area (inside the borders), and after showing the button, remove the
             //  reverse video and update the message area to refresh it.
@@ -89,8 +97,10 @@ long cxButton::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows)
             bool mouseClickOnButton = false;
             int lastKey = cxWindow::getLastKey();
 #ifdef NCURSES_MOUSE_VERSION
-            if (lastKey == KEY_MOUSE) {
-               if (getmouse(&mMouse) == OK) {
+            if (lastKey == KEY_MOUSE)
+            {
+               if (getmouse(&mMouse) == OK)
+               {
                   mouseEvent = true;
                   // For normal mouse clicks (left click), check to see if the
                   //  user clicked in the button.  For other clicks, just keep
@@ -102,7 +112,8 @@ long cxButton::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows)
                   //  have it call overridable event functions?  (not sure if that
                   //  would make things easier or harder for developers..  will
                   //  have to play with it some more first.)
-                  switch (mMouse.bstate) {
+                  switch (mMouse.bstate)
+                  {
                      case BUTTON1_CLICKED:  // Normal mouse click
                         mouseClickOnButton = mouseEvtWasInWindow();
                         break;
@@ -115,23 +126,29 @@ long cxButton::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows)
                }
             }
 #endif
-            if ((lastKey == ENTER) || (lastKey == KEY_ENTER) || mouseClickOnButton) {
+            if ((lastKey == ENTER) || (lastKey == KEY_ENTER) || mouseClickOnButton)
+            {
                doShowModal = true;
                runOnClickFunction();
             }
-            else {
+            else
+            {
                // If there was a mouse event, and no external function existed
                //  for the mouse event, then if this button has a cxPanel for a
                //  parent, and if the mouse event was outside the button
                //  window, then quit.
-               if (mouseEvent & !mouseFunctionExists) {
-                  if (parentIsCxPanel()) {
-                     if (!mouseEvtWasInWindow()) {
+               if (mouseEvent & !mouseFunctionExists)
+               {
+                  if (parentIsCxPanel())
+                  {
+                     if (!mouseEvtWasInWindow())
+                     {
                         doShowModal = false;
                      }
                   }
                }
-               else {
+               else
+               {
                   // For all other keys other than enter and mouse clicking within
                   //  the window, quit.
                   doShowModal = false;
@@ -145,28 +162,34 @@ long cxButton::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows)
 } // showModal
 
 void cxButton::setOnClickFunction(funcPtr4 pFunction, void *p1, void *p2,
-                                  void *p3, void *p4) {
+                                  void *p3, void *p4)
+                                  {
    mOnClickFunction.reset();
    mOnClickFunction = make_shared<cxFunction4>(pFunction, p1, p2, p3, p4, false, false,
                                       false);
 } // setOnClickFunction
 
-void cxButton::setOnClickFunction(funcPtr2 pFunction, void *p1, void *p2) {
+void cxButton::setOnClickFunction(funcPtr2 pFunction, void *p1, void *p2)
+{
    mOnClickFunction.reset();
    mOnClickFunction = make_shared<cxFunction2>(pFunction, p1, p2, false, false, false);
 } // setOnClickFunction
 
-void cxButton::setOnClickFunction(funcPtr0 pFunction) {
+void cxButton::setOnClickFunction(funcPtr0 pFunction)
+{
    mOnClickFunction.reset();
    mOnClickFunction = make_shared<cxFunction0>(pFunction, false, false, false);
 } // setOnClickFunction
 
-string cxButton::runOnClickFunction() {
+string cxButton::runOnClickFunction()
+{
    string retval;
 
    // If the onClick function is set, run it.
-   if (mOnClickFunction != nullptr) {
-      if (mOnClickFunction->functionIsSet()) {
+   if (mOnClickFunction != nullptr)
+   {
+      if (mOnClickFunction->functionIsSet())
+      {
          retval = mOnClickFunction->runFunction();
       }
    }
@@ -174,11 +197,13 @@ string cxButton::runOnClickFunction() {
    return(retval);
 } // runOnClickFunction
 
-void cxButton::doMouseBehavior() {
+void cxButton::doMouseBehavior()
+{
 #ifdef NCURSES_MOUSE_VERSION
    // If mouse button 1 was clicked inside the window, then run the onClick
    //  function, if it's set.
-   if (mouseEvtWasInWindow() && mouseButton1Clicked()) {
+   if (mouseEvtWasInWindow() && mouseButton1Clicked())
+   {
       runOnClickFunction();
    }
 #endif
@@ -188,31 +213,42 @@ void cxButton::doMouseBehavior() {
 // Private functions //
 ///////////////////////
 
-void cxButton::copyOnClickFunction(const cxButton& pButton) {
+void cxButton::copyOnClickFunction(const cxButton& pButton)
+{
    mOnClickFunction.reset();
    const cxFunction *rawPtr = pButton.mOnClickFunction.get();
-   if (rawPtr != nullptr) {
+   if (rawPtr != nullptr)
+   {
       const string funcType = pButton.mOnClickFunction->cxTypeStr();
-      if (funcType == "cxFunction0") {
-         try {
+      if (funcType == "cxFunction0")
+      {
+         try
+         {
             const cxFunction0* func0 = dynamic_cast<const cxFunction0*>(rawPtr);
-            if (func0 != nullptr) {
+            if (func0 != nullptr)
+            {
                mOnClickFunction = make_shared<cxFunction0>(func0->getFunction(),
                                               func0->getUseReturnVal(),
                                               func0->getExitAfterRun(),
                                               func0->getRunOnLeaveFunction());
             }
          }
-         catch (...) {
+         catch (...)
+         {
          }
       }
-      else if (funcType == "cxFunction2") {
-         try {
+      else if (funcType == "cxFunction2")
+      {
+         try
+         {
             const cxFunction2* func2 = dynamic_cast<const cxFunction2*>(rawPtr);
-            if (func2 != nullptr) {
+            if (func2 != nullptr)
+            {
                void* params[] = { func2->getParam1(), func2->getParam2() };
-               for (int i = 0; i < 2; ++i) {
-                  if (params[i] == (void*)(&pButton)) {
+               for (int i = 0; i < 2; ++i)
+               {
+                  if (params[i] == (void*)(&pButton))
+                  {
                      params[i] = (void*)this;
                   }
                }
@@ -223,17 +259,23 @@ void cxButton::copyOnClickFunction(const cxButton& pButton) {
                                               func2->getRunOnLeaveFunction());
             }
          }
-         catch (...) {
+         catch (...)
+         {
          }
       }
-      else if (funcType == "cxFunction4") {
-         try {
+      else if (funcType == "cxFunction4")
+      {
+         try
+         {
             const cxFunction4* func4 = dynamic_cast<const cxFunction4*>(rawPtr);
-            if (func4 != nullptr) {
+            if (func4 != nullptr)
+            {
                void* params[] = { func4->getParam1(), func4->getParam4(),
                                   func4->getParam3(), func4->getParam4() };
-               for (int i = 0; i < 4; ++i) {
-                  if (params[i] == (void*)(&pButton)) {
+               for (int i = 0; i < 4; ++i)
+               {
+                  if (params[i] == (void*)(&pButton))
+                  {
                      params[i] = (void*)this;
                   }
                }
@@ -245,7 +287,8 @@ void cxButton::copyOnClickFunction(const cxButton& pButton) {
                                               func4->getRunOnLeaveFunction());
             }
          }
-         catch (...) {
+         catch (...)
+         {
          }
       }
    }

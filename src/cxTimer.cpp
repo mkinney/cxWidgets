@@ -13,64 +13,79 @@ cxTimer::cxTimer(const shared_ptr<cxFunction>& pFuncPtr, unsigned int pDelayMS, 
      mDelay(pDelayMS),
      mWaitInSeparateThread(pWaitInSeparateThread)
 {
-   if (mFunction != nullptr) {
+   if (mFunction != nullptr)
+   {
      start();
    }
 }
 
-cxTimer::~cxTimer() {
+cxTimer::~cxTimer()
+{
 }
 
-void cxTimer::function(const shared_ptr<cxFunction>& pFuncPtr) {
+void cxTimer::function(const shared_ptr<cxFunction>& pFuncPtr)
+{
    lock_guard<std::mutex> lock(mWaitMutex);
    mFunction = pFuncPtr;
 }
 
-shared_ptr<cxFunction> cxTimer::function() const {
+shared_ptr<cxFunction> cxTimer::function() const
+{
    return(mFunction);
 }
 
-void cxTimer::delay(unsigned int pDelay) {
+void cxTimer::delay(unsigned int pDelay)
+{
    lock_guard<std::mutex> lock(mWaitMutex);
    mDelay = pDelay;
 }
 
-unsigned int cxTimer::delay() const {
+unsigned int cxTimer::delay() const
+{
    return mDelay;
 }
 
-void cxTimer::waitInSeparateThread(bool pWaitInSeparateThread) {
+void cxTimer::waitInSeparateThread(bool pWaitInSeparateThread)
+{
    lock_guard<std::mutex> lock(mWaitMutex);
    mWaitInSeparateThread = pWaitInSeparateThread;
 }
 
-bool cxTimer::waitInSeparateThread() const {
+bool cxTimer::waitInSeparateThread() const
+{
    return(mWaitInSeparateThread);
 }
 
-void cxTimer::start() {
-   if (!mIsWaiting && mFunction != nullptr) {
+void cxTimer::start()
+{
+   if (!mIsWaiting && mFunction != nullptr)
+   {
       wait();
    }
 }
 
-void cxTimer::stop(bool pRunFunction) {
+void cxTimer::stop(bool pRunFunction)
+{
    mRunFunctionAfterWaiting = pRunFunction;
    mIsWaiting = false;
 }
 
-bool cxTimer::isWaiting() const {
+bool cxTimer::isWaiting() const
+{
    return(mIsWaiting);
 }
 
-string cxTimer::cxTypeStr() const {
+string cxTimer::cxTypeStr() const
+{
    return("cxTimer");
 } // cxTypeStr
 
-void cxTimer::wait() {
+void cxTimer::wait()
+{
    mRunFunctionAfterWaiting = true; // Default
    // If the function pointer is null, then do nothing & return now
-   if (mFunction == nullptr) {
+   if (mFunction == nullptr)
+   {
       mIsWaiting = false;
       return;
    }
@@ -97,13 +112,15 @@ void cxTimer::wait() {
       const clock_t endTime = now + (mDelay * clocksPerMS);
 
       mIsWaiting = true;
-      while (now < endTime && mIsWaiting) {
+      while (now < endTime && mIsWaiting)
+      {
          now = clock();
       }
       mIsWaiting = false;
 
       // If mRunFunctionAfterWaiting is true, then run the function
-      if (mRunFunctionAfterWaiting && mFunction != nullptr) {
+      if (mRunFunctionAfterWaiting && mFunction != nullptr)
+      {
          mFunction->runFunction();
       }
       mRunFunctionAfterWaiting = true; // Reset back to default
@@ -111,10 +128,12 @@ void cxTimer::wait() {
 
    // Perform the wait & run in a separate thread if configured to do so;
    // otherwise, run it in the current thread.
-   if (mWaitInSeparateThread) {
+   if (mWaitInSeparateThread)
+   {
       std::thread t(doWaitLoop);
    }
-   else {
+   else
+   {
       doWaitLoop();
    }
 }

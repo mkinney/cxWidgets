@@ -34,7 +34,8 @@
  * \enum Specifies a cxWidgets item (title, message, status, input label,
  * input data, etc.).
  */
-enum e_WidgetItems {
+enum e_WidgetItems
+{
    eMESSAGE = 0,    // Message
    eTITLE,          // Title
    eSTATUS,         // Status

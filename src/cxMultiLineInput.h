@@ -33,7 +33,8 @@
 #include <map>
 #include <memory>
 
-enum eMLIF {
+enum eMLIF
+{
    eMLIF_COMMA_SEP = 0,
    eMLIF_COMMA_SEP_WITH_DESC
 }; // enum for cxMultiLineInputFormat
@@ -41,7 +42,8 @@ enum eMLIF {
 // eInputErrors is an enumeration that specifies an errors state for the
 //  input.  If validation fails, the input's mErrorState will be set to
 //  one of these errors.  If there is no error, it will be set to eNO_ERROR.
-enum eInputErrors {
+enum eInputErrors
+{
    eNO_ERROR,
    eOUT_OF_RANGE,
    eINVALID_VALUE,
@@ -74,16 +76,16 @@ class cxForm; // Pre-declaration to avoid a circular reference
  *  There is also a set of functions that may be set, that will be run at
  *  various times.  The order of the functions is as follows:<br>
  *  <ol>
- *  <li> The "on focus" function is executed immediately at the start of 
+ *  <li> The "on focus" function is executed immediately at the start of
  *      setFocus() (see setOnFocusFunction() in cxWindow).
- *  <li> When certain hotkeys (set up with setKeyFunction()) are pressed, 
- *      functions associated with those keys are run.  If there are no hotkey 
- *      functions set up, the "on key" function is run after each keypress 
- *      (see setOnKeyFunction()). 
- *  <li> After the user is finished entering text, the validator function 
- *      is run (see setValidatorFunction()).  The purpose of this function 
+ *  <li> When certain hotkeys (set up with setKeyFunction()) are pressed,
+ *      functions associated with those keys are run.  If there are no hotkey
+ *      functions set up, the "on key" function is run after each keypress
+ *      (see setOnKeyFunction()).
+ *  <li> After the user is finished entering text, the validator function
+ *      is run (see setValidatorFunction()).  The purpose of this function
  *      is to do any validation of the input that requires special logic.
- *  <li> Just before setFocus() exits, the "on leave" function is 
+ *  <li> Just before setFocus() exits, the "on leave" function is
  *      executed (see setOnLeaveFunction() in cxWindow).
  *  </ol>
  *  Note that the functions used must have the following signatures:<br>
@@ -139,14 +141,15 @@ class cxForm; // Pre-declaration to avoid a circular reference
  *  +-Form Title-----------------------------+
  *  |                                        |
  *  | Label:__________ RightLabel            |  (Note: When you press F1, a new message
- *  |                                        |         box pops up with info, aka 
+ *  |                                        |         box pops up with info, aka
  *  +Status Line-----------------------------+         extended help.)
  *
  * \author $Author: erico $
  * \version $Revision: 1.155 $
  * \date $Date: 2007/12/04 00:23:46 $
  */
-class cxMultiLineInput : public cxWindow {
+class cxMultiLineInput : public cxWindow
+{
    public:
       /**
        * Default constructor
@@ -555,7 +558,7 @@ class cxMultiLineInput : public cxWindow {
        * \brief Adds a key to the list of keys that, when pressed, the input
        * \brief won't run the validator function.
        *
-       * @param pKey A key to add to the list of keys 
+       * @param pKey A key to add to the list of keys
        */
       virtual void addSkipValidatorKey(int pKey);
 
@@ -1014,7 +1017,7 @@ class cxMultiLineInput : public cxWindow {
       /**
        * \brief Returns whether the input loop is enabled
        *
-       * @return 
+       * @return
        */
       virtual bool inputLoopEnabled() const;
 
@@ -1163,7 +1166,7 @@ class cxMultiLineInput : public cxWindow {
        */
       virtual void quitNow(bool pMoveForward);
 
-      /** 
+      /**
        * \brief Tells the input to exit the input loop now, with a return value
        * \brief of cxID_QUIT.
        */
@@ -1181,7 +1184,7 @@ class cxMultiLineInput : public cxWindow {
        */
       virtual void exitNow(bool pMoveForward);
 
-      /** 
+      /**
        * \brief Tells the input to exit the input loop now, with a return value
        * \brief of cxID_EXIT.
        */
@@ -1216,7 +1219,7 @@ class cxMultiLineInput : public cxWindow {
        * \brief Returns whether the input ran a key function that was set up
        * \brief to have the input exit when it was done.
        *
-       * @return 
+       * @return
        */
       virtual bool ranFunctionAndShouldExit() const;
 
@@ -1656,10 +1659,10 @@ class cxMultiLineInput : public cxWindow {
        */
       virtual void getValidOptions(std::map<std::string, std::string>& pValidOptions) const;
 
-      /** 
+      /**
        * \brief Get the valid input strings formatted
        * @param pMLIF (format enum)
-       *     eMLIF_COMMA_SEP=Comma separated list of inputs, 
+       *     eMLIF_COMMA_SEP=Comma separated list of inputs,
        *     eMLIF_COMMA_SEP_WITH_DESC=Comma Separated list of inputs with the description
        * @return formatted string of the valid inputs
        */

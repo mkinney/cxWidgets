@@ -23,10 +23,11 @@
  * \brief String utility functions
  * \version $Revision: 1.15 $
  * \date $Date: 2007/12/04 00:23:46 $
- * 
+ *
  */
 
-namespace cxStringUtils {
+namespace cxStringUtils
+{
    /**
     * Splits a string based on a regular expression, similar to Perl's split function.
     * @param input String to split
@@ -79,7 +80,7 @@ namespace cxStringUtils {
    std::string replace(const std::string& input, const std::string& search, const std::string& replace);
 
    /**
-    * \brief Converts a string to another type.  
+    * \brief Converts a string to another type.
     * @param s A string to be converted.
     * @return The value of the string converted to the given type
     */
@@ -194,20 +195,20 @@ namespace cxStringUtils {
     */
    std::string removeChar(const std::string& pString, const int pPos);
 
-   /** 
+   /**
     * @brief conver the string to upper case
-    * 
+    *
     * @param theString to convert
-    * 
+    *
     * @return the converted string
     */
    std::string strToUpper(const std::string& theString);
 
-   /** 
+   /**
     * @brief conver the string to lower case
-    * 
+    *
     * @param theString to convert
-    * 
+    *
     * @return the converted string
     */
    std::string strToLower(const std::string& theString);

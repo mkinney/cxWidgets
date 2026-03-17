@@ -6,7 +6,8 @@
 
 #include <string>
 
-namespace cxValidators {
+namespace cxValidators
+{
    /**
     * \brief Validator for inputs that should only accept integers.  This is
     * \brief meant to be used as an 'onKey' validator (to validate on each

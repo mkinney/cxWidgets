@@ -42,7 +42,8 @@
  * of this class takes care of freeing the memory
  * used by the subforms.
  */
-class cxMultiForm : public cxForm {
+class cxMultiForm : public cxForm
+{
    public:
       /**
        * Default constructor.  All parameters have default values.

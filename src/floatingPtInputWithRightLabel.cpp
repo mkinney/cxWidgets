@@ -11,10 +11,12 @@ floatingPtInputWithRightLabel::floatingPtInputWithRightLabel(cxWindow *pParentWi
 {
 } // constructor
 
-floatingPtInputWithRightLabel::~floatingPtInputWithRightLabel() {
+floatingPtInputWithRightLabel::~floatingPtInputWithRightLabel()
+{
 } // destructor
 
-string floatingPtInputWithRightLabel::onKeypress() {
+string floatingPtInputWithRightLabel::onKeypress()
+{
    string retval = cxMultiLineInput::onKeypress();
    // Update the right label with the input value
    setRightLabel(getValue(), true);

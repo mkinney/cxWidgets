@@ -18,7 +18,8 @@
   * \brief can be used to do database queries using user-inputted data from the
   * \brief form and show the results in the menu.
  */
-class cxSearchPanel : public cxPanel {
+class cxSearchPanel : public cxPanel
+{
    public:
       /**
        * \brief Default constructor.
@@ -260,7 +261,7 @@ class cxSearchPanel : public cxPanel {
        * @param p2 Pointer to the second parameter to be used for the function
        * @param p3 Pointer to the 3rd parameter to be used for the function
        * @param p4 Pointer to the 4th parameter to be used for the function
-       * @param pUseVal 
+       * @param pUseVal
        * @param pExitAfterRun Whether or not the menu should exit after the function
        *  finishes running (defaults to false).
        */
@@ -275,7 +276,7 @@ class cxSearchPanel : public cxPanel {
        *  string func(void*, void*)
        * @param p1 Pointer to the first parameter to be used for the function
        * @param p2 Pointer to the second parameter to be used for the function
-       * @param pUseVal 
+       * @param pUseVal
        * @param pExitAfterRun Whether or not the menu should exit after the function
        *  finishes running (defaults to false).
        */
@@ -287,7 +288,7 @@ class cxSearchPanel : public cxPanel {
        *
        * @param pFunction The function to be run - Must have this signature:
        *  string func()
-       * @param pUseVal 
+       * @param pUseVal
        * @param pExitAfterRun Whether or not the menu should exit after the function
        *  finishes running (defaults to false).
        */
@@ -737,7 +738,7 @@ class cxSearchPanel : public cxPanel {
       static std::string formReverseNavigation(void *theSearchPanel, void *unused);
 
       // This is an event function for when the user presses the ESCAPE in
-      //  the cxMenu.  It will clear the form fields, the menu items, and 
+      //  the cxMenu.  It will clear the form fields, the menu items, and
       //  apply focus to the first field on the form.
       static std::string menuOnESC(void *theSearchPanel, void *unused);
 

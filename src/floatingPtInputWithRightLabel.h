@@ -9,7 +9,8 @@
 #include "cxMultiLineInput.h"
 #include <string>
 
-class floatingPtInputWithRightLabel : public cxMultiLineInput {
+class floatingPtInputWithRightLabel : public cxMultiLineInput
+{
    public:
       explicit floatingPtInputWithRightLabel(cxWindow *pParentWindow = nullptr,
                                 int pRow = 0, int pCol = 0, int pHeight = 1,

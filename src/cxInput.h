@@ -102,7 +102,8 @@ class cxMultiLineInput;
  * \date $Date: 2007/12/04 00:23:46 $
  *
  */
-class cxInput : public cxWindow {
+class cxInput : public cxWindow
+{
    public:
       /**
        * \brief Default constructor
@@ -133,7 +134,7 @@ class cxInput : public cxWindow {
        * @param pThatInput Another cxInput object to be copied
        */
       cxInput(const cxInput& pThatInput);
-      
+
       /**
        * \brief Copy constructor that will be used by cxMultiLineInput when
        * \brief copying a cxMultiLineInput.  This was originally meant to be
@@ -584,7 +585,7 @@ class cxInput : public cxWindow {
 
       /**
        * \brief Returns whether the input can be editable.
-       * 
+       *
        * @return Whether or not the input can be editable
        */
       bool canBeEditable() const;
@@ -858,7 +859,7 @@ class cxInput : public cxWindow {
        * \brief inputClearKey is a default key to be used to clear inputs.
        */
       static int inputClearKey;
-      
+
    protected:
       // Attributes for various element (in addition to the ones provided
       //  in cxWindow)

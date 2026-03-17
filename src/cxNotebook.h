@@ -30,11 +30,12 @@
  * \version $Revision: 1.31 $
  * \date $Date: 2007/12/04 00:23:46 $
 */
-class cxNotebook: public cxPanel {
+class cxNotebook: public cxPanel
+{
 
    public:
 
-      /** 
+      /**
        * \brief Constructor
        *
        * @param pParentWindow A pointer to the parent window.  Can be nullptr.
@@ -191,7 +192,7 @@ class cxNotebook: public cxPanel {
        *  input loop.  Defaults to true.
        * @param pBringToTop Whether or not to bring the window to the top.  Defaults
        *  to true.
-       * @param pShowSubwindows 
+       * @param pShowSubwindows
        *
        * @return A return code based on user input.  Returns cxID_QUIT if the user
        *  presses ESC; otherwise, returns cxID_EXIT.
@@ -804,7 +805,7 @@ class cxNotebook: public cxPanel {
       cxNotebook(const cxNotebook& pNotebook);
       cxNotebook& operator =(const cxNotebook& pNotebook);
 
-      /** 
+      /**
        * \brief Sets up spaces in the border for a panel so that it looks
        * \brief like the label window "opens up" into the panel.  (either
        * \brief the top/title line or the bottom/status line)

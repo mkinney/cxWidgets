@@ -41,13 +41,16 @@ cxMultiForm::cxMultiForm(const cxMultiForm& pThatMultiForm)
    setIsModal(false); // This is done on purpose
 } // Copy constructor
 
-cxMultiForm::~cxMultiForm() {
+cxMultiForm::~cxMultiForm()
+{
    // Free the memory used by the subform pointers.
    freeSubforms();
 } // Destructor
 
-cxMultiForm& cxMultiForm::operator =(const cxMultiForm& pThatMultiForm) {
-   if (&pThatMultiForm != this) {
+cxMultiForm& cxMultiForm::operator =(const cxMultiForm& pThatMultiForm)
+{
+   if (&pThatMultiForm != this)
+   {
       copyCxMultiFormStuff(&pThatMultiForm);
    }
 
@@ -56,7 +59,8 @@ cxMultiForm& cxMultiForm::operator =(const cxMultiForm& pThatMultiForm) {
 
 shared_ptr<cxForm> cxMultiForm::appendForm(int pRow, int pCol, int pHeight,
                                            int pWidth, const string& pTitle,
-                                           eBorderStyle pBorderStyle, bool pStacked) {
+                                           eBorderStyle pBorderStyle, bool pStacked)
+                                           {
    // Create the subform.  Set the form's autoExit to true so
    //  that it will exit its input loop when the user exits the last field.
    shared_ptr<cxForm> form = make_shared<cxForm>(nullptr, pRow+top(), pCol+left(), pHeight, pWidth,
@@ -83,10 +87,12 @@ shared_ptr<cxForm> cxMultiForm::appendForm(int pRow, int pCol, int pHeight,
    return(form);
 } // appendForm
 
-bool cxMultiForm::appendForm(shared_ptr<cxForm>& pForm, int pRow, int pCol, bool* pMoved) {
+bool cxMultiForm::appendForm(shared_ptr<cxForm>& pForm, int pRow, int pCol, bool* pMoved)
+{
    // Don't append the form if it's nullptr, and don't
    // allow appending a cxMultiForm to itself.
-   if ((pForm.get() == nullptr) || (pForm.get() == this)) {
+   if ((pForm.get() == nullptr) || (pForm.get() == this))
+   {
       return false;
    }
 
@@ -94,17 +100,21 @@ bool cxMultiForm::appendForm(shared_ptr<cxForm>& pForm, int pRow, int pCol, bool
 
    // Only let them append the form if it isn't already in mForms.
    bool alreadyExists = false;
-   for (const shared_ptr<cxForm>& form : mForms) {
-      if (form == pForm) {
+   for (const shared_ptr<cxForm>& form : mForms)
+   {
+      if (form == pForm)
+      {
          alreadyExists = true;
          break;
       }
    }
-   if (!alreadyExists) {
+   if (!alreadyExists)
+   {
       // Move the subform to the proper place (relative to the form).
       //  Make sure it's not refreshed if it's hidden.
       bool subformMoved = pForm->move(top()+pRow, left()+pCol, !(pForm->isHidden()));
-      if (pMoved != nullptr) {
+      if (pMoved != nullptr)
+      {
          *pMoved = subformMoved;
       }
 
@@ -139,10 +149,12 @@ bool cxMultiForm::appendForm(shared_ptr<cxForm>& pForm, int pRow, int pCol, bool
    return(appendedIt);
 } // appendForm
 
-bool cxMultiForm::appendForm(shared_ptr<cxForm>& pForm) {
+bool cxMultiForm::appendForm(shared_ptr<cxForm>& pForm)
+{
    // Don't append the form if it's nullptr, and don't
    // allow appending a cxMultiForm to itself.
-   if ((pForm.get() == nullptr) || (pForm.get() == this)) {
+   if ((pForm.get() == nullptr) || (pForm.get() == this))
+   {
       return false;
    }
 
@@ -150,13 +162,16 @@ bool cxMultiForm::appendForm(shared_ptr<cxForm>& pForm) {
    // Only let them append the form if it isn't already in mForms.
    bool alreadyExists = false;
    formPtrContainer::const_iterator iter = mForms.begin();
-   for (; iter != mForms.end(); ++iter) {
-      if ((*iter) == pForm) {
+   for (; iter != mForms.end(); ++iter)
+   {
+      if ((*iter) == pForm)
+      {
          alreadyExists = true;
          break;
       }
    }
-   if (!alreadyExists) {
+   if (!alreadyExists)
+   {
       // Make sure the form has no parent window
       pForm->setParent(nullptr);
 
@@ -188,21 +203,26 @@ bool cxMultiForm::appendForm(shared_ptr<cxForm>& pForm) {
    return(appendedIt);
 } // appendForm
 
-shared_ptr<cxForm> cxMultiForm::getForm(unsigned pIndex) const {
+shared_ptr<cxForm> cxMultiForm::getForm(unsigned pIndex) const
+{
    shared_ptr<cxForm> form;
 
-   if ((pIndex >= 0) && (pIndex < mForms.size())) {
+   if ((pIndex >= 0) && (pIndex < mForms.size()))
+   {
       form = mForms[pIndex];
    }
 
    return(form);
 } // getForm
 
-shared_ptr<cxForm> cxMultiForm::getForm(const string& pTitle) const {
+shared_ptr<cxForm> cxMultiForm::getForm(const string& pTitle) const
+{
    shared_ptr<cxForm> form;
 
-   for (const shared_ptr<cxForm>& formInCollection : mForms) {
-      if (formInCollection->getTitle() == pTitle) {
+   for (const shared_ptr<cxForm>& formInCollection : mForms)
+   {
+      if (formInCollection->getTitle() == pTitle)
+      {
          form = formInCollection;
          break;
       }
@@ -211,15 +231,18 @@ shared_ptr<cxForm> cxMultiForm::getForm(const string& pTitle) const {
    return(form);
 } // getForm
 
-long cxMultiForm::show(bool pBringToTop, bool pShowSubwindows) {
+long cxMultiForm::show(bool pBringToTop, bool pShowSubwindows)
+{
    long retval = cxFIRST_AVAIL_RETURN_CODE;
    // If the form is enabled, show the form (along with the
    //  inputs), and show all subforms.  Otherwise, hide the
    //  form and all subforms.
-   if (isEnabled()) {
+   if (isEnabled())
+   {
       // Show this window before showing the subforms if
       //  getShowSelfBeforeSubwins() returns true
-      if (getShowSelfBeforeSubwins()) {
+      if (getShowSelfBeforeSubwins())
+      {
          retval = cxForm::show(pBringToTop, pShowSubwindows);
          // Set pBringToTop to true so that when the subforms are shown,
          //  they will appear above the multiForm window.
@@ -230,30 +253,36 @@ long cxMultiForm::show(bool pBringToTop, bool pShowSubwindows) {
       showAllSubforms(pBringToTop, false);
 
       // Show this window now if getShowSelfBeforeSubwins() returns false
-      if (!getShowSelfBeforeSubwins()) {
+      if (!getShowSelfBeforeSubwins())
+      {
          retval = cxWindow::show(pBringToTop, pShowSubwindows);
       }
    }
-   else {
+   else
+   {
       hide(false);
    }
 
    return(retval);
 } // show
 
-long cxMultiForm::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows) {
+long cxMultiForm::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows)
+{
    setReturnCode(cxID_EXIT);
 
    // Do the input loop if the form is enabled.
-   if (isEnabled()) {
+   if (isEnabled())
+   {
       mIsModal = true;
 
       // Run the onFocus function.  If runOnFocusFunction() returns true, that
       //  means we should exit.. so only do the input loop if it returns false.
       //  Also, check to make sure that getLeaveNow() returns false, in case
       //  the onFocus function called exitNow() or quitNow().
-      if (!runOnFocusFunction() && !getLeaveNow()) {
-         if (pShowSelf) {
+      if (!runOnFocusFunction() && !getLeaveNow())
+      {
+         if (pShowSelf)
+         {
             show(pBringToTop, pShowSubwindows);
          }
          // Do the input loop; have the subforms show themselves if we didn't
@@ -269,12 +298,16 @@ long cxMultiForm::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindo
    return(getReturnCode());
 } // showModal
 
-void cxMultiForm::showAllSubforms(bool pBringToTop, bool pSkipCurrentForm) const {
+void cxMultiForm::showAllSubforms(bool pBringToTop, bool pSkipCurrentForm) const
+{
    unsigned numForms = mForms.size();
-   for (unsigned i = 0; i < numForms; ++i) {
+   for (unsigned i = 0; i < numForms; ++i)
+   {
       // Don't show the current subform if pSkipCurrentForm is true.
-      if (pSkipCurrentForm) {
-         if ((unsigned)mCurrentForm == i) {
+      if (pSkipCurrentForm)
+      {
+         if ((unsigned)mCurrentForm == i)
+         {
             continue;
          }
       }
@@ -284,16 +317,19 @@ void cxMultiForm::showAllSubforms(bool pBringToTop, bool pSkipCurrentForm) const
       if (mForms[i]->isBelow(*this)) {
          mForms[i]->show(true, false);
       }
-      else {
+      else
+      {
          mForms[i]->show(pBringToTop, false);
       }
    }
 } // showAllSubforms
 
-bool cxMultiForm::removeSubform(unsigned pIndex) {
+bool cxMultiForm::removeSubform(unsigned pIndex)
+{
    bool removed = false;
 
-   if ((pIndex >= 0) && (pIndex < mForms.size())) {
+   if ((pIndex >= 0) && (pIndex < mForms.size()))
+   {
       mForms.erase(mForms.begin()+pIndex);
       removed = true;
    }
@@ -301,40 +337,49 @@ bool cxMultiForm::removeSubform(unsigned pIndex) {
    return(removed);
 } // removeSubform
 
-string cxMultiForm::getValue(int pIndex) const {
+string cxMultiForm::getValue(int pIndex) const
+{
    return cxForm::getValue(pIndex);
 } // getValue
 
-string cxMultiForm::getValue(const string& pStr, bool pIsLabel) const {
+string cxMultiForm::getValue(const string& pStr, bool pIsLabel) const
+{
    return cxForm::getValue(pStr, pIsLabel);
 } // getValue
 
-string cxMultiForm::getValue(unsigned pFormIndex, int pInputIndex) const {
+string cxMultiForm::getValue(unsigned pFormIndex, int pInputIndex) const
+{
    string retval;
 
-   if ((pFormIndex >= 0) && (pFormIndex <= mForms.size())) {
+   if ((pFormIndex >= 0) && (pFormIndex <= mForms.size()))
+   {
       retval = mForms[pFormIndex]->getValue((int)pInputIndex);
    }
 
    return(retval);
 } // getValue
 
-string cxMultiForm::getValue(unsigned pFormIndex, const string& pLabel, bool pIsLabel) const {
+string cxMultiForm::getValue(unsigned pFormIndex, const string& pLabel, bool pIsLabel) const
+{
    string retval;
 
-   if ((pFormIndex >= 0) && (pFormIndex <= mForms.size())) {
+   if ((pFormIndex >= 0) && (pFormIndex <= mForms.size()))
+   {
       retval = mForms[pFormIndex]->getValue(pLabel, pIsLabel);
    }
 
    return(retval);
 } // getValue
 
-string cxMultiForm::getValue(const string& pTitle, int pInputIndex) const {
+string cxMultiForm::getValue(const string& pTitle, int pInputIndex) const
+{
    string value;
 
    formPtrContainer::const_iterator iter = mForms.begin();
-   for (; iter != mForms.end(); ++iter) {
-      if ((*iter)->getTitle() == pTitle) {
+   for (; iter != mForms.end(); ++iter)
+   {
+      if ((*iter)->getTitle() == pTitle)
+      {
          value = (*iter)->getValue(pInputIndex);
          break;
       }
@@ -343,12 +388,15 @@ string cxMultiForm::getValue(const string& pTitle, int pInputIndex) const {
    return(value);
 } // getValue
 
-string cxMultiForm::getValue(const string& pTitle, const string& pLabel, bool pIsLabel) const {
+string cxMultiForm::getValue(const string& pTitle, const string& pLabel, bool pIsLabel) const
+{
    string value;
 
    formPtrContainer::const_iterator iter = mForms.begin();
-   for (; iter != mForms.end(); ++iter) {
-      if ((*iter)->getTitle() == pTitle) {
+   for (; iter != mForms.end(); ++iter)
+   {
+      if ((*iter)->getTitle() == pTitle)
+      {
          value = (*iter)->getValue(pLabel, pIsLabel);
          break;
       }
@@ -357,32 +405,39 @@ string cxMultiForm::getValue(const string& pTitle, const string& pLabel, bool pI
    return(value);
 } // getValue
 
-bool cxMultiForm::setValue(unsigned pFormIndex, int pInputIndex, const string& pValue, bool pRefresh) {
+bool cxMultiForm::setValue(unsigned pFormIndex, int pInputIndex, const string& pValue, bool pRefresh)
+{
    bool valueWasSet = false;
 
-   if ((pFormIndex >= 0) && (pFormIndex <= mForms.size())) {
+   if ((pFormIndex >= 0) && (pFormIndex <= mForms.size()))
+   {
       valueWasSet = mForms[pFormIndex]->setValue(pInputIndex, pValue, pRefresh);
    }
 
    return(valueWasSet);
 } // setValue
 
-bool cxMultiForm::setValue(unsigned pFormIndex, const string& pLabel, const string& pValue, bool pIsLabel, bool pRefresh) {
+bool cxMultiForm::setValue(unsigned pFormIndex, const string& pLabel, const string& pValue, bool pIsLabel, bool pRefresh)
+{
    bool valueWasSet = false;
 
-   if ((pFormIndex >= 0) && (pFormIndex <= mForms.size())) {
+   if ((pFormIndex >= 0) && (pFormIndex <= mForms.size()))
+   {
       valueWasSet = mForms[pFormIndex]->setValue(pLabel, pValue, pIsLabel, pRefresh);
    }
 
    return(valueWasSet);
 } // setValue
 
-bool cxMultiForm::setValue(const string& pTitle, int pInputIndex, const string& pValue, bool pRefresh) {
+bool cxMultiForm::setValue(const string& pTitle, int pInputIndex, const string& pValue, bool pRefresh)
+{
    bool valueWasSet = false;
 
    formPtrContainer::iterator iter = mForms.begin();
-   for (; iter != mForms.end(); ++iter) {
-      if ((*iter)->getTitle() == pTitle) {
+   for (; iter != mForms.end(); ++iter)
+   {
+      if ((*iter)->getTitle() == pTitle)
+      {
          valueWasSet = (*iter)->setValue(pInputIndex, pValue, pRefresh);
          break;
       }
@@ -391,12 +446,15 @@ bool cxMultiForm::setValue(const string& pTitle, int pInputIndex, const string& 
    return(valueWasSet);
 } // setValue
 
-bool cxMultiForm::setValue(const string& pTitle, const string& pLabel, const string& pValue, bool pIsLabel, bool pRefresh) {
+bool cxMultiForm::setValue(const string& pTitle, const string& pLabel, const string& pValue, bool pIsLabel, bool pRefresh)
+{
    bool valueWasSet = false;
 
    formPtrContainer::iterator iter = mForms.begin();
-   for (; iter != mForms.end(); ++iter) {
-      if ((*iter)->getTitle() == pTitle) {
+   for (; iter != mForms.end(); ++iter)
+   {
+      if ((*iter)->getTitle() == pTitle)
+      {
          valueWasSet = (*iter)->setValue(pLabel, pValue, pIsLabel, pRefresh);
          break;
       }
@@ -405,31 +463,38 @@ bool cxMultiForm::setValue(const string& pTitle, const string& pLabel, const str
    return(valueWasSet);
 } // setValue
 
-bool cxMultiForm::setValue(int pIndex, const string& pValue, bool pRefresh) {
+bool cxMultiForm::setValue(int pIndex, const string& pValue, bool pRefresh)
+{
    return(cxForm::setValue(pIndex, pValue, pRefresh));
 } // setValue
 
 bool cxMultiForm::setValue(const string& pLabel, const string& pValue,
-      bool pIsLabel, bool pRefresh) {
+      bool pIsLabel, bool pRefresh)
+      {
    return(cxForm::setValue(pLabel, pValue, pIsLabel, pRefresh));
 }
 
-size_t cxMultiForm::numSubforms() const {
+size_t cxMultiForm::numSubforms() const
+{
    return(mForms.size());
 } // numSubforms
 
-int cxMultiForm::getLastKey() const {
+int cxMultiForm::getLastKey() const
+{
    return(cxForm::getLastKey());
 } // getLastKey
 
-bool cxMultiForm::hasEditableSubforms() const {
+bool cxMultiForm::hasEditableSubforms() const
+{
    bool editableSubformExists = false;
 
    formPtrContainer::const_iterator iter = mForms.begin();
-   for (; iter != mForms.end(); ++iter) {
+   for (; iter != mForms.end(); ++iter)
+   {
       // If the subform is enabled and has editable inputs,
       //  then it is considered editable.
-      if ((*iter)->isEnabled() && (*iter)->hasEditableInputs()) {
+      if ((*iter)->isEnabled() && (*iter)->hasEditableInputs())
+      {
          editableSubformExists = true;
          break;
       }
@@ -438,7 +503,8 @@ bool cxMultiForm::hasEditableSubforms() const {
    return (editableSubformExists);
 } // hasEditableSubforms
 
-bool cxMultiForm::move(int pNewRow, int pNewCol, bool pRefresh) {
+bool cxMultiForm::move(int pNewRow, int pNewCol, bool pRefresh)
+{
    // In case moving any of the subforms fails..
    int oldRow = top();
    int oldCol = left();
@@ -450,14 +516,16 @@ bool cxMultiForm::move(int pNewRow, int pNewCol, bool pRefresh) {
    // Move the main form
    bool moved = cxForm::move(pNewRow, pNewCol, false);
    // If the window move was successful, move the subforms.
-   if (moved) {
+   if (moved)
+   {
       // Save the positions of the subforms in case
       //  moving one of the fails, so we can move
       //  the rest back to where they were
       vector<pair<int, int> > oldSubformPositions;
 
       formPtrContainer::iterator iter = mForms.begin();
-      for (; iter != mForms.end(); ++iter) {
+      for (; iter != mForms.end(); ++iter)
+      {
          // Store the subform's current position
          //  in oldSubformPositions
          int subformTop = (*iter)->top();
@@ -468,9 +536,11 @@ bool cxMultiForm::move(int pNewRow, int pNewCol, bool pRefresh) {
          // If moving the subform failed, then move all
          //  the previously-moved subforms back to where
          //  they were.
-         if (!moved) {
+         if (!moved)
+         {
             unsigned vectorSize = oldSubformPositions.size();
-            for (unsigned i = 0; i < vectorSize; ++i) {
+            for (unsigned i = 0; i < vectorSize; ++i)
+            {
                mForms[i]->move(oldSubformPositions[i].first,
                                 oldSubformPositions[i].second, false);
             }
@@ -482,36 +552,44 @@ bool cxMultiForm::move(int pNewRow, int pNewCol, bool pRefresh) {
    // If the move was successful, refresh everything
    //  if pRefresh is true; otherwise, move the
    //  the multiForm to where it was before.
-   if (moved) {
-      if (pRefresh) {
+   if (moved)
+   {
+      if (pRefresh)
+      {
          show(false, false);
       }
    }
-   else {
+   else
+   {
       cxForm::move(oldRow, oldCol, false);
    }
 
    return(moved);
 } // move
 
-void cxMultiForm::hide(bool pHideSubwindows) {
+void cxMultiForm::hide(bool pHideSubwindows)
+{
    // Hide the main window
    cxForm::hide(pHideSubwindows);
    // Hide the subforms
    formPtrContainer::iterator iter = mForms.begin();
-   for (; iter != mForms.end(); ++iter) {
+   for (; iter != mForms.end(); ++iter)
+   {
       (*iter)->hide(pHideSubwindows);
    }
 } // hide
 
-void cxMultiForm::unhide(bool pUnhideSubwindows) {
+void cxMultiForm::unhide(bool pUnhideSubwindows)
+{
    // If the form is enabled, un-hide the main form
    //  window and all subwindows.
-   if (isEnabled()) {
+   if (isEnabled())
+   {
       cxForm::unhide(pUnhideSubwindows);
       // Un-hide the subforms
       formPtrContainer::iterator iter = mForms.begin();
-      for (; iter != mForms.end(); ++iter) {
+      for (; iter != mForms.end(); ++iter)
+      {
          (*iter)->unhide(pUnhideSubwindows);
       }
    }
@@ -520,14 +598,17 @@ void cxMultiForm::unhide(bool pUnhideSubwindows) {
 bool cxMultiForm::setKeyFunction(int pKey, funcPtr4 pFunction,
                              void *p1, void *p2, void *p3, void *p4,
                              bool pUseReturnVal, bool pExitAfterRun,
-                             bool pRunOnLeaveFunction) {
+                             bool pRunOnLeaveFunction)
+                             {
    // Set the form function via the parent class' setKeyFunction, and set
    //  the form function in all the subforms.
    bool setIt = cxForm::setKeyFunction(pKey, pFunction, p1, p2,
                    p3, p4, pUseReturnVal, pExitAfterRun, pRunOnLeaveFunction);
-   if (setIt) {
+   if (setIt)
+   {
       formPtrContainer::iterator iter = mForms.begin();
-      for (; iter != mForms.end(); ++iter) {
+      for (; iter != mForms.end(); ++iter)
+      {
          // Add the key to the subform to make it stop its input loop
          //  (so that the key can be handled here)
          // Note: if the function doesn't do anything, the subform will
@@ -542,14 +623,17 @@ bool cxMultiForm::setKeyFunction(int pKey, funcPtr4 pFunction,
 
 bool cxMultiForm::setKeyFunction(int pKey, funcPtr2 pFunction,
                              void *p1, void *p2, bool pUseReturnVal,
-                             bool pExitAfterRun, bool pRunOnLeaveFunction) {
+                             bool pExitAfterRun, bool pRunOnLeaveFunction)
+                             {
    // Set the form function via the parent class' setKeyFunction, and set
    //  the form function in all the subforms.
    bool setIt = cxForm::setKeyFunction(pKey, pFunction, p1, p2,
                         pUseReturnVal, pExitAfterRun, pRunOnLeaveFunction);
-   if (setIt) {
+   if (setIt)
+   {
       formPtrContainer::iterator iter = mForms.begin();
-      for (; iter != mForms.end(); ++iter) {
+      for (; iter != mForms.end(); ++iter)
+      {
          // Add the key to the subform to make it stop its input loop
          //  (so that the key can be handled here)
          // Note: if the function doesn't do anything, the subform will
@@ -564,14 +648,17 @@ bool cxMultiForm::setKeyFunction(int pKey, funcPtr2 pFunction,
 
 bool cxMultiForm::setKeyFunction(int pKey, funcPtr0 pFunction,
                              bool pUseReturnVal, bool pExitAfterRun,
-                             bool pRunOnLeaveFunction) {
+                             bool pRunOnLeaveFunction)
+                             {
    // Set the form function via the parent class' setKeyFunction, and set
    //  the form function in all the subforms.
    bool setIt = cxForm::setKeyFunction(pKey, pFunction, pUseReturnVal,
                                        pExitAfterRun, pRunOnLeaveFunction);
-   if (setIt) {
+   if (setIt)
+   {
       formPtrContainer::iterator iter = mForms.begin();
-      for (; iter != mForms.end(); ++iter) {
+      for (; iter != mForms.end(); ++iter)
+      {
          // Add the key to the subform to make it stop its input loop
          //  (so that the key can be handled here)
          // Note: if the function doesn't do anything, the subform will
@@ -584,12 +671,15 @@ bool cxMultiForm::setKeyFunction(int pKey, funcPtr0 pFunction,
    return(setIt);
 } // setKeyFunction
 
-bool cxMultiForm::removeSubform(const string& pTitle) {
+bool cxMultiForm::removeSubform(const string& pTitle)
+{
    bool removed = false;
 
    formPtrContainer::iterator iter = mForms.begin();
-   for (; iter != mForms.end(); ++iter) {
-      if ((*iter)->getTitle() == pTitle) {
+   for (; iter != mForms.end(); ++iter)
+   {
+      if ((*iter)->getTitle() == pTitle)
+      {
          mForms.erase(iter);
          removed = true;
          break;
@@ -599,10 +689,12 @@ bool cxMultiForm::removeSubform(const string& pTitle) {
    return(removed);
 } // removeSubform
 
-bool cxMultiForm::setCurrentSubform(int pIndex) {
+bool cxMultiForm::setCurrentSubform(int pIndex)
+{
    bool retval = false;
 
-   if ((pIndex >= 0) && (pIndex < (int)mForms.size())) {
+   if ((pIndex >= 0) && (pIndex < (int)mForms.size()))
+   {
       retval = true;
       mCurrentForm = pIndex;
       // Make sure the form is enabled (if it's not
@@ -617,12 +709,15 @@ bool cxMultiForm::setCurrentSubform(int pIndex) {
    return(retval);
 } // setCurrentSubform
 
-bool cxMultiForm::setCurrentSubform(const string& pTitle) {
+bool cxMultiForm::setCurrentSubform(const string& pTitle)
+{
    bool succeeded = false;
 
    int numSubforms = (int)(mForms.size());
-   for (int i = 0; i < numSubforms; ++i) {
-      if (mForms[i]->getTitle() == pTitle) {
+   for (int i = 0; i < numSubforms; ++i)
+   {
+      if (mForms[i]->getTitle() == pTitle)
+      {
          succeeded = true;
          mCurrentForm = i;
 
@@ -637,17 +732,22 @@ bool cxMultiForm::setCurrentSubform(const string& pTitle) {
    return(succeeded);
 } // setCurrentSubform
 
-bool cxMultiForm::setCurrentSubformByPtr(const shared_ptr<cxForm>& pForm) {
+bool cxMultiForm::setCurrentSubformByPtr(const shared_ptr<cxForm>& pForm)
+{
    return setCurrentSubformByPtr(pForm.get());
 }
 
-bool cxMultiForm::setCurrentSubformByPtr(cxForm *pForm) {
+bool cxMultiForm::setCurrentSubformByPtr(cxForm *pForm)
+{
    bool succeeded = false;
 
-   if (pForm != nullptr) {
+   if (pForm != nullptr)
+   {
       int numSubforms = (int)(mForms.size());
-      for (int i = 0; i < numSubforms; ++i) {
-         if (mForms[i].get() == pForm) {
+      for (int i = 0; i < numSubforms; ++i)
+      {
+         if (mForms[i].get() == pForm)
+         {
             succeeded = true;
             mCurrentForm = i;
 
@@ -663,20 +763,25 @@ bool cxMultiForm::setCurrentSubformByPtr(cxForm *pForm) {
    return(succeeded);
 } // setCurrentSubformByPtr
 
-int cxMultiForm::getCurrentForm() const {
+int cxMultiForm::getCurrentForm() const
+{
    return(mCurrentForm);
 } // getCurrentForm
 
-int cxMultiForm::getSubformIndex(const std::shared_ptr<cxForm>& pForm) const {
+int cxMultiForm::getSubformIndex(const std::shared_ptr<cxForm>& pForm) const
+{
    return getSubformIndex(pForm.get());
 }
 
-int cxMultiForm::getSubformIndex(cxForm *pForm) const {
+int cxMultiForm::getSubformIndex(cxForm *pForm) const
+{
    int index = -1;
 
    int numSubforms = (int)mForms.size();
-   for (int i = 0; i < numSubforms; ++i) {
-      if (mForms[i].get() == pForm) {
+   for (int i = 0; i < numSubforms; ++i)
+   {
+      if (mForms[i].get() == pForm)
+      {
          index = i;
          break;
       }
@@ -685,16 +790,20 @@ int cxMultiForm::getSubformIndex(cxForm *pForm) const {
    return(index);
 } // getSubformIndex
 
-bool cxMultiForm::hasChanged() const {
+bool cxMultiForm::hasChanged() const
+{
    // See if any inputs changed on the form
    bool anythingChanged = cxForm::hasChanged();
 
    // If no inputs changed, see if any inputs
    //  on the subforms changed.
-   if (!anythingChanged) {
+   if (!anythingChanged)
+   {
       formPtrContainer::const_iterator iter = mForms.begin();
-      for (; iter != mForms.end(); ++iter) {
-         if ((*iter)->hasChanged()) {
+      for (; iter != mForms.end(); ++iter)
+      {
+         if ((*iter)->hasChanged())
+         {
             anythingChanged = true;
             break;
          }
@@ -704,26 +813,33 @@ bool cxMultiForm::hasChanged() const {
    return(anythingChanged);
 } // hasChanged
 
-void cxMultiForm::setChanged(bool pDataChanged) {
+void cxMultiForm::setChanged(bool pDataChanged)
+{
    // Set pDataChanged on the main form
    cxForm::setChanged(pDataChanged);
    // Set pDataChanged on the subforms
    formPtrContainer::iterator iter = mForms.begin();
-   for (; iter != mForms.end(); ++iter) {
+   for (; iter != mForms.end(); ++iter)
+   {
       (*iter)->setChanged(pDataChanged);
    }
 } // setChanged
 
-void cxMultiForm::setSubformEnabled(unsigned pIndex, bool pEnabled) {
-   if ((pIndex >= 0) && (pIndex < mForms.size())) {
+void cxMultiForm::setSubformEnabled(unsigned pIndex, bool pEnabled)
+{
+   if ((pIndex >= 0) && (pIndex < mForms.size()))
+   {
       mForms[pIndex]->setEnabled(pEnabled);
    }
 } // setSubformEnabled
 
-void cxMultiForm::setSubformEnabled(const string& pTitle, bool pEnabled) {
+void cxMultiForm::setSubformEnabled(const string& pTitle, bool pEnabled)
+{
    formPtrContainer::iterator iter = mForms.begin();
-   for (; iter != mForms.end(); ++iter) {
-      if ((*iter)->getTitle() == pTitle) {
+   for (; iter != mForms.end(); ++iter)
+   {
+      if ((*iter)->getTitle() == pTitle)
+      {
          (*iter)->setEnabled(pEnabled);
          // Don't break here..  Apply pEnabled to
          //  all subforms with the same title.
@@ -731,25 +847,30 @@ void cxMultiForm::setSubformEnabled(const string& pTitle, bool pEnabled) {
    }
 } // setSubformEnabled
 
-bool cxMultiForm::subformIsEnabled(unsigned pIndex) const {
+bool cxMultiForm::subformIsEnabled(unsigned pIndex) const
+{
    bool isEnabled = false;
 
-   if ((pIndex >= 0) && (pIndex < mForms.size())) {
+   if ((pIndex >= 0) && (pIndex < mForms.size()))
+   {
       isEnabled = mForms[pIndex]->isEnabled();
    }
 
    return (isEnabled);
 } // subformIsEnabled
 
-bool cxMultiForm::addQuitKey(int pKey, bool pRunOnLeaveFunction, bool pOverride) {
+bool cxMultiForm::addQuitKey(int pKey, bool pRunOnLeaveFunction, bool pOverride)
+{
    // Add the key to the parent and all of the subforms.  Also, in case the
    //  key is set up as an exit key, remove it from the exit key list.
    bool added = cxForm::addQuitKey(pKey, pRunOnLeaveFunction, pOverride);
-   if (added) {
+   if (added)
+   {
       cxWindow::removeExitKey(pKey);
 
       formPtrContainer::iterator iter = mForms.begin();
-      for (; iter != mForms.end(); ++iter) {
+      for (; iter != mForms.end(); ++iter)
+      {
          (*iter)->addQuitKey(pKey, pRunOnLeaveFunction, pOverride);
          (*iter)->removeExitKey(pKey);
       }
@@ -758,23 +879,28 @@ bool cxMultiForm::addQuitKey(int pKey, bool pRunOnLeaveFunction, bool pOverride)
    return(added);
 } // addQuitKey
 
-void cxMultiForm::removeQuitKey(int pKey) {
+void cxMultiForm::removeQuitKey(int pKey)
+{
    cxForm::removeQuitKey(pKey);
    formPtrContainer::iterator iter = mForms.begin();
-   for (; iter != mForms.end(); ++iter) {
+   for (; iter != mForms.end(); ++iter)
+   {
       (*iter)->removeQuitKey(pKey);
    }
 } // removeQuitKey
 
-bool cxMultiForm::addExitKey(int pKey, bool pRunOnLeaveFunction, bool pOverride) {
+bool cxMultiForm::addExitKey(int pKey, bool pRunOnLeaveFunction, bool pOverride)
+{
    // Add the key to the parent and all of the subforms.  Also, in case the
    //  key is set up as a quit key, remove it from the quit key list.
    bool added = cxForm::addExitKey(pKey, pRunOnLeaveFunction, pOverride);
-   if (added) {
+   if (added)
+   {
       cxWindow::removeQuitKey(pKey);
 
       formPtrContainer::iterator iter = mForms.begin();
-      for (; iter != mForms.end(); ++iter) {
+      for (; iter != mForms.end(); ++iter)
+      {
          (*iter)->addExitKey(pKey, pRunOnLeaveFunction, pOverride);
          (*iter)->removeQuitKey(pKey);
       }
@@ -783,59 +909,73 @@ bool cxMultiForm::addExitKey(int pKey, bool pRunOnLeaveFunction, bool pOverride)
    return(added);
 } // addExitKey
 
-void cxMultiForm::removeExitKey(int pKey) {
+void cxMultiForm::removeExitKey(int pKey)
+{
    cxForm::removeExitKey(pKey);
    formPtrContainer::iterator iter = mForms.begin();
-   for (; iter != mForms.end(); ++iter) {
+   for (; iter != mForms.end(); ++iter)
+   {
       (*iter)->removeExitKey(pKey);
    }
 } // removeExitKey
 
-void cxMultiForm::setDisableCursorOnShow(bool pDisableCursorOnShow) {
+void cxMultiForm::setDisableCursorOnShow(bool pDisableCursorOnShow)
+{
    cxForm::setDisableCursorOnShow(pDisableCursorOnShow);
    formPtrContainer::iterator iter = mForms.begin();
-   for (; iter != mForms.end(); ++iter) {
+   for (; iter != mForms.end(); ++iter)
+   {
       (*iter)->setDisableCursorOnShow(pDisableCursorOnShow);
    }
 } // setDisableCursorOnShow
 
-void cxMultiForm::clear(bool pRefresh) {
+void cxMultiForm::clear(bool pRefresh)
+{
    // Clear the parent form
    cxForm::clear(pRefresh);
    // And clear all the subforms
    formPtrContainer::iterator iter = mForms.begin();
-   for (; iter != mForms.end(); ++iter) {
+   for (; iter != mForms.end(); ++iter)
+   {
       (*iter)->clear(pRefresh);
    }
 } // clear
 
-void cxMultiForm::setAssumeMovingBackwards(bool pAssumeMovingBackwards) {
+void cxMultiForm::setAssumeMovingBackwards(bool pAssumeMovingBackwards)
+{
    mAssumeMovingBackwards = pAssumeMovingBackwards;
 } // setAssumeMovingBackwards
 
-bool cxMultiForm::getAssumeMovingBackwards() const {
+bool cxMultiForm::getAssumeMovingBackwards() const
+{
    return(mAssumeMovingBackwards);
 } // getAssumeMovingBackwards
 
-void cxMultiForm::setEnabled(bool pEnabled) {
+void cxMultiForm::setEnabled(bool pEnabled)
+{
    // Enable/disable the multiForm window, then enable/disable the subforms.
    cxForm::setEnabled(pEnabled);
    formPtrContainer::iterator iter = mForms.begin();
-   for (; iter != mForms.end(); ++iter) {
+   for (; iter != mForms.end(); ++iter)
+   {
       (*iter)->setEnabled(pEnabled);
    }
 } // setEnabled
 
-string cxMultiForm::cxTypeStr() const {
+string cxMultiForm::cxTypeStr() const
+{
    return("cxMultiForm");
 } // cxTypeStr
 
-bool cxMultiForm::subformIsEnabled(const string& pTitle) const {
+bool cxMultiForm::subformIsEnabled(const string& pTitle) const
+{
    bool isEnabled = false;
 
    formPtrContainer::const_iterator iter = mForms.begin();
-   for (; iter != mForms.end(); ++iter) {
-      if ((*iter)->getTitle() == pTitle) {
+   for (; iter != mForms.end(); ++iter)
+   {
+      if ((*iter)->getTitle() == pTitle)
+      {
          isEnabled = (*iter)->isEnabled();
          break;
       }
@@ -846,15 +986,19 @@ bool cxMultiForm::subformIsEnabled(const string& pTitle) const {
 
 //// Protected functions
 
-void cxMultiForm::copyCxMultiFormStuff(const cxMultiForm* pThatMultiForm) {
-   if ((pThatMultiForm != nullptr) && (pThatMultiForm != this)) {
+void cxMultiForm::copyCxMultiFormStuff(const cxMultiForm* pThatMultiForm)
+{
+   if ((pThatMultiForm != nullptr) && (pThatMultiForm != this))
+   {
       freeSubforms();
 
       // Copy the parent cxForm stuff, then copy the stuff for this class.
-      try {
+      try
+      {
          copyCxFormStuff((const cxForm*)pThatMultiForm);
       }
-      catch (const cxWidgetsException& esc) {
+      catch (const cxWidgetsException& esc)
+      {
          // Free up the other memory used
          cxWindow::freeWindow();
          throw(cxWidgetsException("Couldn't copy base cxForm stuff (copying another cxMultiForm)."));
@@ -869,38 +1013,46 @@ void cxMultiForm::copyCxMultiFormStuff(const cxMultiForm* pThatMultiForm) {
 
       // Copy the subforms
       formPtrContainer::const_iterator iter = pThatMultiForm->mForms.begin();
-      for (; iter != pThatMultiForm->mForms.end(); ++iter) {
+      for (; iter != pThatMultiForm->mForms.end(); ++iter)
+      {
          mForms.push_back(make_shared<cxForm>(**iter));
       }
    }
 } // copyCxMultiFormStuff
 
-long cxMultiForm::doInputLoop(bool pShowSubforms) {
+long cxMultiForm::doInputLoop(bool pShowSubforms)
+{
    long returnCode = cxID_EXIT;
    mLeaveNow = false;
 
    // Run the onFocus function.  If it
    //  returns true, that means we should exit
    //  after the function runs.
-   if (runOnFocusFunction()) {
+   if (runOnFocusFunction())
+   {
       return(returnCode);
    }
 
    bool continueOn = true;
-   while (continueOn) {
+   while (continueOn)
+   {
       // Run the loop start function, and break from
       //  the input loop if its mExitAfterRun is true.
-      if (runLoopStartFunction()) {
+      if (runLoopStartFunction())
+      {
          break;
       }
 
       // If there are no editable inputs and no enabled/editable
       //  subforms on the form, show a message to the user.
-      if (!hasEditableInputs() && !hasEditableSubforms()) {
-         if (!getWaitForInputIfEmpty()) {
+      if (!hasEditableInputs() && !hasEditableSubforms())
+      {
+         if (!getWaitForInputIfEmpty())
+         {
             cxBase::messageBox("This multiForm has no editable inputs and no enabled/editable subforms.");
          }
-         else {
+         else
+         {
             setLastKey(wgetch(mWindow));
 #ifdef NCURSES_MOUSE_VERSION
             // Handle mouse events.
@@ -909,17 +1061,23 @@ long cxMultiForm::doInputLoop(bool pShowSubforms) {
             //    window is a cxPanel or another cxMultiForm, then exit the
             //    input loop.  This would allow the user to go to another
             //    window.
-            if (getLastKey() == KEY_MOUSE) {
-               if (getmouse(&mMouse) == OK) {
+            if (getLastKey() == KEY_MOUSE)
+            {
+               if (getmouse(&mMouse) == OK)
+               {
                   // Run a function that may exist for the mouse state.  If
                   //  no function exists for the mouse state, then process
                   //  it here.
                   bool mouseFuncExists = false;
                   continueOn = handleFunctionForLastMouseState(&mouseFuncExists);
-                  if (!mouseFuncExists) {
-                     if (mouseButton1Clicked()) {
-                        if (!mouseEvtWasInWindow()) {
-                           if (parentIsCxPanel() || (mParentMultiForm != nullptr)) {
+                  if (!mouseFuncExists)
+                  {
+                     if (mouseButton1Clicked())
+                     {
+                        if (!mouseEvtWasInWindow())
+                        {
+                           if (parentIsCxPanel() || (mParentMultiForm != nullptr))
+                           {
                               continueOn = false;
                            }
                         }
@@ -927,7 +1085,8 @@ long cxMultiForm::doInputLoop(bool pShowSubforms) {
                   }
                }
             }
-            else {
+            else
+            {
                continueOn = false;
             }
 #endif
@@ -939,19 +1098,23 @@ long cxMultiForm::doInputLoop(bool pShowSubforms) {
          continueOn = false;
 #endif
       }
-      else {
+      else
+      {
          // doTheInputs is used for controlling whether to cycle through the
          //  inputs for each pass through the input loop.
          bool doTheInputs = true;
 
          // Cycle through all inputs on this form, if there are any, before
          //  cycling through the subforms.
-         if (doTheInputs && hasEditableInputs()) {
+         if (doTheInputs && hasEditableInputs())
+         {
             returnCode = doInputs(continueOn);
-            if (continueOn) {
+            if (continueOn)
+            {
                // If the user wants to quit, and we allow
                //  this, then let the user quit.
-               if (((returnCode == cxID_QUIT) && getAllowQuit())) {
+               if (((returnCode == cxID_QUIT) && getAllowQuit()))
+               {
                   continueOn = false;
                   break;
                }
@@ -964,16 +1127,20 @@ long cxMultiForm::doInputLoop(bool pShowSubforms) {
          //  last time)
          doTheInputs = true;
 
-         if (continueOn) {
+         if (continueOn)
+         {
             // Cycle through all the subforms, if there are any that have
             //  editable inputs.
-            if (hasEditableSubforms()) {
+            if (hasEditableSubforms())
+            {
                bool clickedInput = false;
                returnCode = doSubforms(pShowSubforms, continueOn, clickedInput);
-               if (continueOn) {
+               if (continueOn)
+               {
                   // If the user wants to quit, and we allow
                   //  this, then let the user quit.
-                  if (((returnCode == cxID_QUIT) && getAllowQuit())) {
+                  if (((returnCode == cxID_QUIT) && getAllowQuit()))
+                  {
                      continueOn = false;
                      break;
                   }
@@ -981,10 +1148,12 @@ long cxMultiForm::doInputLoop(bool pShowSubforms) {
                   //  so that we can go back up and cycle through the inputs
                   //  again.  Otherwise, update continueOn based on other
                   //  factors.
-                  if (clickedInput) {
+                  if (clickedInput)
+                  {
                      continueOn = true;
                   }
-                  else {
+                  else
+                  {
                      // Update continueOn based on:
                      //  - The current value of continueOn AND
                      //  - The value of mLeaveNow (in case it changed via
@@ -1012,15 +1181,19 @@ long cxMultiForm::doInputLoop(bool pShowSubforms) {
    return(returnCode);
 } // doInputLoop
 
-int cxMultiForm::lowestSubformRow(unsigned pIndex) const {
+int cxMultiForm::lowestSubformRow(unsigned pIndex) const
+{
    int lowestRow = -1;
 
-   if ((pIndex >= 0) && (pIndex < mForms.size()) && mForms.size() > 0) {
+   if ((pIndex >= 0) && (pIndex < mForms.size()) && mForms.size() > 0)
+   {
       formPtrContainer::const_iterator iter = mForms.begin() + pIndex;
       int row = 0;
-      for (; iter != mForms.end(); ++iter) {
+      for (; iter != mForms.end(); ++iter)
+      {
          row = (*iter)->top() - top() > lowestRow;
-         if (row > lowestRow) {
+         if (row > lowestRow)
+         {
             lowestRow = row;
          }
       }
@@ -1031,61 +1204,75 @@ int cxMultiForm::lowestSubformRow(unsigned pIndex) const {
 
 //// Private functions
 
-inline void cxMultiForm::freeSubforms() {
-   for (shared_ptr<cxForm>& form : mForms) {
+inline void cxMultiForm::freeSubforms()
+{
+   for (shared_ptr<cxForm>& form : mForms)
+   {
       form.reset(); // TODO: Is this really necessary here?
    }
    mForms.clear();
 } // freeSubforms
 
-long cxMultiForm::doInputs(bool& pContinueOn) {
+long cxMultiForm::doInputs(bool& pContinueOn)
+{
    long returnCode = cxID_EXIT;
    pContinueOn = true;
 
-   if ((numInputs() > 0) && hasEditableInputs()) {
+   if ((numInputs() > 0) && hasEditableInputs())
+   {
       // Go through all the inputs.  Don't worry about
       //  processing function keys, because that's
       //  done in cxForm.
       bool runOnLeaveFunction = true;
       bool functionExists = false;
       while(doCurrentInput(returnCode, runOnLeaveFunction, functionExists,
-                           true) && !mLeaveNow && pContinueOn) {
+                           true) && !mLeaveNow && pContinueOn)
+                           {
 #ifdef NCURSES_MOUSE_VERSION
-         if (cxForm::getLastKey() == KEY_MOUSE) {
+         if (cxForm::getLastKey() == KEY_MOUSE)
+         {
             // Run a function that may exist for the mouse state.  If
             //  no function exists for the mouse state, then process
             //  it here.
             bool mouseFuncExists = false;
             pContinueOn = handleFunctionForLastMouseState(&mouseFuncExists);
-            if (!mouseFuncExists) {
-               if (mouseButton1Clicked()) {
+            if (!mouseFuncExists)
+            {
+               if (mouseButton1Clicked())
+               {
                   // Loop through the member inputs and see if the user clicked
                   //  on another input.  If so, then set that input as the current
                   //  input.  If the user clicked outside all inputs, then exit
                   //  the while loop.
                   bool clickedAnotherInput = false;
                   int index = 0;
-                  for (; index < (int)(mInputs.size()); ++index) {
+                  for (; index < (int)(mInputs.size()); ++index)
+                  {
                      // If the mouse event location is inside the input, then
                      //  set it as the current input and go onto the next
                      //  iteration of the while loop.
-                     if (mInputs[index]->pointIsInWindow(mMouse.y, mMouse.x)) {
+                     if (mInputs[index]->pointIsInWindow(mMouse.y, mMouse.x))
+                     {
                         clickedAnotherInput = true;
                         setCurrentInput(index);
                      }
                   }
-                  if (clickedAnotherInput) {
+                  if (clickedAnotherInput)
+                  {
                      continue;
                   }
-                  else {
+                  else
+                  {
                      // The user didn't click another input.  See if they clicked
                      //  in a subform, and if so, select it.
                      bool clickedASubform = false;
                      index = 0;
-                     for (; index < (int)(mForms.size()); ++index) {
+                     for (; index < (int)(mForms.size()); ++index)
+                     {
                         // If the mouse event location is inside the form, then
                         //  set it as the current form.
-                        if (mForms[index]->pointIsInWindow(mMouse.y, mMouse.x)) {
+                        if (mForms[index]->pointIsInWindow(mMouse.y, mMouse.x))
+                        {
                            setCurrentSubform(index);
                            clickedASubform = true;
                         }
@@ -1096,17 +1283,21 @@ long cxMultiForm::doInputs(bool& pContinueOn) {
                      //  so, then if the parent window is a cxPanel or another
                      //  cxForm/cxMultiForm, then set pContinueOn to false so
                      //  that the main input loop with exit.
-                     if (!clickedASubform && !mouseEvtWasInWindow()) {
-                        if (parentIsCxPanel() || (mParentMultiForm != nullptr)) {
+                     if (!clickedASubform && !mouseEvtWasInWindow())
+                     {
+                        if (parentIsCxPanel() || (mParentMultiForm != nullptr))
+                        {
                            pContinueOn = false;
                         }
-                        else {
+                        else
+                        {
                            // Continue onto the next iteration of the while
                            //  loop.  The user will stay in the current input.
                            continue;
                         }
                      }
-                     else {
+                     else
+                     {
                         // Exit out of the while loop for inputs
                         returnCode = cxID_EXIT;
                         break;
@@ -1119,23 +1310,27 @@ long cxMultiForm::doInputs(bool& pContinueOn) {
          // This is defined for versions of ncurses without mouse support.
          // This is here because the next block starts with "else if".  The
          //  code will go onto the next block because of the false.
-         if (false) {
+         if (false)
+         {
          }
 #endif
          // If the last key is a quit key, then quit and return
          //  cxID_QUIT.  If the key isn't there, look for it in
          //  the exit keys (if it's there, quit and return cxID_EXIT).
-         else if (hasQuitKey(cxForm::getLastKey())) {
+         else if (hasQuitKey(cxForm::getLastKey()))
+         {
             returnCode = cxID_QUIT;
             pContinueOn = false;
          }
-         else if (hasExitKey(cxForm::getLastKey())) {
+         else if (hasExitKey(cxForm::getLastKey()))
+         {
             returnCode = cxID_EXIT;
             pContinueOn = false;
          }
       }
       // If pContinueOn was set false, then return now.
-      if (!pContinueOn) {
+      if (!pContinueOn)
+      {
          return(returnCode);
       }
 
@@ -1145,7 +1340,8 @@ long cxMultiForm::doInputs(bool& pContinueOn) {
       // Note: The parent class (cxForm)'s doCurrentInput()
       //  handles running functions for the last keypress,
       //  so we don't have to do that here.
-      switch (cxForm::getLastKey()) {
+      switch (cxForm::getLastKey())
+      {
          case TAB:
          case ENTER:
          case KEY_ENTER:
@@ -1155,7 +1351,8 @@ long cxMultiForm::doInputs(bool& pContinueOn) {
          case SHIFT_TAB:
          case KEY_UP:
             mCurrentForm = (int)mForms.size() - 1;
-            if (mCurrentForm < 0) {
+            if (mCurrentForm < 0)
+            {
                mCurrentForm = 0;
             }
             break;
@@ -1169,28 +1366,35 @@ long cxMultiForm::doInputs(bool& pContinueOn) {
    return(returnCode);
 } // doInputs
 
-long cxMultiForm::doSubforms(bool pShowSubforms, bool& pContinueOn, bool& pClickedInput) {
+long cxMultiForm::doSubforms(bool pShowSubforms, bool& pContinueOn, bool& pClickedInput)
+{
    long returnCode = cxID_EXIT;
    pContinueOn = true;
    pClickedInput = false;
 
-   if ((mForms.size() > 0) && hasEditableSubforms()) {
+   if ((mForms.size() > 0) && hasEditableSubforms())
+   {
       // If the last keypress was a mouse event, then run a function that may
       //  exist for the mouse state.
 #ifdef NCURSES_MOUSE_VERSION
-      if (cxForm::getLastKey() == KEY_MOUSE) {
-         if (getmouse(&mMouse) == OK) {
+      if (cxForm::getLastKey() == KEY_MOUSE)
+      {
+         if (getmouse(&mMouse) == OK)
+         {
             pContinueOn = handleFunctionForLastMouseState();
          }
       }
-      else {
+      else
+      {
 #endif
       // If the current form is the last form and mAssumeMovingBackwards is
       //  true, assume that we're navigating backwards and set the current
       //  input on the last form to its last input.
-         if ((mCurrentForm == (int)mForms.size() - 1) && mAssumeMovingBackwards) {
+         if ((mCurrentForm == (int)mForms.size() - 1) && mAssumeMovingBackwards)
+         {
             int lastInput = mForms[mCurrentForm]->numInputs() - 1;
-            if (lastInput < 0) {
+            if (lastInput < 0)
+            {
                lastInput = 0;
             }
             mForms[mCurrentForm]->setCurrentInput(lastInput);
@@ -1200,17 +1404,20 @@ long cxMultiForm::doSubforms(bool pShowSubforms, bool& pContinueOn, bool& pClick
 #endif
 
       shared_ptr<cxForm> currentForm = mForms[mCurrentForm];
-      while (pContinueOn) {
+      while (pContinueOn)
+      {
          // Show the current form modally but don't bring it
          //  to the top, because bringing it to the top will
          //  cause it to also have to re-draw all of its
          //  inputs, which is noticeable on slow terminals.
          returnCode = currentForm->showModal(pShowSubforms, false, false);
          // Set the last key and check for quit/exit functions
-         if (currentForm->modalGetsKeypress()) {
+         if (currentForm->modalGetsKeypress())
+         {
             cxForm::setLastKey(currentForm->getLastKey());
 #ifdef NCURSES_MOUSE_VERSION
-            if (cxForm::getLastKey() == KEY_MOUSE) {
+            if (cxForm::getLastKey() == KEY_MOUSE)
+            {
                // If the input captured a mouse event, then set mMouse to the
                //  form's mMouse.  Note: Not using getmouse() here because if
                //  an onLeave function for the input was fired and the user
@@ -1223,35 +1430,43 @@ long cxMultiForm::doSubforms(bool pShowSubforms, bool& pContinueOn, bool& pClick
                //  it here.
                bool mouseFuncExists = false;
                pContinueOn = handleFunctionForLastMouseState(&mouseFuncExists);
-               if (!mouseFuncExists) {
-                  if (mouseButton1Clicked()) {
+               if (!mouseFuncExists)
+               {
+                  if (mouseButton1Clicked())
+                  {
                      // Loop through the subforms and see if the user clicked on
                      //  another form.  If so, then set that form as the current
                      //  subform.
                      bool clickedAnotherForm = false;
                      int index = 0;
-                     for (; index < (int)(mForms.size()); ++index) {
+                     for (; index < (int)(mForms.size()); ++index)
+                     {
                         // If the mouse event location is inside the form, then
                         //  set it as the current input and go onto the next
                         //  iteration of the while loop.
-                        if (mForms[index]->pointIsInWindow(mMouse.y, mMouse.x)) {
+                        if (mForms[index]->pointIsInWindow(mMouse.y, mMouse.x))
+                        {
                            clickedAnotherForm = true;
                            setCurrentSubform(index);
                            currentForm = mForms[index];
                         }
                      }
-                     if (clickedAnotherForm) {
+                     if (clickedAnotherForm)
+                     {
                         continue;
                      }
-                     else {
+                     else
+                     {
                         // The user didn't click another subform.  Look to see
                         //  if they clicked in an input, and if so, select it.
                         index = 0;
-                        for (; index < (int)(mInputs.size()); ++index) {
+                        for (; index < (int)(mInputs.size()); ++index)
+                        {
                            // If the mouse event location is inside the input, then
                            //  set it as the current input and go onto the next
                            //  iteration of the while loop.
-                           if (mInputs[index]->pointIsInWindow(mMouse.y, mMouse.x)) {
+                           if (mInputs[index]->pointIsInWindow(mMouse.y, mMouse.x))
+                           {
                               pClickedInput = true;
                               setCurrentInput(index);
                            }
@@ -1262,17 +1477,21 @@ long cxMultiForm::doSubforms(bool pShowSubforms, bool& pContinueOn, bool& pClick
                         //  so, then if the parent window is a cxPanel or another
                         //  cxForm/cxMultiForm, then set pContinueOn to false so
                         //  that the main input loop with exit.
-                        if (!pClickedInput && !mouseEvtWasInWindow()) {
-                           if (parentIsCxPanel() || (mParentMultiForm != nullptr)) {
+                        if (!pClickedInput && !mouseEvtWasInWindow())
+                        {
+                           if (parentIsCxPanel() || (mParentMultiForm != nullptr))
+                           {
                               pContinueOn = false;
                            }
-                           else {
+                           else
+                           {
                               // Continue onto the next iteration of the while
                               //  loop.  The user will stay in the current form.
                               continue;
                            }
                         }
-                        else {
+                        else
+                        {
                            // Exit the while loop for the subforms
                            returnCode = cxID_EXIT;
                            break;
@@ -1285,69 +1504,83 @@ long cxMultiForm::doSubforms(bool pShowSubforms, bool& pContinueOn, bool& pClick
             // This is defined for versions of ncurses without mouse support.
             // This is here because the next block starts with "else if".  The
             //  code will go onto the next block because of the false.
-            if (false) {
+            if (false)
+            {
             }
 #endif
             // If the last key is a quit key, then quit and return
             //  cxID_QUIT.  If the key isn't there, look for it in
             //  the exit keys (if it's there, quit and return cxID_EXIT).
             //  If not there either, handle the key normally.
-            else if (hasQuitKey(cxForm::getLastKey())) {
+            else if (hasQuitKey(cxForm::getLastKey()))
+            {
                returnCode = cxID_QUIT;
                pContinueOn = false;
             }
-            else if (hasExitKey(cxForm::getLastKey())) {
+            else if (hasExitKey(cxForm::getLastKey()))
+            {
                returnCode = cxID_EXIT;
                pContinueOn = false;
             }
          }
 
          // If pContinueOn was set false, then return now.
-         if (!pContinueOn) {
+         if (!pContinueOn)
+         {
             return(returnCode);
          }
 
          // If the user wants to quit, and we allow this,
          //  then let the user quit (break out of the input
          //  loop).  Otherwise, handle the last keypress.
-         if ((returnCode == cxID_QUIT) && getAllowQuit()) {
+         if ((returnCode == cxID_QUIT) && getAllowQuit())
+         {
             pContinueOn = false;
             break;
          }
-         else {
+         else
+         {
             // If we got a new keypress, run a function that may be associated
             //  with the last keypress.  If no function exists for the key,
             //  then go on to the next/previous subform.
             bool functionExists = false;
-            if (currentForm->modalGetsKeypress()) {
+            if (currentForm->modalGetsKeypress())
+            {
                pContinueOn = handleFunctionForLastKey(&functionExists);
             }
-            if (!pContinueOn) {
+            if (!pContinueOn)
+            {
                break;
             }
 
-            if (!functionExists) {
+            if (!functionExists)
+            {
                // Based on the last key typed by the user, go to the next
                //  or previous form (if pContinueOn is still true).
-               switch (cxForm::getLastKey()) {
+               switch (cxForm::getLastKey())
+               {
                   // Shift-tab & up arrow: Go to the previous form
                   case SHIFT_TAB:
                   case KEY_UP:
                      // Set the current form's input to its first input, but
                      //  only if it's allowed to cycle its current input.
-                     if (currentForm->mCycleInput) {
+                     if (currentForm->mCycleInput)
+                     {
                         currentForm->setCurrentInput(0);
                      }
                      currentForm->mCycleInput = true;
                      // Go to the previous form.  If the current form
                      //  was the last form, then don't continue.
-                     if (mCycleForm) {
-                        if (selectPrevForm()) {
+                     if (mCycleForm)
+                     {
+                        if (selectPrevForm())
+                        {
                            pContinueOn = false;
                            // If we go back to the inputs/ make sure we
                            //  go to the last one.
                            mCurrentInput = (int)numInputs() - 1;
-                           if (mCurrentInput < 0) {
+                           if (mCurrentInput < 0)
+                           {
                               mCurrentInput = 0;
                            }
                         }
@@ -1361,15 +1594,18 @@ long cxMultiForm::doSubforms(bool pShowSubforms, bool& pContinueOn, bool& pClick
                   case KEY_DOWN:
                      // Set the current form's input to its last input, but
                      //  only if it's allowed to cycle its current input.
-                     if (currentForm->mCycleInput) {
+                     if (currentForm->mCycleInput)
+                     {
                         currentForm->setCurrentInput(currentForm->numInputs()-1);
                      }
                      currentForm->mCycleInput = true;
                      // Go to the next form.  If the current form
                      //  was the last form, then don't continue.
-                     if (mCycleForm) {
+                     if (mCycleForm)
+                     {
                         // Go to the next form
-                        if (selectNextForm()) {
+                        if (selectNextForm())
+                        {
                            pContinueOn = false;
                            // If we go back to the inputs, make sure
                            //  we go to the first one.
@@ -1392,20 +1628,25 @@ long cxMultiForm::doSubforms(bool pShowSubforms, bool& pContinueOn, bool& pClick
                         //bool shouldContinue = handleFunctionForLastKey(&functionExists);
                         // If the function exists, pay attention to the
                         //  return value of handleFunctionForLastKey().
-                        if (functionExists) {
+                        if (functionExists)
+                        {
                            //pContinueOn = shouldContinue;
                         }
                         // Go to the next form if there wasn't a function
                         //  for the last keypress.
-                        else {
-                           if (mCycleForm) {
-                              if (selectNextForm()) {
+                        else
+                        {
+                           if (mCycleForm)
+                           {
+                              if (selectNextForm())
+                              {
                                  pContinueOn = false;
                                  // If we go back to the inputs, make sure
                                  //  we go to the first one.
                                  mCurrentInput = 0;
                               }
-                              else {
+                              else
+                              {
                                  pContinueOn = true;
                               }
                            }
@@ -1431,13 +1672,15 @@ long cxMultiForm::doSubforms(bool pShowSubforms, bool& pContinueOn, bool& pClick
    return(returnCode);
 } // doSubforms
 
-bool cxMultiForm::selectNextForm() {
+bool cxMultiForm::selectNextForm()
+{
    bool wasOnLastForm = false;
 
    // Go to the next form.
    ++mCurrentForm;
    // Fix mCurrentForm if it went out of bounds.
-   if ((unsigned)mCurrentForm >= mForms.size()) {
+   if ((unsigned)mCurrentForm >= mForms.size())
+   {
       mCurrentForm = 0;
       wasOnLastForm = true;
    }
@@ -1445,18 +1688,22 @@ bool cxMultiForm::selectNextForm() {
    return(wasOnLastForm);
 } // selectNextForm
 
-bool cxMultiForm::selectPrevForm() {
+bool cxMultiForm::selectPrevForm()
+{
    bool wasOnFirstForm = false;
 
    // Go to the previous form
    --mCurrentForm;
    // Fix mCurrentForm if it went out of bounds
-   if (mCurrentForm < 0) {
+   if (mCurrentForm < 0)
+   {
       // Wrap around to the last subform
-      if (mForms.size() > 0) {
+      if (mForms.size() > 0)
+      {
          mCurrentForm = (int)(mForms.size()) - 1;
       }
-      else {
+      else
+      {
          mCurrentForm = 0;
       }
    }
@@ -1464,22 +1711,28 @@ bool cxMultiForm::selectPrevForm() {
    return(wasOnFirstForm);
 } // selectPrevForm
 
-void cxMultiForm::addFormFunctionKeysToSubform(std::shared_ptr<cxForm>& pForm) {
-   for (const pair<const int, shared_ptr<cxFunction> >& funcPair : mKeyFunctions) {
+void cxMultiForm::addFormFunctionKeysToSubform(std::shared_ptr<cxForm>& pForm)
+{
+   for (const pair<const int, shared_ptr<cxFunction> >& funcPair : mKeyFunctions)
+   {
       pForm->addExitKey(funcPair.first, false, true);
    }
 } // addFormFunctionKeysToSubform
 
-void cxMultiForm::addQuitAndExitKeysToSubform(std::shared_ptr<cxForm>& pForm) {
-   for (const pair<const int, bool>& quitKeyPair : mQuitKeys) {
+void cxMultiForm::addQuitAndExitKeysToSubform(std::shared_ptr<cxForm>& pForm)
+{
+   for (const pair<const int, bool>& quitKeyPair : mQuitKeys)
+   {
       pForm->addQuitKey(quitKeyPair.first, false, true);
    }
-   for (const pair<const int, bool>& exitKeyPair : mExitKeys) {
+   for (const pair<const int, bool>& exitKeyPair : mExitKeys)
+   {
       pForm->addQuitKey(exitKeyPair.first, false, true);
    }
 } // addQuitAndExitKeysToSubform
 
-inline bool cxMultiForm::subformIsEnabledAndEditable(unsigned int pIndex) {
+inline bool cxMultiForm::subformIsEnabledAndEditable(unsigned int pIndex)
+{
    return(mForms[pIndex]->isEnabled() &&
           mForms[pIndex]->hasEditableInputs());
 } // subformIsEnabledAndEditable

@@ -12,7 +12,8 @@
 /**
  * \enum eInputOptions Specifies editability options (editable or read-only).
  */
-enum eInputOptions {
+enum eInputOptions
+{
    eINPUT_EDITABLE = 0,
    eINPUT_READONLY
 };

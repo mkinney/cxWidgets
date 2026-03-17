@@ -26,7 +26,8 @@
  * \version $Revision: 1.23 $
  * \date $Date: 2007/12/04 00:23:46 $
 */
-class cxMessageDialog : public cxDialog {
+class cxMessageDialog : public cxDialog
+{
 
    public:
       /**
@@ -54,7 +55,7 @@ class cxMessageDialog : public cxDialog {
        * @param pParentWindow A pointer to the parent window
        * @param pTitle The title of the window
        * @param pMessage The message to be displayed in the dialog
-       * @return 
+       * @return
        */
       cxMessageDialog(cxWindow *pParentWindow, const std::string& pTitle, const std::string& pMessage);
 
@@ -109,13 +110,13 @@ class cxMessageDialog : public cxDialog {
        */
       virtual bool move(int pNewRow, int pNewCol, bool pRefresh = true) override;
 
-      /** 
+      /**
        * @brief get a pointer to the the OK/Yes button
        * @return cxButton pointer
        */
       virtual std::shared_ptr<cxButton> getOKButton() const { return(mOKBtn); }
 
-      /** 
+      /**
        * @brief get a pointer to the the Cancel/NO button
        * @return cxButton pointer
        */
@@ -124,7 +125,7 @@ class cxMessageDialog : public cxDialog {
       // Overridden from cxWindow so that this function doesn't get hidden
       virtual long setFocus(bool pShowSelf = true, bool pBringToTop = true, bool pShowSubwindows = true) override;
 
-      /** 
+      /**
        * @brief set the focus on the cxButton
        * @param pButton the button to set the focus to
        * @param pShow show the buttons

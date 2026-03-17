@@ -13,21 +13,25 @@ cxTextValidator::cxTextValidator(const string& pTextStr,
 {
 }
 
-cxTextValidator::~cxTextValidator() {
+cxTextValidator::~cxTextValidator()
+{
 }
 
 // Sets the text string to be validated.
-void cxTextValidator::setTextStr(const string& pTextStr) {
+void cxTextValidator::setTextStr(const string& pTextStr)
+{
    mTextStr = pTextStr;
 }
 
 // Returns the text string.
-const string& cxTextValidator::getTextStr() const {
+const string& cxTextValidator::getTextStr() const
+{
    return(mTextStr);
 }
 
 // Sets the validator string.
-void cxTextValidator::setValidatorStr(const string& pValidatorStr) {
+void cxTextValidator::setValidatorStr(const string& pValidatorStr)
+{
    mValidatorStr = pValidatorStr;
 
    // Go through mValidatorStr from reverse, and if
@@ -37,22 +41,29 @@ void cxTextValidator::setValidatorStr(const string& pValidatorStr) {
    //  are required, and this would simplify the
    //  input validation).
    bool setCapital = false;
-   if (mValidatorStr.length() > 0) {
-      for (int i = (int)mValidatorStr.length()-1; i >= 0; --i) {
-         if (isAlpha(mValidatorStr[i])) {
-            if (setCapital) {
+   if (mValidatorStr.length() > 0)
+   {
+      for (int i = (int)mValidatorStr.length()-1; i >= 0; --i)
+      {
+         if (isAlpha(mValidatorStr[i]))
+         {
+            if (setCapital)
+            {
                // Don't convert 'm' or 'r' to capitals
                //  ('m' is for masking (for passwords, etc.),
                //  and 'r' is for using regular expressions).
-               if ((mValidatorStr[i] != 'm') && (mValidatorStr[i] != 'r')) {
+               if ((mValidatorStr[i] != 'm') && (mValidatorStr[i] != 'r'))
+               {
                   mValidatorStr[i] = toupper(mValidatorStr[i]);
                }
             }
-            else {
+            else
+            {
                // If this alpha is uppercase, then
                //  we need to make sure the other letters
                //  are capitals.
-               if ((mValidatorStr[i] >= 'A') && (mValidatorStr[i] <= 'Z')) {
+               if ((mValidatorStr[i] >= 'A') && (mValidatorStr[i] <= 'Z'))
+               {
                   setCapital = true;
                }
             }
@@ -62,20 +73,24 @@ void cxTextValidator::setValidatorStr(const string& pValidatorStr) {
 }
 
 // Accessor for the validator string.
-const string& cxTextValidator::getValidatorStr() const {
+const string& cxTextValidator::getValidatorStr() const
+{
    return(mValidatorStr);
 }
 
 // Returns whether the text string passes validation.
-bool cxTextValidator::textIsValid() const {
+bool cxTextValidator::textIsValid() const
+{
    return(textIsValid(mTextStr));
 }
 
 // Returns whether a text string passes validation.
-bool cxTextValidator::textIsValid(const string& pTextStr) const {
+bool cxTextValidator::textIsValid(const string& pTextStr) const
+{
    bool isValid(true);
 
-   if (mValidatorStr != "") {
+   if (mValidatorStr != "")
+   {
       // Add any implied characters from mValidatorStr to
       //  pTextStr.
       string textStr = pTextStr;
@@ -87,7 +102,8 @@ bool cxTextValidator::textIsValid(const string& pTextStr) const {
       //  valid (because a capital says we need that many
       //  characters).
       if (isUpper(mValidatorStr[mValidatorStr.length()-1]) &&
-          textStr.length() < mValidatorStr.length()) {
+          textStr.length() < mValidatorStr.length())
+          {
          return(false);
       }
 
@@ -95,52 +111,63 @@ bool cxTextValidator::textIsValid(const string& pTextStr) const {
       //  mValidatorStr, go through textStr and check each
       //  character in textStr based on the type of
       //  validator character in mValidatorStr.
-      if (textStr.length() <= mValidatorStr.length()) {
+      if (textStr.length() <= mValidatorStr.length())
+      {
          unsigned valueLen = textStr.length();
          // The variable i in this loop is used as an index
          //  into mValidatorStr, but we're only going the length
          //  of textStr (mValidatorStr could still be longer).
-         for (unsigned i = 0; i < valueLen; ++i) {
-            switch(mValidatorStr[i]) {
+         for (unsigned i = 0; i < valueLen; ++i)
+         {
+            switch(mValidatorStr[i])
+            {
                case 'd': // Any digit ([0-9])
-                  if (!isDigit(textStr[i])) {
+                  if (!isDigit(textStr[i]))
+                  {
                      isValid = false;
                      break;  // Break from the for loop
                   }
                   break;
                case 'D': // Like above, but all are required
-                  if (!isDigit(textStr[i])) {
+                  if (!isDigit(textStr[i]))
+                  {
                      isValid = false;
                      break;
                   }
-                  else {
+                  else
+                  {
                      // Since this is a 'required' character,
                      //  that means textStr needs to have the
                      //  same number of characters as
                      //  mValidatorStr at this index.
-                     if (valueLen < i+1) {
+                     if (valueLen < i+1)
+                     {
                         isValid = false;
                         break;
                      }
                   }
                   break;
                case 'n': // Any number ([0-9.])
-                  if (!isDigitOrDecimal(textStr[i])) {
+                  if (!isDigitOrDecimal(textStr[i]))
+                  {
                      isValid = false;
                      break;
                   }
                   break;
                case 'N': // Like above, but all are required
-                  if (!isDigitOrDecimal(textStr[i])) {
+                  if (!isDigitOrDecimal(textStr[i]))
+                  {
                      isValid = false;
                      break;
                   }
-                  else {
+                  else
+                  {
                      // Since this is a 'required' character,
                      //  that means textStr needs to have the
                      //  same number of characters as
                      //  mValidatorStr at this index.
-                     if (valueLen < i+1) {
+                     if (valueLen < i+1)
+                     {
                         isValid = false;
                         break;
                      }
@@ -155,11 +182,13 @@ bool cxTextValidator::textIsValid(const string& pTextStr) const {
                      //  of characters in the validator string after
                      //  the '@', then the string is OK.
                      size_t dotPos = textStr.find('.');
-                     if (dotPos != string::npos) {
+                     if (dotPos != string::npos)
+                     {
                         //unsigned textStrLen = textStr.substr(dotPos+1).length();
                         //unsigned validatorStrLen = mValidatorStr.substr(i+1).length();
                         if (textStr.substr(dotPos+1).length() !=
-                            mValidatorStr.substr(i+1).length()) {
+                            mValidatorStr.substr(i+1).length())
+                            {
                            // The length after the '.' does not
                            //  equal the length in the validator
                            //  string after the '@'.
@@ -167,7 +196,8 @@ bool cxTextValidator::textIsValid(const string& pTextStr) const {
                            break;
                         }
                      }
-                     else {
+                     else
+                     {
                         // Since the string doesn't have a decimal
                         //  point, it's not valid.
                         isValid = false;
@@ -176,44 +206,52 @@ bool cxTextValidator::textIsValid(const string& pTextStr) const {
                   }
                   break;
                case 'a': // Alphanumeric ([0-9a-zA-Z])
-                  if (!isAlphaNum(textStr[i])) {
+                  if (!isAlphaNum(textStr[i]))
+                  {
                      isValid = false;
                      break;
                   }
                   break;
                case 'A': // Like above, but all are required
-                  if (!isAlphaNum(textStr[i])) {
+                  if (!isAlphaNum(textStr[i]))
+                  {
                      isValid = false;
                      break;
                   }
-                  else {
+                  else
+                  {
                      // Since this is a 'required' character,
                      //  that means textStr needs to have the
                      //  same number of characters as
                      //  mValidatorStr at this index.
-                     if (valueLen < i+1) {
+                     if (valueLen < i+1)
+                     {
                         isValid = false;
                         break;
                      }
                   }
                   break;
                case 'p': // Alphanumeric w/ punctuation ([0-9a-zA-Z ,-.])
-                  if (!isAlphaNumOrPunc(textStr[i])) {
+                  if (!isAlphaNumOrPunc(textStr[i]))
+                  {
                      isValid = false;
                      break;
                   }
                   break;
                case 'P': // Like above, but all are required
-                  if (!isAlphaNumOrPunc(textStr[i])) {
+                  if (!isAlphaNumOrPunc(textStr[i]))
+                  {
                      isValid = false;
                      break;
                   }
-                  else {
+                  else
+                  {
                      // Since this is a 'required' character,
                      //  that means textStr needs to have the
                      //  same number of characters as
                      //  mValidatorStr at this index.
-                     if (valueLen < i+1) {
+                     if (valueLen < i+1)
+                     {
                         isValid = false;
                         break;
                      }
@@ -226,7 +264,8 @@ bool cxTextValidator::textIsValid(const string& pTextStr) const {
                   //  that means textStr needs to have the
                   //  same number of characters as
                   //  mValidatorStr at this index.
-                  if (valueLen < i+1) {
+                  if (valueLen < i+1)
+                  {
                      isValid = false;
                      break;
                   }
@@ -237,7 +276,8 @@ bool cxTextValidator::textIsValid(const string& pTextStr) const {
                   // If the character in textStr at this position
                   //  doesn't match the one in mValidatorStr, then
                   //  textStr isn't valid.
-                  if (textStr[i] != mValidatorStr[i]) {
+                  if (textStr[i] != mValidatorStr[i])
+                  {
                      isValid = false;
                      break;
                   }
@@ -249,13 +289,16 @@ bool cxTextValidator::textIsValid(const string& pTextStr) const {
          //  a capital letter, then we know the string is not valid
          //  (since the string is not long enough).
          // First see if mValidatorStr has any more characters..
-         if (mValidatorStr.length() > valueLen) {
-            if (isUpper(mValidatorStr[valueLen])) {
+         if (mValidatorStr.length() > valueLen)
+         {
+            if (isUpper(mValidatorStr[valueLen]))
+            {
                isValid = false;
             }
          }
       }
-      else {
+      else
+      {
          // textStr is longer than mValidatorStr..  so
          //  the input is invalid.
          isValid = false;
@@ -265,48 +308,60 @@ bool cxTextValidator::textIsValid(const string& pTextStr) const {
    return(isValid);
 } // textIsValid
 
-string cxTextValidator::addImpliedChars() const {
+string cxTextValidator::addImpliedChars() const
+{
    string newString = mTextStr;
    addImpliedChars(newString);
 
    return(newString);
 }
 
-void cxTextValidator::addImpliedChars(string& pTextStr) const {
-   if (mValidatorStr != "") {
+void cxTextValidator::addImpliedChars(string& pTextStr) const
+{
+   if (mValidatorStr != "")
+   {
       // If pTextStr is shorter or equal in length to
       //  mValidatorStr, go through mValidatorStr, and insert
       //  each non-validator character into pTextStr.
       unsigned validatorStrLen = mValidatorStr.length();
-      if (pTextStr.length() <= validatorStrLen) {
-         for (unsigned i = 0; i < validatorStrLen; ++i) {
+      if (pTextStr.length() <= validatorStrLen)
+      {
+         for (unsigned i = 0; i < validatorStrLen; ++i)
+         {
             // If the current character in mValidatorStr is not a validator,
             //  then insert the character into pTextStr.
-            if (!isValidatorChar(mValidatorStr[i])) {
+            if (!isValidatorChar(mValidatorStr[i]))
+            {
                // Only insert the character if the index (i) isn't too large..
                //  If i is greater than the length of pTextStr, the insert
                //  will fail.
-               if (i <= pTextStr.length()) {
+               if (i <= pTextStr.length())
+               {
                   // '@' means a fixed decimal point..  If the current character
                   //  in mValidatorStr is an '@', insert a '.'.  Otherwise, just
                   //  insert whatever the character is.
-                  if (mValidatorStr[i] == '@') {
+                  if (mValidatorStr[i] == '@')
+                  {
                      // Only insert a decimal point if there isn't one already
                      //  in pTextStr.
                      unsigned dotPos = pTextStr.find('.');
-                     if (dotPos == string::npos) {
+                     if (dotPos == string::npos)
+                     {
                         pTextStr.insert(pTextStr.begin()+i, 1, '.');
                      }
                   }
-                  else {
+                  else
+                  {
                      // Only add the character if the current character in pTextStr
                      //  is not already this character.
-                     if (pTextStr[i] != mValidatorStr[i]) {
+                     if (pTextStr[i] != mValidatorStr[i])
+                     {
                         pTextStr.insert(pTextStr.begin()+i, 1, mValidatorStr[i]);
                      }
                   }
                }
-               else {
+               else
+               {
                   break;
                }
             }
@@ -315,7 +370,8 @@ void cxTextValidator::addImpliedChars(string& pTextStr) const {
    } // if (mValidatorStr != "")
 }
 
-string cxTextValidator::cxTypeStr() const {
+string cxTextValidator::cxTypeStr() const
+{
    return("cxValidator");
 } // cxTypeStr
 
@@ -323,77 +379,94 @@ string cxTextValidator::cxTypeStr() const {
 /// Private facilitator functions
 
 // Returns whether a character is a digit.
-inline bool cxTextValidator::isDigit(char pChar) {
+inline bool cxTextValidator::isDigit(char pChar)
+{
    //return(Find(&pChar, "[0-9]"));
 
-   if ((pChar >= '0') && (pChar <= '9')) {
+   if ((pChar >= '0') && (pChar <= '9'))
+   {
       return(true);
    }
-   else {
+   else
+   {
       return(false);
    }
 }
 
 // Returns whether a character is a letter.
-inline bool cxTextValidator::isAlpha(char pChar) {
+inline bool cxTextValidator::isAlpha(char pChar)
+{
    if (((pChar >= 'a') && (pChar <= 'z')) ||
-       ((pChar >= 'A') && (pChar <= 'Z'))) {
+       ((pChar >= 'A') && (pChar <= 'Z')))
+       {
       return(true);
    }
-   else {
+   else
+   {
       return(false);
    }
 }
 
 // Returns whether a character is a digit or decimal point.
-inline bool cxTextValidator::isDigitOrDecimal(char pChar) {
+inline bool cxTextValidator::isDigitOrDecimal(char pChar)
+{
    //return(Find(&pChar, "[0-9\\.]"));
 
-   if (((pChar >= '0') && (pChar <= '9')) || (pChar == '.')) {
+   if (((pChar >= '0') && (pChar <= '9')) || (pChar == '.'))
+   {
       return(true);
    }
-   else {
+   else
+   {
       return(false);
    }
 }
 
 // Returns whether a character is alphanumeric.
-inline bool cxTextValidator::isAlphaNum(char pChar) {
+inline bool cxTextValidator::isAlphaNum(char pChar)
+{
    //return(Find(&pChar, "[0-9a-zA-Z]"));
 
    if (((pChar >= 'a') && (pChar <= 'z')) ||
        ((pChar >= 'A') && (pChar <= 'Z')) ||
-       ((pChar >= '0') && (pChar <= '9'))) {
+       ((pChar >= '0') && (pChar <= '9')))
+       {
       return(true);
    }
-   else {
+   else
+   {
       return(false);
    }
 }
 
 // Returns whether a character is alphanumeric or punctuation.
-inline bool cxTextValidator::isAlphaNumOrPunc(char pChar) {
+inline bool cxTextValidator::isAlphaNumOrPunc(char pChar)
+{
    //return(Find(&pChar, "[0-9a-zA-Z ,-\\.]"));
 
    if (((pChar >= 'a') && (pChar <= 'z')) ||
        ((pChar >= 'A') && (pChar <= 'Z')) ||
        ((pChar >= '0') && (pChar <= '9')) ||
        ((pChar >= 32) && (pChar <= 46)) ||
-       ((pChar >= 58) && (pChar <= 64))) {
+       ((pChar >= 58) && (pChar <= 64)))
+       {
       return(true);
    }
-   else {
+   else
+   {
       return(false);
    }
 }
 
 // Returns whether a character is an uppercase letter.
-inline bool cxTextValidator::isUpper(char pChar) {
+inline bool cxTextValidator::isUpper(char pChar)
+{
    return((pChar >= 'A') && (pChar <= 'Z'));
 }
 
 // Returns whether a character is a validator character.
-inline bool cxTextValidator::isValidatorChar(char pChar) {
+inline bool cxTextValidator::isValidatorChar(char pChar)
+{
    return((pChar == 'd') || (pChar == 'D') || (pChar == 'n') ||
           (pChar == 'N') || (pChar == 'a') || (pChar == 'A') ||
           (pChar == 'p') || (pChar == 'P') || (pChar == 'x') ||

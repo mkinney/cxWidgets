@@ -58,7 +58,8 @@
  * \date $Date: 2007/12/04 00:23:46 $
  *
  */
-class cxMenu : public cxWindow {
+class cxMenu : public cxWindow
+{
    public:
       /**
        * Default constructor
@@ -119,7 +120,7 @@ class cxMenu : public cxWindow {
        * Adds an item with a pull-right submenu
        * @param pDisplayText The text to display for the item
        * @param pSubMenu A pointer to the submenu to display
-       * @param pHelpString A string to be displayed in the statusbar of the main window 
+       * @param pHelpString A string to be displayed in the statusbar of the main window
        * when the item is highlighted
        * @param pResize If true, the menu will resize itself so that it can show all the items.
        */
@@ -131,7 +132,7 @@ class cxMenu : public cxWindow {
        * Adds an item with a pop-up submenu
        * @param pDisplayText The text to display for the item
        * @param pSubMenu A pointer to the submenu to display
-       * @param pHelpString A string to be displayed in the statusbar of the main 
+       * @param pHelpString A string to be displayed in the statusbar of the main
        * window when the item is highlighted
        * @param pResize If true, the menu will resize itself so that it can show all the items.
        */
@@ -592,11 +593,11 @@ class cxMenu : public cxWindow {
        */
       bool getAllowExit() const;
 
-      /** 
+      /**
        * \brief Returns the index of a menu item by its return code.
-       * 
+       *
        * @param pReturnCode The return code of the menu item
-       * 
+       *
        * @return The index of the item, or -1 if it's not found.
        */
       int getIndexByReturnCode(long pReturnCode) const;

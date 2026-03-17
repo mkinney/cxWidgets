@@ -43,19 +43,23 @@ cxMenu::cxMenu(cxWindow *pParentWindow, int pRow, int pCol, int pHeight,
      mSubWinWidth((getBorderStyle() == eBS_NOBORDER) ? width() : width()-2)
 {
    // Create the subwindow (for the list of items)
-   if (getBorderStyle() == eBS_NOBORDER) {
+   if (getBorderStyle() == eBS_NOBORDER)
+   {
       mSubWindow = derwin(mWindow, mSubWinHeight, mSubWinWidth, 0, 0);
       // If mSubWindow is nullptr, that means derwin() had an error..
-      if (mSubWindow == nullptr) {
+      if (mSubWindow == nullptr)
+      {
          // Free up the other memory used
          cxWindow::freeWindow();
          throw(cxWidgetsException("Couldn't create a new ncurses subwindow (constructing a new cxMenu)."));
       }
    }
-   else {
+   else
+   {
       mSubWindow = derwin(mWindow, mSubWinHeight, mSubWinWidth, 1, 1);
       // If mSubWindow is nullptr, that means derwin() had an error..
-      if (mSubWindow == nullptr) {
+      if (mSubWindow == nullptr)
+      {
          // Free up the other memory used
          cxWindow::freeWindow();
          throw(cxWidgetsException("Couldn't create a new ncurses subwindow (constructing a new cxMenu)."));
@@ -64,7 +68,8 @@ cxMenu::cxMenu(cxWindow *pParentWindow, int pRow, int pCol, int pHeight,
    scrollok(mSubWindow, true);
    idlok(mSubWindow, true);
 
-   if (pHeight > 2) {
+   if (pHeight > 2)
+   {
       //resize(pHeight, pWidth, false);
    }
 
@@ -116,7 +121,8 @@ cxMenu::cxMenu(const cxMenu& pThatMenu)
    copyCxMenuStuff(&pThatMenu);
 } // Copy constructor
 
-cxMenu::~cxMenu() {
+cxMenu::~cxMenu()
+{
    // Free the memory used by the subwindow. (note: cxWindow frees the memory
    //  used by the main window.)
    freeSubWindow();
@@ -126,7 +132,8 @@ cxMenu::~cxMenu() {
 
 void cxMenu::append(const string& pDisplayText, long pReturnCode,
                     const string& pHelpString, cxMenuItemType pType,
-                    bool pResize, const string& pItemText) {
+                    bool pResize, const string& pItemText)
+                    {
    // Add the display text to mMessageLines, and add the alternate item text to
    //  mAltItemText
    mMessageLines.push_back(pDisplayText);
@@ -138,22 +145,30 @@ void cxMenu::append(const string& pDisplayText, long pReturnCode,
    mItemTypes.push_back(pType);
 
    // Resize the window, if pResize is true
-   if (pResize) {
-      if (getBorderStyle() == eBS_NOBORDER) {
+   if (pResize)
+   {
+      if (getBorderStyle() == eBS_NOBORDER)
+      {
          resize((int)(mMessageLines.size()), width());
       }
-      else {
+      else
+      {
          resize((int)(mMessageLines.size()+2), width());
       }
    }
-   else {
-      if (getBorderStyle() == eBS_NOBORDER) {
-         if (height() < 1) {
+   else
+   {
+      if (getBorderStyle() == eBS_NOBORDER)
+      {
+         if (height() < 1)
+         {
             resize(1, width());
          }
       }
-      else {
-         if (height() < 3) {
+      else
+      {
+         if (height() < 3)
+         {
             resize(3, width());
          }
       }
@@ -164,34 +179,40 @@ void cxMenu::append(const string& pDisplayText, long pReturnCode,
 
    // If this is a normal item, then mSelectableItemExists
    //  should be true.
-   if (pType == cxITEM_NORMAL) {
+   if (pType == cxITEM_NORMAL)
+   {
       mSelectableItemExists = true;
    }
    // If the menu item has a pull-right submenu, then
    //  insert a '>' in the text to appear next to the rightmost
    //  edge of the menu.
-   else if (pType == cxITEM_SUBMENU) {
+   else if (pType == cxITEM_SUBMENU)
+   {
       string itemText = mMessageLines[mMessageLines.size()-1];
       itemText.append(mSubWinWidth - (int)itemText.length() - 1, ' ');
       itemText += ">";
 
       mMessageLines[mMessageLines.size()-1] = itemText;
    }
-   else if (pType == cxITEM_UNSELECTABLE) {
+   else if (pType == cxITEM_UNSELECTABLE)
+   {
       mUnselectableItems.insert(mMessageLines.size()-1);
    }
 
    // If the item type is not cxITEM_NORMAL, call lookForSelectableItem()
    //  to look for a selectable item on the menu and all of the submenus
    //  if there are any.
-   if (pType != cxITEM_NORMAL) {
+   if (pType != cxITEM_NORMAL)
+   {
       lookForSelectableItem();
    }
 } // append
 
 void cxMenu::appendWithPullRight(const string& pDisplayText, cxMenu *pSubMenu,
-                                 const string& pHelpString, bool pResize) {
-   if (pSubMenu != nullptr) {
+                                 const string& pHelpString, bool pResize)
+                                 {
+   if (pSubMenu != nullptr)
+   {
       // Add the item text to the menu
       append(pDisplayText, -1, pHelpString, cxITEM_SUBMENU, pResize, "");
       // Add the submenu pointer to mSubMenus.
@@ -202,8 +223,10 @@ void cxMenu::appendWithPullRight(const string& pDisplayText, cxMenu *pSubMenu,
 } // appendWithPullRight
 
 void cxMenu::appendWithPopUp(const string& pDisplayText, cxMenu *pSubMenu,
-                             const string& pHelpString, bool pResize) {
-   if (pSubMenu != nullptr) {
+                             const string& pHelpString, bool pResize)
+                             {
+   if (pSubMenu != nullptr)
+   {
       // Add the item text to the menu
       append(pDisplayText, -1, pHelpString, cxITEM_POPUPMENU, pResize, "");
       // Add the submenu pointer to mSubMenus.
@@ -213,10 +236,12 @@ void cxMenu::appendWithPopUp(const string& pDisplayText, cxMenu *pSubMenu,
    }
 } // appendWithPopUp
 
-bool cxMenu::remove(unsigned pItemIndex, bool pResize, bool pRefresh) {
+bool cxMenu::remove(unsigned pItemIndex, bool pResize, bool pRefresh)
+{
    bool returnVal = false;
 
-   if ((pItemIndex >= 0) && (pItemIndex < mMessageLines.size())) {
+   if ((pItemIndex >= 0) && (pItemIndex < mMessageLines.size()))
+   {
       // Remove all info about the item from the collections
       mMessageLines.erase(mMessageLines.begin() + pItemIndex);
       mReturnCodes.erase(mReturnCodes.begin() + pItemIndex);
@@ -225,31 +250,39 @@ bool cxMenu::remove(unsigned pItemIndex, bool pResize, bool pRefresh) {
       mAltItemText.erase(mAltItemText.begin() + pItemIndex);
       // If there is a submenu for this item index, decrement its
       //  mNumParentMenus member and remove it from mSubMenus.
-      if (mSubMenus.find(pItemIndex) != mSubMenus.end()) {
+      if (mSubMenus.find(pItemIndex) != mSubMenus.end())
+      {
          --(mSubMenus[pItemIndex]->mNumParentMenus);
          mSubMenus.erase(pItemIndex);
       }
       mUnselectableItems.erase(pItemIndex);
       // If the item that has been removed happens to be
       //  mCurrentItem or mTopMenuItem, then decrement them.
-      if (pItemIndex == (unsigned)mCurrentMenuItem) {
+      if (pItemIndex == (unsigned)mCurrentMenuItem)
+      {
          --mCurrentMenuItem;
-         if (mCurrentMenuItem < 0) {
+         if (mCurrentMenuItem < 0)
+         {
             mCurrentMenuItem = 0;
          }
       }
-      if (pItemIndex == (unsigned)mTopMenuItem) {
+      if (pItemIndex == (unsigned)mTopMenuItem)
+      {
          --mTopMenuItem;
-         if (mTopMenuItem < 0) {
+         if (mTopMenuItem < 0)
+         {
             mTopMenuItem = 0;
          }
       }
 
-      if (pResize) {
-         if (getBorderStyle() == eBS_NOBORDER) {
+      if (pResize)
+      {
+         if (getBorderStyle() == eBS_NOBORDER)
+         {
             resize((int)(mMessageLines.size()), width(), false);
          }
-         else {
+         else
+         {
             resize((int)(mMessageLines.size()+2), width(), false);
          }
       }
@@ -257,13 +290,16 @@ bool cxMenu::remove(unsigned pItemIndex, bool pResize, bool pRefresh) {
       // If mCurrentMenuItem is beyond the last menu item, then set it to the
       //  last menu item.
       int menuItemCount = (int)(numMenuItems());
-      if (menuItemCount > 0) {
+      if (menuItemCount > 0)
+      {
          int lastItemIndex = menuItemCount - 1;
-         if (mCurrentMenuItem > lastItemIndex) {
+         if (mCurrentMenuItem > lastItemIndex)
+         {
             mCurrentMenuItem = lastItemIndex;
          }
       }
-      else {
+      else
+      {
          mCurrentMenuItem = 0;
       }
 
@@ -278,28 +314,35 @@ bool cxMenu::remove(unsigned pItemIndex, bool pResize, bool pRefresh) {
 } // remove
 
 bool cxMenu::remove(const string& pItemText, bool pUseDisplayText, bool pResize,
-                    bool pRefresh) {
+                    bool pRefresh)
+                    {
    bool returnVal = false;
 
    // If pUseDisplayText is true, then look at the display text for each item.
    //  Otherwise, look at the alternate item text for each item.
-   if (pUseDisplayText) {
+   if (pUseDisplayText)
+   {
       unsigned numItems = mMessageLines.size();
-      for (unsigned i = 0; i < numItems; ++i) {
+      for (unsigned i = 0; i < numItems; ++i)
+      {
          // Check the item text verbatim and the item text without the hotkey
          //  characters
          if ((mMessageLines[i] == pItemText) ||
-             (stringWithoutHotkeyChars(mMessageLines[i]) == pItemText)) {
+             (stringWithoutHotkeyChars(mMessageLines[i]) == pItemText))
+             {
             returnVal = remove(i, pResize, pRefresh);
             break;
          }
       }
    }
-   else {
+   else
+   {
       unsigned numItems = mAltItemText.size();
       // pUseDisplayText is false - Look at the alternate item text for each item
-      for (unsigned i = 0; i < numItems; ++i) {
-         if (mAltItemText[i] == pItemText) {
+      for (unsigned i = 0; i < numItems; ++i)
+      {
+         if (mAltItemText[i] == pItemText)
+         {
             returnVal = remove(i, pResize, pRefresh);
             break;
          }
@@ -309,14 +352,17 @@ bool cxMenu::remove(const string& pItemText, bool pUseDisplayText, bool pResize,
    return(returnVal);
 } // remove
 
-bool cxMenu::removeByReturnCode(long pReturnCode, bool pResize, bool pRefresh) {
+bool cxMenu::removeByReturnCode(long pReturnCode, bool pResize, bool pRefresh)
+{
    bool removed = false;
 
    // Go through the menu items and find the index
    //  of the item to remove
    unsigned numItems = mReturnCodes.size();
-   for (unsigned index = 0; index < numItems; ++index) {
-      if (mReturnCodes[index] == pReturnCode) {
+   for (unsigned index = 0; index < numItems; ++index)
+   {
+      if (mReturnCodes[index] == pReturnCode)
+      {
          removed = true;
          remove(index, pResize, pRefresh);
          break;
@@ -326,7 +372,8 @@ bool cxMenu::removeByReturnCode(long pReturnCode, bool pResize, bool pRefresh) {
    return(removed);
 } // removeByReturnCode
 
-void cxMenu::removeAllItems(bool pResize, bool pRefresh) {
+void cxMenu::removeAllItems(bool pResize, bool pRefresh)
+{
    mMessageLines.clear();
    mReturnCodes.clear();
    mHelpStrings.clear();
@@ -336,7 +383,8 @@ void cxMenu::removeAllItems(bool pResize, bool pRefresh) {
    // Before clearing mSubMenus, go through it and decrement the submenus'
    //  mNumParentMenus members.
    map<int, cxMenu*>::iterator subMenuIter = mSubMenus.begin();
-   for (; subMenuIter != mSubMenus.end(); ++ subMenuIter) {
+   for (; subMenuIter != mSubMenus.end(); ++ subMenuIter)
+   {
       --(subMenuIter->second->mNumParentMenus);
    }
    mSubMenus.clear();
@@ -345,39 +393,49 @@ void cxMenu::removeAllItems(bool pResize, bool pRefresh) {
    mCurrentMenuItem = 0;
    mTopMenuItem = 0;
 
-   if (pResize) {
+   if (pResize)
+   {
       // No more items
-      if (getBorderStyle() == eBS_NOBORDER) {
+      if (getBorderStyle() == eBS_NOBORDER)
+      {
          resize(1, width(), false);
       }
-      else {
+      else
+      {
          resize(2, width(), false);
       }
    }
 
-   if (pRefresh) {
+   if (pRefresh)
+   {
       show(false, false);
    }
 } // removeAllItems
 
-void cxMenu::clear(bool pRefresh) {
+void cxMenu::clear(bool pRefresh)
+{
    removeAllItems(false, pRefresh);
 } // clear
 
-long cxMenu::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows) {
+long cxMenu::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows)
+{
    setReturnCode(cxID_EXIT);
 
    // Only do the input loop if the menu window is enabled.
-   if (isEnabled()) {
+   if (isEnabled())
+   {
       // Run the onFocus function.  If runOnFocusFunction() returns true, that
       //  means we should exit.. so only do the input loop if it returns false.
       //  Also, check to make sure that getLeaveNow() returns false, in case
       //  the onFocus function called exitNow() or quitNow().
-      if (!runOnFocusFunction() && !getLeaveNow()) {
-         if (pShowSelf) {
+      if (!runOnFocusFunction() && !getLeaveNow())
+      {
+         if (pShowSelf)
+         {
             show(pBringToTop, pShowSubwindows);
          }
-         if (mRefreshItemsWhenModal) {
+         if (mRefreshItemsWhenModal)
+         {
             refreshMenuItems();
          }
          // Disable the cursor (saving the current cursor state)
@@ -389,7 +447,8 @@ long cxMenu::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows) {
          // Set the cursor state back to what it was
          curs_set(prevCursorState);
          // Run the onLeave function
-         if (runOnLeaveFunc) {
+         if (runOnLeaveFunc)
+         {
             runOnLeaveFunction();
          }
       }
@@ -398,19 +457,25 @@ long cxMenu::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows) {
    return(getReturnCode());
 } // showModal
 
-bool cxMenu::modalGetsKeypress() const {
+bool cxMenu::modalGetsKeypress() const
+{
    bool willGetKeypress = false;
 
-   if (isEnabled()) {
-      if (mMessageLines.size() > 0) {
-         if (mSelectableItemExists) {
+   if (isEnabled())
+   {
+      if (mMessageLines.size() > 0)
+      {
+         if (mSelectableItemExists)
+         {
             willGetKeypress = true;
          }
-         else {
+         else
+         {
             willGetKeypress = mWaitForInputIfEmpty;
          }
       }
-      else {
+      else
+      {
          willGetKeypress = mWaitForInputIfEmpty;
       }
    }
@@ -418,28 +483,34 @@ bool cxMenu::modalGetsKeypress() const {
    return(willGetKeypress);
 } // modalGetsKeypress
 
-void cxMenu::scrollItems(int pScrollAmt, bool pRefresh) {
+void cxMenu::scrollItems(int pScrollAmt, bool pRefresh)
+{
    // Don't do anything if pScrollAmt is 0.
-   if (pScrollAmt != 0) {
+   if (pScrollAmt != 0)
+   {
       // If scrolling by pScrollAmt would result in the last item being above
       //  the bottom row inside the window border, then adjust pScrollAmt so
       //  that the last item will appear on the bottom row inside the window
       //  border.
       int bottom = mTopMenuItem + mSubWinHeight + pScrollAmt;
-      if (bottom > (int)mMessageLines.size() - 1) {
+      if (bottom > (int)mMessageLines.size() - 1)
+      {
          pScrollAmt -= (bottom - (int)mMessageLines.size());
       }
 
       // Scroll the subwindow with wscrl, and adjust things if
       //  it succeeds.
-      if (wscrl(mSubWindow, pScrollAmt) != ERR) {
+      if (wscrl(mSubWindow, pScrollAmt) != ERR)
+      {
          // Update mTopMenuItem by pScrollAmt
          mTopMenuItem += pScrollAmt;
          // If mTopMenuItem went out of bounds, adjust it.
-         if (mTopMenuItem < 0) {
+         if (mTopMenuItem < 0)
+         {
             mTopMenuItem = 0;
          }
-         else if (mTopMenuItem >= (int)mMessageLines.size()) {
+         else if (mTopMenuItem >= (int)mMessageLines.size())
+         {
             mTopMenuItem = (int)mMessageLines.size() - 1;
          }
 
@@ -449,59 +520,73 @@ void cxMenu::scrollItems(int pScrollAmt, bool pRefresh) {
          //  current menu item is below the visible
          //  portion of the menu, make the current item
          //  the bottommost visible item.
-         if (mCurrentMenuItem < mTopMenuItem) {
+         if (mCurrentMenuItem < mTopMenuItem)
+         {
             mCurrentMenuItem = mTopMenuItem;
          }
-         else if (mCurrentMenuItem > (mTopMenuItem + (height()-3))) {
+         else if (mCurrentMenuItem > (mTopMenuItem + (height()-3)))
+         {
             mCurrentMenuItem = mTopMenuItem + (height()-3);
          }
       }
    }
 
    // Refresh the window if the user wanted to.
-   if (pRefresh) {
+   if (pRefresh)
+   {
       show(false, false);
    }
 } // scrollItems
 
-void cxMenu::scrollToTop(bool pRefresh) {
+void cxMenu::scrollToTop(bool pRefresh)
+{
    setTopItem(0, pRefresh);
 } // scrollToTop
 
-void cxMenu::scrollToBottom(bool pRefresh) {
-   if (numMenuItems() > 0) {
+void cxMenu::scrollToBottom(bool pRefresh)
+{
+   if (numMenuItems() > 0)
+   {
       setBottomItem(numMenuItems()-1, pRefresh);
    }
 } // scrollToBottom
 
-void cxMenu::setTopItem(unsigned pTopItem, bool pRefresh) {
+void cxMenu::setTopItem(unsigned pTopItem, bool pRefresh)
+{
    // Find the greatest possible top item (the greatest-numbered one that
    //  can be a top item with the menu still full as possible).  For
    //  example, if there are 10 menu items and the subwindow is 8 lines
    //  high, the greatest possible top item number is item number 2
    //  (0-based).
    unsigned greatestPossibleTopItem = 0;
-   if (mMessageLines.size() > (unsigned)mSubWinHeight) {
+   if (mMessageLines.size() > (unsigned)mSubWinHeight)
+   {
       greatestPossibleTopItem = mMessageLines.size() - (unsigned)mSubWinHeight;
-      if (pTopItem > greatestPossibleTopItem) {
+      if (pTopItem > greatestPossibleTopItem)
+      {
          pTopItem = greatestPossibleTopItem;
       }
    }
 
-   if ((pTopItem >= 0) && (pTopItem < mMessageLines.size())) {
-      if (mTopMenuItem != (int)pTopItem) {
+   if ((pTopItem >= 0) && (pTopItem < mMessageLines.size()))
+   {
+      if (mTopMenuItem != (int)pTopItem)
+      {
          mTopMenuItem = (int)pTopItem;
 
          // If mCurrentMenuItem went out of bounds, adjust it.
-         if (mCurrentMenuItem < mTopMenuItem) {
+         if (mCurrentMenuItem < mTopMenuItem)
+         {
             mCurrentMenuItem = mTopMenuItem;
          }
-         else if (mCurrentMenuItem >= mTopMenuItem + mSubWinHeight) {
+         else if (mCurrentMenuItem >= mTopMenuItem + mSubWinHeight)
+         {
             mCurrentMenuItem = mTopMenuItem + mSubWinHeight - 1;
          }
       }
 
-      if (pRefresh) {
+      if (pRefresh)
+      {
          // Update the menu item text in the subwindow and
          //  refresh it.
          drawMessage();
@@ -510,37 +595,46 @@ void cxMenu::setTopItem(unsigned pTopItem, bool pRefresh) {
    }
 } // setTopItem
 
-void cxMenu::setTopItem(const string& pItemText, bool pRefresh) {
+void cxMenu::setTopItem(const string& pItemText, bool pRefresh)
+{
    messageLineContainer::iterator iter = mMessageLines.begin();
    unsigned index = 0;
-   for (; iter != mMessageLines.end(); ++iter) {
-      if (stringWithoutHotkeyChars(*iter) == pItemText) {
+   for (; iter != mMessageLines.end(); ++iter)
+   {
+      if (stringWithoutHotkeyChars(*iter) == pItemText)
+      {
          setTopItem(index, pRefresh);
          break;
       }
-      else {
+      else
+      {
          ++index;
       }
    }
 } // setTopItem
 
-void cxMenu::setBottomItem(unsigned pItemIndex, bool pRefresh) {
-   if ((pItemIndex >= 0) && (pItemIndex < mMessageLines.size())) {
+void cxMenu::setBottomItem(unsigned pItemIndex, bool pRefresh)
+{
+   if ((pItemIndex >= 0) && (pItemIndex < mMessageLines.size()))
+   {
       // Calculate what the top item would be and set it, if
       //  pItemIndex is below the bottommost item in the menu.
       //  Otherwise, calculate the distance from pItemIndex to the item
       //  currently at the bottom of the menu and scroll by that amount.
-      if ((int)pItemIndex > (mTopMenuItem + mSubWinHeight - 1)) {
+      if ((int)pItemIndex > (mTopMenuItem + mSubWinHeight - 1))
+      {
          setTopItem(pItemIndex - (unsigned)mSubWinHeight + 1, pRefresh);
       }
-      else {
+      else
+      {
          int dist = (int)pItemIndex - (mTopMenuItem + mSubWinHeight - 1);
          scrollItems(dist, pRefresh);
       }
    }
 } // setBottomItem
 
-bool cxMenu::move(int pNewRow, int pNewCol, bool pRefresh) {
+bool cxMenu::move(int pNewRow, int pNewCol, bool pRefresh)
+{
    // When we move the menu window, we should be able to move the subwindow
    //  by calling mvwin, as in the code below, but this seems to cause
    //  the menu to have refresh issues on some platforms.
@@ -569,9 +663,11 @@ bool cxMenu::move(int pNewRow, int pNewCol, bool pRefresh) {
    bool moved = cxWindow::move(pNewRow, pNewCol, pRefresh);
    reCreateSubWindow();
 
-   if (moved) {
+   if (moved)
+   {
       // Refresh the window if pRefresh is true.
-      if (pRefresh) {
+      if (pRefresh)
+      {
          show(false, false);
       }
    }
@@ -579,36 +675,46 @@ bool cxMenu::move(int pNewRow, int pNewCol, bool pRefresh) {
    return(moved);
 } // move
 
-unsigned cxMenu::numMenuItems() const {
+unsigned cxMenu::numMenuItems() const
+{
    return(mMessageLines.size());
 }
 
 // Resizes the menu.
-void cxMenu::resize(int pNewHeight, int pNewWidth, bool pRefresh) {
+void cxMenu::resize(int pNewHeight, int pNewWidth, bool pRefresh)
+{
    if (((pNewHeight != height()) || (pNewWidth != width())) &&
-       (pNewHeight > 0) && (pNewWidth > 0)) {
+       (pNewHeight > 0) && (pNewWidth > 0))
+       {
       const int maxHeight = cxBase::height() - top();
       const int maxWidth = cxBase::width() - left();
-      if ((pNewHeight <= maxHeight) && (pNewWidth <= maxWidth)) {
+      if ((pNewHeight <= maxHeight) && (pNewWidth <= maxWidth))
+      {
          int leftSide = left();
          int topSide = top();
 
          // No borders: If the new height and the new width are < 1, this is
          //  probably unacceptable..  With borders, the height & width should
          //  be at least 3.
-         if (getBorderStyle() == eBS_NOBORDER) {
-            if (pNewHeight < 1) {
+         if (getBorderStyle() == eBS_NOBORDER)
+         {
+            if (pNewHeight < 1)
+            {
                pNewHeight = 1;
             }
-            if (pNewWidth < 1) {
+            if (pNewWidth < 1)
+            {
                pNewWidth = 1;
             }
          }
-         else {
-            if (pNewHeight < 3) {
+         else
+         {
+            if (pNewHeight < 3)
+            {
                pNewHeight = 3;
             }
-            if (pNewWidth < 3) {
+            if (pNewWidth < 3)
+            {
                pNewWidth = 3;
             }
          }
@@ -618,45 +724,55 @@ void cxMenu::resize(int pNewHeight, int pNewWidth, bool pRefresh) {
          //  or pNewWidth.
          int longestMenuItem = 0;
          messageLineContainer::iterator iter = mMessageLines.begin();
-         for (; iter != mMessageLines.end(); ++iter) {
-            if ((int)(iter->length()) > longestMenuItem) {
+         for (; iter != mMessageLines.end(); ++iter)
+         {
+            if ((int)(iter->length()) > longestMenuItem)
+            {
                longestMenuItem = (int)(iter->length());
             }
          }
-         if (longestMenuItem > pNewWidth) {
+         if (longestMenuItem > pNewWidth)
+         {
             pNewWidth = longestMenuItem;
          }
          // Change the width if it's smaller than the main title or status
          //  text.
          int titleLen = (int)(getTitle().length());
          int statusLen = (int)(getStatus().length());
-         if ((pNewWidth < titleLen) || (pNewWidth < statusLen)) {
-            if (titleLen > statusLen) {
+         if ((pNewWidth < titleLen) || (pNewWidth < statusLen))
+         {
+            if (titleLen > statusLen)
+            {
                pNewWidth = titleLen;
             }
-            else {
+            else
+            {
                pNewWidth = statusLen;
             }
          }
          // Make sure it's not too wide.
-         if (pNewWidth > maxWidth) {
+         if (pNewWidth > maxWidth)
+         {
             pNewWidth = maxWidth;
          }
 
          // Make sure it's not too tall.
-         if (pNewHeight > maxHeight) {
+         if (pNewHeight > maxHeight)
+         {
             pNewHeight = maxHeight;
          }
 
          // If we have something realistic to display..
-         if ((pNewWidth >= 1) && (pNewHeight >= 1)) {
+         if ((pNewWidth >= 1) && (pNewHeight >= 1))
+         {
             // Free the subwindow and main window.  Note: An ncurses subwindow
             //  must be deleted before the main window is deleted.
             freeSubWindow();
             freeWindow();
             // Re-create mWindow
             mWindow = newwin(pNewHeight, pNewWidth, topSide, leftSide);
-            if (mWindow != nullptr) {
+            if (mWindow != nullptr)
+            {
                keypad(mWindow, TRUE);
                // Re-create the subwindow
                reCreateSubWindow();
@@ -665,21 +781,25 @@ void cxMenu::resize(int pNewHeight, int pNewWidth, bool pRefresh) {
                // Make sure the menu items fit inside the window.
                fitItemsToWidth();
             }
-            else {
+            else
+            {
                // Uh oh, mWindow is nullptr..
                throw(cxWidgetsException("Couldn't re-create the curses window (cxMenu::resize()).  Height: " + toString(pNewHeight) + ", width: " + toString(pNewWidth) + ", row: " + toString(topSide) + ", col: " + toString(leftSide)));
             }
          }
 
-         if (pRefresh) {
+         if (pRefresh)
+         {
             show(false, false);
          }
       }
    }
 } // resize
 
-void cxMenu::drawMessage() {
-   if (mSubWindow != nullptr) {
+void cxMenu::drawMessage()
+{
+   if (mSubWindow != nullptr)
+   {
       // Enable the message attributes
       enableAttrs(mSubWindow, eMESSAGE);
       wcolor_set(mSubWindow, mMessageColorPair, nullptr);
@@ -687,14 +807,17 @@ void cxMenu::drawMessage() {
       int currentSubWinRow = 0;
       int minHeight = 0;
       // If there is a border, the minimum height is 2.
-      if (getBorderStyle() != eBS_NOBORDER) {
+      if (getBorderStyle() != eBS_NOBORDER)
+      {
          minHeight = 2;
       }
-      if ((mMessageLines.size() > 0) && (height() > minHeight)) {
+      if ((mMessageLines.size() > 0) && (height() > minHeight))
+      {
          // bottomMenuItem is the index of the bottommost menu
          //  item to be displayed.
          int bottomMenuItem = getBottomItemIndex();
-         for (int i = mTopMenuItem; i <= bottomMenuItem; ++i) {
+         for (int i = mTopMenuItem; i <= bottomMenuItem; ++i)
+         {
             drawMenuItem(i, currentSubWinRow, false);
 
             ++currentSubWinRow;
@@ -705,7 +828,8 @@ void cxMenu::drawMessage() {
       //  that may have been output previously).
       int rowLimit = mSubWinHeight;
       scrollok(mSubWindow, false);
-      for ( ; currentSubWinRow < rowLimit; ++currentSubWinRow) {
+      for ( ; currentSubWinRow < rowLimit; ++currentSubWinRow)
+      {
          // Output spaces to fill the current row in the subwindow
          std::ostringstream os;
          os << "%-" << mSubWinWidth << "s";
@@ -719,73 +843,91 @@ void cxMenu::drawMessage() {
    }
 } // drawMessage
 
-long cxMenu::show(bool pBringToTop, bool pShowSubwindows) {
+long cxMenu::show(bool pBringToTop, bool pShowSubwindows)
+{
    long returnCode = cxFIRST_AVAIL_RETURN_CODE;
 
    // Only do this if the menu window is enabled.
-   if (isEnabled()) {
+   if (isEnabled())
+   {
       returnCode = cxWindow::show(pBringToTop, pShowSubwindows);
       // Refresh the subwindow
       wrefresh(mSubWindow);
       update_panels();
    }
-   else {
+   else
+   {
       hide(false);
    }
 
    return(returnCode);
 } // show
 
-void cxMenu::erase(bool pEraseSubwindows) {
+void cxMenu::erase(bool pEraseSubwindows)
+{
    cxWindow::erase(pEraseSubwindows);
-   if (pEraseSubwindows && mSubWindow != nullptr) {
+   if (pEraseSubwindows && mSubWindow != nullptr)
+   {
       werase(mSubWindow);
       wrefresh(mSubWindow);
    }
 } // erase
 
-int cxMenu::getSubWinWidth() const {
+int cxMenu::getSubWinWidth() const
+{
    return (mSubWinWidth);
 } // getSubwinWidth
 
-int cxMenu::getSubWinHeight() const {
+int cxMenu::getSubWinHeight() const
+{
    return (mSubWinHeight);
 } // getSubwinHeight
 
-long cxMenu::getReturnCode() const {
+long cxMenu::getReturnCode() const
+{
    return(cxWindow::getReturnCode());
 } // getReturnCode
 
-long cxMenu::getReturnCode(unsigned pIndex) const {
-   if ((pIndex >= 0) && (pIndex < mReturnCodes.size())) {
+long cxMenu::getReturnCode(unsigned pIndex) const
+{
+   if ((pIndex >= 0) && (pIndex < mReturnCodes.size()))
+   {
       return(mReturnCodes[pIndex]);
    }
-   else {
+   else
+   {
       return(-1);
    }
 } // getReturnCode
 
-long cxMenu::getReturnCode(const string& pItemText, bool pUseDisplayText) const {
+long cxMenu::getReturnCode(const string& pItemText, bool pUseDisplayText) const
+{
    int returnCode = -1;
 
    // If pUseDisplayText is true, then look at the display text for each item.
    //  Otherwise, look at the alternate item text for each item.
-   if (pUseDisplayText) {
+   if (pUseDisplayText)
+   {
       unsigned numItems = mMessageLines.size();
-      for (unsigned i = 0; i < numItems; ++i) {
+      for (unsigned i = 0; i < numItems; ++i)
+      {
          // Check the item text verbatim and the item text without the hotkey
          //  characters
          if ((mMessageLines[i] == pItemText) ||
-             (stringWithoutHotkeyChars(mMessageLines[i]) == pItemText)) {
+             (stringWithoutHotkeyChars(mMessageLines[i]) == pItemText))
+             {
             returnCode = mReturnCodes[i];
             break;
          }
       }
    }
-   else {
+   else
+   {
       unsigned numItems = mAltItemText.size();
-      for (unsigned i = 0; i < numItems; ++i) {
-         if (mAltItemText[i] == pItemText) {
+      for (unsigned i = 0; i < numItems; ++i)
+      {
+         if (mAltItemText[i] == pItemText)
+         {
             returnCode = mReturnCodes[i];
             break;
          }
@@ -795,20 +937,26 @@ long cxMenu::getReturnCode(const string& pItemText, bool pUseDisplayText) const 
    return(returnCode);
 } // getReturnCode
 
-long cxMenu::getCurrentItemReturnCode() const {
+long cxMenu::getCurrentItemReturnCode() const
+{
    return(getReturnCode(getCurrentMenuItem()));
 } // getCurrentItemReturnCode
 
-string cxMenu::getItemText(int pIndex, bool pGetDisplayText) const {
+string cxMenu::getItemText(int pIndex, bool pGetDisplayText) const
+{
    string itemText;
 
-   if (pGetDisplayText) {
-      if ((pIndex >= 0) && (pIndex < (int)(mMessageLines.size()))) {
+   if (pGetDisplayText)
+   {
+      if ((pIndex >= 0) && (pIndex < (int)(mMessageLines.size())))
+      {
          itemText = mMessageLines[pIndex];
       }
    }
-   else {
-      if ((pIndex >= 0) && (pIndex < (int)(mAltItemText.size()))) {
+   else
+   {
+      if ((pIndex >= 0) && (pIndex < (int)(mAltItemText.size())))
+      {
          itemText = mAltItemText[pIndex];
       }
    }
@@ -816,20 +964,23 @@ string cxMenu::getItemText(int pIndex, bool pGetDisplayText) const {
    return(itemText);
 } // getItemText()
 
-string cxMenu::getCurrentItemText(bool pGetDisplayText) const {
+string cxMenu::getCurrentItemText(bool pGetDisplayText) const
+{
    string itemText;
 
    // 1) Get the current menu item index
    // 2) Get the text associated with that index
    int itemIndex = getCurrentMenuItem();
-   if ((itemIndex >= 0) && (itemIndex < (int)numMenuItems())) {
+   if ((itemIndex >= 0) && (itemIndex < (int)numMenuItems()))
+   {
       itemText = getItemText(itemIndex, pGetDisplayText);
    }
 
    return(itemText);
 } // getCurrentItemText
 
-void cxMenu::drawBorder() {
+void cxMenu::drawBorder()
+{
    cxWindow::drawBorder();
 
    // On the right border, display up & down arrows directly under the top
@@ -837,10 +988,12 @@ void cxMenu::drawBorder() {
    //  is allowed.
    // Make sure the window has a border and there is enough space to draw the
    //  arrows.
-   if (hasBorder() && (height() > 4)) {
+   if (hasBorder() && (height() > 4))
+   {
       // Enable the border attributes
       enableAttrs(mWindow, eBORDER);
-      if (useColors) {
+      if (useColors)
+      {
          wcolor_set(mWindow, mBorderColorPair, nullptr);
       }
 
@@ -849,18 +1002,23 @@ void cxMenu::drawBorder() {
 
       // Disable the border attributes
       disableAttrs(mWindow, eBORDER);
-      if (useColors) {
+      if (useColors)
+      {
          wcolor_set(mWindow, 0, nullptr);
       }
    }
 } // drawBorder
 
-void cxMenu::toggleSelectability(unsigned pIndex, bool pSelectable) {
-   if ((pIndex >= 0) && (pIndex < mMessageLines.size())) {
-      if (pSelectable) {
+void cxMenu::toggleSelectability(unsigned pIndex, bool pSelectable)
+{
+   if ((pIndex >= 0) && (pIndex < mMessageLines.size()))
+   {
+      if (pSelectable)
+      {
          mUnselectableItems.erase(pIndex);
       }
-      else {
+      else
+      {
          mUnselectableItems.insert(pIndex);
       }
 
@@ -869,100 +1027,124 @@ void cxMenu::toggleSelectability(unsigned pIndex, bool pSelectable) {
    }
 } // toggleSelectability
 
-void cxMenu::toggleSelectability(const string& pItemText, bool pSelectable) {
+void cxMenu::toggleSelectability(const string& pItemText, bool pSelectable)
+{
    unsigned numItems = mMessageLines.size();
-   for (unsigned index = 0; index < numItems; ++index) {
-      if (mMessageLines[index] == pItemText) {
+   for (unsigned index = 0; index < numItems; ++index)
+   {
+      if (mMessageLines[index] == pItemText)
+      {
          toggleSelectability(index, pSelectable);
          break;
       }
    }
 } // toggleSelectability
 
-void cxMenu::setClearOnSearch(bool pClearOnSearch) {
+void cxMenu::setClearOnSearch(bool pClearOnSearch)
+{
    mClearOnSearch = pClearOnSearch;
 } // setClearOnSearch
 
-void cxMenu::setCaseSensitiveSearch(bool pCaseSensitiveSearch) {
+void cxMenu::setCaseSensitiveSearch(bool pCaseSensitiveSearch)
+{
    mCaseSensitiveSearch = pCaseSensitiveSearch;
 } // setCaseSensitiveSearch
 
-void cxMenu::setSearchKey(int pSearchKey) {
+void cxMenu::setSearchKey(int pSearchKey)
+{
    mSearchKey = pSearchKey;
 } // setSearchKey
 
-void cxMenu::setAltPgUpKey(int pPgUpKey) {
+void cxMenu::setAltPgUpKey(int pPgUpKey)
+{
    mAltPgUpKey = pPgUpKey;
 } // setAltPgUpkey
 
-int cxMenu::getAltPgUpKey() const {
+int cxMenu::getAltPgUpKey() const
+{
    return(mAltPgUpKey);
 } // getAltPgUpKey
 
-void cxMenu::setAltPgDownKey(int pPgDownKey) {
+void cxMenu::setAltPgDownKey(int pPgDownKey)
+{
    mAltPgDownKey = pPgDownKey;
 } // setAltPgDownKey
 
-int cxMenu::getAltPgDownKey() const {
+int cxMenu::getAltPgDownKey() const
+{
    return(mAltPgDownKey);
 } // getAltPgDownKey
 
-void cxMenu::setStatus(const string& pStatus, bool pRefreshStatus) {
+void cxMenu::setStatus(const string& pStatus, bool pRefreshStatus)
+{
    cxWindow::setStatus(pStatus, pRefreshStatus);
    mCustomStatus = true;
 } // setStatus
 
-void cxMenu::disableCustomStatus(bool pRefreshStatus) {
+void cxMenu::disableCustomStatus(bool pRefreshStatus)
+{
    cxWindow::setStatus("", pRefreshStatus);
    mCustomStatus = false;
    useHelpAsStatus(pRefreshStatus);
 } // disableCustomStatus
 
-cxMenu& cxMenu::operator =(const cxMenu& pThatMenu) {
+cxMenu& cxMenu::operator =(const cxMenu& pThatMenu)
+{
    // Only try to copy pThatMenu if it's a different
    //  instance.
-   if (&pThatMenu != this) {
+   if (&pThatMenu != this)
+   {
       copyCxMenuStuff(&pThatMenu);
    }
 
    return(*this);
 } // operator =
 
-void cxMenu::refreshMenuItems() {
+void cxMenu::refreshMenuItems()
+{
    drawMessage();
    wrefresh(mSubWindow);
 } // refreshMenuItems
 
 bool cxMenu::setItemTextByReturnCode(long pReturnCode, const string& pItemText,
-      bool pSetAll, bool pRefresh) {
+      bool pSetAll, bool pRefresh)
+      {
    bool foundIt = false; // Whether or not the return code was found
 
    // Look for indexes in mReturnCodes with a matching return code
    unsigned numItems = mMessageLines.size();
    unsigned i = 0;
-   for (; i < numItems; ++i) {
-      if (mReturnCodes[i] == pReturnCode) {
+   for (; i < numItems; ++i)
+   {
+      if (mReturnCodes[i] == pReturnCode)
+      {
          foundIt = true; // We found it!
          // If pItemText is longer than the width of the subwindow, then
          //  truncate it before adding it to mMessageLines.
-         if (pItemText.length() > (unsigned)mSubWinWidth) {
+         if (pItemText.length() > (unsigned)mSubWinWidth)
+         {
             mMessageLines[i] = pItemText.substr(0, (unsigned)mSubWinWidth-1);
          }
-         else {
+         else
+         {
             mMessageLines[i] = pItemText; // Set the item text
          }
 
-         if (pRefresh) {
+         if (pRefresh)
+         {
             // If the item is currently in the window, refresh it.
             if ((i >= (unsigned)mTopMenuItem) &&
-                (i < ((unsigned)mTopMenuItem+(unsigned)mSubWinHeight))) {
+                (i < ((unsigned)mTopMenuItem+(unsigned)mSubWinHeight)))
+                {
                int subwinRow = (int)i - mTopMenuItem;
                // If pIndex is the current menu item and this menu is modal,
                //  highlight it when it's refreshed.
-               if ((i == (unsigned)mCurrentMenuItem) && (isModal())) {
+               if ((i == (unsigned)mCurrentMenuItem) && (isModal()))
+               {
                   drawMenuItem((int)i, subwinRow, true, true);
                }
-               else {
+               else
+               {
                   drawMenuItem((int)i, subwinRow, true, false);
                }
             }
@@ -970,7 +1152,8 @@ bool cxMenu::setItemTextByReturnCode(long pReturnCode, const string& pItemText,
 
          // If we aren't to set all items with the matching return code,
          //  then quit out of the loop.
-         if (!pSetAll) {
+         if (!pSetAll)
+         {
             break;
          }
       }
@@ -980,31 +1163,39 @@ bool cxMenu::setItemTextByReturnCode(long pReturnCode, const string& pItemText,
 } // setItemTextByReturnCode
 
 bool cxMenu::setItemTextByIndex(int pIndex, const string& pItemText,
-      bool pRefresh) {
+      bool pRefresh)
+      {
    bool retval = false;
 
-   if ((pIndex >= 0) && (pIndex < (int)mMessageLines.size())) {
+   if ((pIndex >= 0) && (pIndex < (int)mMessageLines.size()))
+   {
       retval = true;
 
       // If pItemText is longer than the width of the subwindow, then
       //  truncate it before adding it to mMessageLines.
-      if (pItemText.length() > (unsigned)mSubWinWidth) {
+      if (pItemText.length() > (unsigned)mSubWinWidth)
+      {
          mMessageLines[pIndex] = pItemText.substr(0, (unsigned)mSubWinWidth-1);
       }
-      else {
+      else
+      {
          mMessageLines[pIndex] = pItemText; // Set the item text
       }
 
-      if (pRefresh) {
+      if (pRefresh)
+      {
          // If the item is currently in the window, refresh it.
-         if ((pIndex >= mTopMenuItem) && (pIndex < (mTopMenuItem+mSubWinHeight))) {
+         if ((pIndex >= mTopMenuItem) && (pIndex < (mTopMenuItem+mSubWinHeight)))
+         {
             int subwinRow = pIndex - mTopMenuItem;
             // If pIndex is the current menu item, highlight it
             //  when it's refreshed.
-            if (pIndex == mCurrentMenuItem) {
+            if (pIndex == mCurrentMenuItem)
+            {
                drawMenuItem(pIndex, subwinRow, true, true);
             }
-            else {
+            else
+            {
                drawMenuItem(pIndex, subwinRow, true, false);
             }
          }
@@ -1014,34 +1205,43 @@ bool cxMenu::setItemTextByIndex(int pIndex, const string& pItemText,
    return(retval);
 } // setItemTextByIndex
 
-void cxMenu::setBorderStyle(eBorderStyle pBorderStyle) {
-   if (getBorderStyle() != pBorderStyle) {
+void cxMenu::setBorderStyle(eBorderStyle pBorderStyle)
+{
+   if (getBorderStyle() != pBorderStyle)
+   {
       cxWindow::setBorderStyle(pBorderStyle);
       freeSubWindow();
       reCreateSubWindow();
    }
 } // setBorderStyle
 
-bool cxMenu::itemExists(const string& pItemText, bool pUseDisplayText) const {
+bool cxMenu::itemExists(const string& pItemText, bool pUseDisplayText) const
+{
    bool exists = false;
 
-   if (pUseDisplayText) {
+   if (pUseDisplayText)
+   {
       messageLineContainer::const_iterator iter = mMessageLines.begin();
-      for (; iter != mMessageLines.end(); ++iter) {
+      for (; iter != mMessageLines.end(); ++iter)
+      {
          // Check the item text verbatim and the item text without the hotkey
          //  characters
          if ((*iter == pItemText) ||
-             (stringWithoutHotkeyChars(*iter) == pItemText)) {
+             (stringWithoutHotkeyChars(*iter) == pItemText))
+             {
             exists = true;
             break;
          }
       }
    }
-   else {
+   else
+   {
       // pUseDisplayText is false - Check using the alternate item texts.
       vector<string>::const_iterator iter = mAltItemText.begin();
-      for (; iter != mAltItemText.end(); ++iter) {
-         if (*iter == pItemText) {
+      for (; iter != mAltItemText.end(); ++iter)
+      {
+         if (*iter == pItemText)
+         {
             exists = true;
             break;
          }
@@ -1051,29 +1251,36 @@ bool cxMenu::itemExists(const string& pItemText, bool pUseDisplayText) const {
    return(exists);
 } // itemExists
 
-void cxMenu::setAllowQuit(bool pAllowQuit) {
+void cxMenu::setAllowQuit(bool pAllowQuit)
+{
    mAllowQuit = pAllowQuit;
 } // setAllowQuit
 
-bool cxMenu::getAllowQuit() const {
+bool cxMenu::getAllowQuit() const
+{
    return(mAllowQuit);
 } // getAllowQuit
 
-void cxMenu::setAllowExit(bool pAllowExit) {
+void cxMenu::setAllowExit(bool pAllowExit)
+{
    mAllowExit = pAllowExit;
 } // setAllowExit
 
-bool cxMenu::getAllowExit() const {
+bool cxMenu::getAllowExit() const
+{
    return(mAllowExit);
 } // getAllowExit
 
-int cxMenu::getIndexByReturnCode(long pReturnCode) const {
+int cxMenu::getIndexByReturnCode(long pReturnCode) const
+{
    int index = -1;
 
    int i = 0;
    vector<long>::const_iterator iter = mReturnCodes.begin();
-   for (; iter != mReturnCodes.end(); ++iter) {
-      if ((*iter) == pReturnCode) {
+   for (; iter != mReturnCodes.end(); ++iter)
+   {
+      if ((*iter) == pReturnCode)
+      {
          index = i;
          break;
       }
@@ -1084,30 +1291,36 @@ int cxMenu::getIndexByReturnCode(long pReturnCode) const {
    return(index);
 } // getIndexByReturnCode
 
-string cxMenu::getItemTextByReturnCode(long pReturnCode, bool pGetDisplayText) {
+string cxMenu::getItemTextByReturnCode(long pReturnCode, bool pGetDisplayText)
+{
    string itemText;
 
    // Get the item's index, and if the index is valid, get the item text.
    int itemIndex = getIndexByReturnCode(pReturnCode);
-   if (itemIndex != -1) {
+   if (itemIndex != -1)
+   {
       itemText = getItemText(itemIndex, pGetDisplayText);
    }
 
    return(itemText);
 } // getItemTextByReturnCode
 
-void cxMenu::setLoopStartFunction(const shared_ptr<cxFunction>& pFuncPtr) {
+void cxMenu::setLoopStartFunction(const shared_ptr<cxFunction>& pFuncPtr)
+{
    mLoopStartFunction= pFuncPtr;
 } // setLoopStartFunction
 
-void cxMenu::setLoopEndFunction(const shared_ptr<cxFunction>& pFuncPtr) {
+void cxMenu::setLoopEndFunction(const shared_ptr<cxFunction>& pFuncPtr)
+{
    mLoopEndFunction = pFuncPtr;
 } // setLoopEndFunction
 
-bool cxMenu::runLoopStartFunction() {
+bool cxMenu::runLoopStartFunction()
+{
    bool exitAfterRun = false;
 
-   if (mLoopStartFunction != nullptr && mLoopStartFunction->functionIsSet()) {
+   if (mLoopStartFunction != nullptr && mLoopStartFunction->functionIsSet())
+   {
       exitAfterRun = mLoopStartFunction->getExitAfterRun();
       mLoopStartFunction->runFunction();
    }
@@ -1115,10 +1328,12 @@ bool cxMenu::runLoopStartFunction() {
    return(exitAfterRun);
 } // runLoopStartFunction
 
-bool cxMenu::runLoopEndFunction() {
+bool cxMenu::runLoopEndFunction()
+{
    bool exitAfterRun = false;
 
-   if (mLoopEndFunction != nullptr && mLoopEndFunction->functionIsSet()) {
+   if (mLoopEndFunction != nullptr && mLoopEndFunction->functionIsSet())
+   {
       exitAfterRun = mLoopEndFunction->getExitAfterRun();
       mLoopEndFunction->runFunction();
    }
@@ -1126,24 +1341,29 @@ bool cxMenu::runLoopEndFunction() {
    return(exitAfterRun);
 } // runLoopEndFunction
 
-cxMenuItemType cxMenu::getItemType(unsigned pIndex) const {
+cxMenuItemType cxMenu::getItemType(unsigned pIndex) const
+{
    cxMenuItemType itemType = (cxMenuItemType)(-1);
 
-   if ((pIndex >= 0) && (pIndex < mItemTypes.size())) {
+   if ((pIndex >= 0) && (pIndex < mItemTypes.size()))
+   {
       itemType = mItemTypes[pIndex];
    }
 
    return(itemType);
 } // getItemType
 
-cxMenuItemType cxMenu::getItemType(const string& pItemText) const {
+cxMenuItemType cxMenu::getItemType(const string& pItemText) const
+{
    cxMenuItemType itemType = (cxMenuItemType)(-1);
 
    // Look through mMessageLines for the item text, and if it is found,
    //  get the type of the item.
    unsigned numItems = numMenuItems();
-   for (unsigned i = 0; i < numItems; ++i) {
-      if (mMessageLines[i] == pItemText) {
+   for (unsigned i = 0; i < numItems; ++i)
+   {
+      if (mMessageLines[i] == pItemText)
+      {
          itemType = getItemType(i);
          break;
       }
@@ -1152,78 +1372,97 @@ cxMenuItemType cxMenu::getItemType(const string& pItemText) const {
    return(itemType);
 } // getItemType
 
-void cxMenu::setWrapping(bool pWrap) {
+void cxMenu::setWrapping(bool pWrap)
+{
    mWrap = pWrap;
 } // setWrapping
 
-bool cxMenu::getWrapping() const {
+bool cxMenu::getWrapping() const
+{
    return(mWrap);
 } // getWrapping
 
-void cxMenu::setWaitForInputIfEmpty(bool pWaitForInputIfEmpty) {
+void cxMenu::setWaitForInputIfEmpty(bool pWaitForInputIfEmpty)
+{
    mWaitForInputIfEmpty = pWaitForInputIfEmpty;
 } // setWaitForInputIfEmpty
 
-bool cxMenu::getWaitForInputIfEmpty() const {
+bool cxMenu::getWaitForInputIfEmpty() const
+{
    return(mWaitForInputIfEmpty);
 } // getWaitForInputIfEmpty
 
-int cxMenu::getCurrentMenuItem() const {
+int cxMenu::getCurrentMenuItem() const
+{
    return(mCurrentMenuItem);
 } // getCurrentMenuItem
 
-void cxMenu::setCurrentMenuItem(int pItemIndex, bool pRefresh) {
+void cxMenu::setCurrentMenuItem(int pItemIndex, bool pRefresh)
+{
    // Only do this if pItemIndex is within bounds
-   if ((pItemIndex >= 0) && (pItemIndex < (int)(mMessageLines.size()))) {
+   if ((pItemIndex >= 0) && (pItemIndex < (int)(mMessageLines.size())))
+   {
       mCurrentMenuItem = pItemIndex;
       // If the current menu item is off the menu, then set it as the top
       //  menu item.
-      if (mCurrentMenuItem < mTopMenuItem) {
+      if (mCurrentMenuItem < mTopMenuItem)
+      {
          setTopItem((unsigned)mCurrentMenuItem, false);
       }
 
-      if (pRefresh) {
+      if (pRefresh)
+      {
          cxMenu::show(false, false);
       }
    }
 } // setCurrentMenuItem
 
-void cxMenu::setExitWhenLeaveFirst(bool pExitWhenLeaveFirst) {
+void cxMenu::setExitWhenLeaveFirst(bool pExitWhenLeaveFirst)
+{
    mExitWhenLeaveFirst = pExitWhenLeaveFirst;
 } // setExitWhenLeaveFirst
 
-bool cxMenu::getExitWhenLeaveFirst() const {
+bool cxMenu::getExitWhenLeaveFirst() const
+{
    return(mExitWhenLeaveFirst);
 } // getExitWhenLeaveFirst
 
-void cxMenu::setExitWhenLeaveLast(bool pExitWhenLeaveLast) {
+void cxMenu::setExitWhenLeaveLast(bool pExitWhenLeaveLast)
+{
    mExitWhenLeaveLast = pExitWhenLeaveLast;
 } // setExitWhenLeaveLast
 
-bool cxMenu::getExitWhenLeaveLast() const {
+bool cxMenu::getExitWhenLeaveLast() const
+{
    return(mExitWhenLeaveLast);
 } // getExitWhenLeaveLast
 
-void cxMenu::setRefreshItemsWhenModal(bool pRefreshItemsWhenModal) {
+void cxMenu::setRefreshItemsWhenModal(bool pRefreshItemsWhenModal)
+{
    mRefreshItemsWhenModal = pRefreshItemsWhenModal;
 } // setRefreshItemsWhenmodal
 
-bool cxMenu::getRefreshItemsWhenModal() const {
+bool cxMenu::getRefreshItemsWhenModal() const
+{
    return(mRefreshItemsWhenModal);
 } // getRefreshItemsWhenModal
 
-void cxMenu::addAttr(e_WidgetItems pItem, attr_t pAttr) {
+void cxMenu::addAttr(e_WidgetItems pItem, attr_t pAttr)
+{
    // If pItem is not one of the ones this class handles, just have
    //  the parent class (cxWindow) handle it.
-   if (pItem != eMENU_SELECTION) {
+   if (pItem != eMENU_SELECTION)
+   {
       cxWindow::addAttr(pItem, pAttr);
       cxWindow::addAttr(pItem, pAttr);
    }
-   else {
+   else
+   {
       // attrSet is a pointer that will be set to point to the correct attribute
       //  set, depending on the value of pItem.
       set<attr_t>* attrSet = nullptr;
-      switch(pItem) {
+      switch(pItem)
+      {
          case eMENU_SELECTION: // Menu selection
             attrSet = &mMenuSelectionAttrs;
             break;
@@ -1241,24 +1480,29 @@ void cxMenu::addAttr(e_WidgetItems pItem, attr_t pAttr) {
       }
 
       // Insert the attribute, if attrSet was set.
-      if (nullptr != attrSet) {
+      if (nullptr != attrSet)
+      {
          attrSet->insert(pAttr);
       }
    }
 } // addAttr
 
-void cxMenu::setAttr(e_WidgetItems pItem, attr_t pAttr) {
+void cxMenu::setAttr(e_WidgetItems pItem, attr_t pAttr)
+{
    // If pItem is not one of the ones this class handles, just have
    //  the parent class (cxWindow) handle it.
-   if (pItem != eMENU_SELECTION) {
+   if (pItem != eMENU_SELECTION)
+   {
       cxWindow::setAttr(pItem, pAttr);
       cxWindow::setAttr(pItem, pAttr);
    }
-   else {
+   else
+   {
       // attrSet is a pointer that will be set to point to the correct attribute
       //  set, depending on the value of pItem.
       set<attr_t>* attrSet = nullptr;
-      switch(pItem) {
+      switch(pItem)
+      {
          case eMENU_SELECTION: // Menu selection
             attrSet = &mMenuSelectionAttrs;
             break;
@@ -1276,25 +1520,30 @@ void cxMenu::setAttr(e_WidgetItems pItem, attr_t pAttr) {
       }
 
       // Set the attribute, if attrSet was set.
-      if (nullptr != attrSet) {
+      if (nullptr != attrSet)
+      {
          attrSet->clear();
          attrSet->insert(pAttr);
       }
    }
 } // setAttr
 
-void cxMenu::removeAttr(e_WidgetItems pItem, attr_t pAttr) {
+void cxMenu::removeAttr(e_WidgetItems pItem, attr_t pAttr)
+{
    // If pItem is not one of the ones this class handles, just have
    //  the parent class (cxWindow) handle it.
-   if (pItem != eMENU_SELECTION) {
+   if (pItem != eMENU_SELECTION)
+   {
       cxWindow::removeAttr(pItem, pAttr);
       cxWindow::removeAttr(pItem, pAttr);
    }
-   else {
+   else
+   {
       // attrSet is a pointer that will be set to point to the correct attribute
       //  set, depending on the value of pItem.
       set<attr_t>* attrSet = nullptr;
-      switch(pItem) {
+      switch(pItem)
+      {
          case eMENU_SELECTION: // Menu selection
             attrSet = &mMenuSelectionAttrs;
             break;
@@ -1312,23 +1561,28 @@ void cxMenu::removeAttr(e_WidgetItems pItem, attr_t pAttr) {
       }
 
       // Remove the attribute, if attrSet was set.
-      if (nullptr != attrSet) {
+      if (nullptr != attrSet)
+      {
          attrSet->erase(pAttr);
       }
    }
 } // removeAttr
 
-void cxMenu::removeAttrs(e_WidgetItems pItem) {
+void cxMenu::removeAttrs(e_WidgetItems pItem)
+{
    // If pItem is not one of the ones this class handles, just have
    //  the parent class (cxWindow) handle it.
-   if (pItem != eMENU_SELECTION) {
+   if (pItem != eMENU_SELECTION)
+   {
       cxWindow::removeAttrs(pItem);
    }
-   else {
+   else
+   {
       // attrSet is a pointer that will be set to point to the correct attribute
       //  set, depending on the value of pItem.
       set<attr_t>* attrSet = nullptr;
-      switch(pItem) {
+      switch(pItem)
+      {
          case eMENU_SELECTION: // Menu selection
             attrSet = &mMenuSelectionAttrs;
             break;
@@ -1346,22 +1600,27 @@ void cxMenu::removeAttrs(e_WidgetItems pItem) {
       }
 
       // Remove the attributes, if attrSet was set.
-      if (nullptr != attrSet) {
+      if (nullptr != attrSet)
+      {
          attrSet->clear();
       }
    }
 } // removeAttrs
 
-void cxMenu::getAttrs(e_WidgetItems pItem, set<attr_t>& pAttrs) const {
+void cxMenu::getAttrs(e_WidgetItems pItem, set<attr_t>& pAttrs) const
+{
    pAttrs.clear();
 
    // If pItem is not one of the ones this class handles, just have
    //  the parent class (cxWindow) handle it.
-   if (pItem != eMENU_SELECTION) {
+   if (pItem != eMENU_SELECTION)
+   {
       cxWindow::getAttrs(pItem, pAttrs);
    }
-   else {
-      switch(pItem) {
+   else
+   {
+      switch(pItem)
+      {
          case eMENU_SELECTION: // Menu selection
             pAttrs = mMenuSelectionAttrs;
             break;
@@ -1380,15 +1639,18 @@ void cxMenu::getAttrs(e_WidgetItems pItem, set<attr_t>& pAttrs) const {
    }
 } // getAttrs
 
-void cxMenu::setHotkeyHighlighting(bool pHotkeyHighlighting) {
+void cxMenu::setHotkeyHighlighting(bool pHotkeyHighlighting)
+{
    mHotkeyHighlighting = pHotkeyHighlighting;
 } // setHotkeyHighlighting
 
-string cxMenu::cxTypeStr() const {
+string cxMenu::cxTypeStr() const
+{
    return("cxMenu");
 } // cxKeyStr
 
-void cxMenu::sortByReturnCode(bool pRefresh) {
+void cxMenu::sortByReturnCode(bool pRefresh)
+{
    // This method sorts by removing all items and re-inserting them in the
    //  order of their return codes.
 
@@ -1400,7 +1662,8 @@ void cxMenu::sortByReturnCode(bool pRefresh) {
    vector<cxMenuItemType> itemTypesBackup = mItemTypes;
    map<int, cxMenu*> submenusBackup = mSubMenus;
    set<unsigned> unselectableItemsBackup = mUnselectableItems;
-   try {
+   try
+   {
       // Store the current return code so that the same item can be
       //  highlighted after the menu is sorted.
       long selectedReturnCode = getReturnCode(getCurrentMenuItem());
@@ -1414,18 +1677,21 @@ void cxMenu::sortByReturnCode(bool pRefresh) {
       map<long, string> codesAndHelpStrings;
       map<long, cxMenuItemType> codesAndItemTypes;
       map<long, cxMenu*> codesAndSubMenus;
-      set<long> unselectableCodes; 
+      set<long> unselectableCodes;
       long returnCode = 0;
       int numItems = (int)(numMenuItems());
-      for (int i = 0; i < numItems; ++i) {
+      for (int i = 0; i < numItems; ++i)
+      {
          returnCode = getReturnCode(i);
          codesAndItems[returnCode] = getItemText(i);
          codesAndHelpStrings[returnCode] = mHelpStrings[i];
          codesAndItemTypes[returnCode] = mItemTypes[i];
-         if (mSubMenus.find(i) != mSubMenus.end()) {
+         if (mSubMenus.find(i) != mSubMenus.end())
+         {
             codesAndSubMenus[returnCode] = mSubMenus[i];
          }
-         if (mUnselectableItems.find((unsigned)i) != mUnselectableItems.end()) {
+         if (mUnselectableItems.find((unsigned)i) != mUnselectableItems.end())
+         {
             unselectableCodes.insert(returnCode);
          }
       }
@@ -1433,16 +1699,19 @@ void cxMenu::sortByReturnCode(bool pRefresh) {
       removeAllItems(false, false);
       int lastItemIndex = 0;
       map<long, string>::iterator iter = codesAndItems.begin();
-      for (; iter != codesAndItems.end(); ++iter) {
+      for (; iter != codesAndItems.end(); ++iter)
+      {
          append(iter->second, iter->first, codesAndHelpStrings[iter->first],
                 codesAndItemTypes[iter->first]);
          lastItemIndex = (int)(mMessageLines.size()) - 1;
          // If there is a submenu or unselectability flag for the item, then
          //  add it.
-         if (codesAndSubMenus.find(iter->first) != codesAndSubMenus.end()) {
+         if (codesAndSubMenus.find(iter->first) != codesAndSubMenus.end())
+         {
             mSubMenus[lastItemIndex] = codesAndSubMenus[iter->first];
          }
-         if (unselectableCodes.find(iter->first) != unselectableCodes.end()) {
+         if (unselectableCodes.find(iter->first) != unselectableCodes.end())
+         {
             mUnselectableItems.insert((unsigned)lastItemIndex);
          }
       }
@@ -1452,12 +1721,14 @@ void cxMenu::sortByReturnCode(bool pRefresh) {
       setCurrentMenuItem(index, false);
 
       // If pRefresh is true, then refresh the menu.
-      if (pRefresh) {
+      if (pRefresh)
+      {
          drawMessage();
          wrefresh(mSubWindow);
       }
    }
-   catch (const std::out_of_range& e) {
+   catch (const std::out_of_range& e)
+   {
       // Retore the backups
       mMessageLines = messageLinesBackup;
       mReturnCodes = returnCodesBackup;
@@ -1466,7 +1737,8 @@ void cxMenu::sortByReturnCode(bool pRefresh) {
       mSubMenus = submenusBackup;
       mUnselectableItems = unselectableItemsBackup;
    }
-   catch (...) {
+   catch (...)
+   {
       // Retore the backups
       mMessageLines = messageLinesBackup;
       mReturnCodes = returnCodesBackup;
@@ -1477,12 +1749,15 @@ void cxMenu::sortByReturnCode(bool pRefresh) {
    }
 } // sortByReturnCode
 
-long cxMenu::getHighestReturnCode() const {
+long cxMenu::getHighestReturnCode() const
+{
    long highestReturnCode = 0;
 
    vector<long>::const_iterator iter = mReturnCodes.begin();
-   for (; iter != mReturnCodes.end(); ++iter) {
-      if (*iter > highestReturnCode) {
+   for (; iter != mReturnCodes.end(); ++iter)
+   {
+      if (*iter > highestReturnCode)
+      {
          highestReturnCode = *iter;
       }
    }
@@ -1490,7 +1765,8 @@ long cxMenu::getHighestReturnCode() const {
    return(highestReturnCode);
 } // getHighestReturnCode
 
-bool cxMenu::itemWasSelected() const {
+bool cxMenu::itemWasSelected() const
+{
    bool retval = false;
 
    // If the return code isn't cxID_QUIT or cxID_EXIT, then if an item was
@@ -1498,24 +1774,29 @@ bool cxMenu::itemWasSelected() const {
    //  and the return code should be within mReturnCodes.  If the current
    //  item is a submenu, then use that menu's itemWasSelected().
    long returnCode = getReturnCode();
-   if ((returnCode != cxID_QUIT) && (returnCode != cxID_EXIT)) {
+   if ((returnCode != cxID_QUIT) && (returnCode != cxID_EXIT))
+   {
       int lastKey = getLastKey();
       bool mouseClickedInWindow = false;
-      if (lastKeyWasMouseEvt()) {
+      if (lastKeyWasMouseEvt())
+      {
          mouseClickedInWindow = ((mouseButton1Clicked() ||
                                   mouseButton1DoubleClicked()) &&
                                  mouseEvtWasInWindow());
       }
       if ((lastKey == ENTER) || (lastKey == KEY_ENTER) ||
-          mouseClickedInWindow) {
+          mouseClickedInWindow)
+          {
          // Try to get the menu item index by the return code (this may be more
          //  accurate, since an event function might set the current menu item).
          //  If it is less than 0, then revert to mCurrentMenuItem.
          int menuItem = getIndexByReturnCode(returnCode);
-         if (menuItem < 0) {
+         if (menuItem < 0)
+         {
             menuItem = mCurrentMenuItem;
          }
-         if (menuItem >= 0) {
+         if (menuItem >= 0)
+         {
             // Since we were able to get a menu item from the return code,
             //  then retval should be true, because the return code exists
             //  in mReturnCodes.
@@ -1523,11 +1804,13 @@ bool cxMenu::itemWasSelected() const {
             // If the currently-selected item has a submenu, then use that
             //  menu's itemWasSelected().
             if ((mItemTypes[menuItem] == cxITEM_SUBMENU) ||
-                (mItemTypes[menuItem] == cxITEM_POPUPMENU)) {
+                (mItemTypes[menuItem] == cxITEM_POPUPMENU))
+                {
                // Since the item is a submenu, mSubMenus should have an entry
                //  for menuItem, but check anyway, just in case.
                map<int, cxMenu*>::const_iterator iter = mSubMenus.find(menuItem);
-               if (iter != mSubMenus.end()) {
+               if (iter != mSubMenus.end())
+               {
                   retval = iter->second->itemWasSelected();
                }
             }
@@ -1538,20 +1821,24 @@ bool cxMenu::itemWasSelected() const {
    return(retval);
 } // itemWasSelected
 
-bool cxMenu::mouseEvtWasInItemArea(int& pItemIndex) const {
+bool cxMenu::mouseEvtWasInItemArea(int& pItemIndex) const
+{
    bool retval = false;
    pItemIndex = -1;
 
    // If the mouse event was in the menu window, see if it was within the
    //  borders (if there are borders).  If so, then see if there's a menu
    //  item there, and if so, set pItemIndex.
-   if (mouseEvtWasInWindow()) {
+   if (mouseEvtWasInWindow())
+   {
       // If there are borders, see if the mouse event is within the borders.
-      if (getBorderStyle() != eBS_NOBORDER) {
+      if (getBorderStyle() != eBS_NOBORDER)
+      {
          retval = ((mMouse.y > top()) && (mMouse.y < bottom()) &&
                    (mMouse.x > left()) && (mMouse.x < right()));
       }
-      else {
+      else
+      {
          // No borders
          retval = true;
       }
@@ -1559,26 +1846,30 @@ bool cxMenu::mouseEvtWasInItemArea(int& pItemIndex) const {
       if (retval) { // If the user clicked in the menu item area..
          // If there are some menu items, then see if the user clicked on one.
          int numItems = (int)(cxMenu::numMenuItems());
-         if (numItems > 0) {
+         if (numItems > 0)
+         {
             // In case there are less items than will fill the menu, set minimum
             //  and maximum line #s in the menu that contain items.  These will be
             //  relative to the screen, just like mMouse.y and mMouse.x.
             int topItemLocation = top();                   // Assuming no borders
             int bottomItemLocation = top() + height() - 1; // Assuming no borders
             // If there are borders, fix topItemLocation and bottomItemLocation.
-            if (getBorderStyle() != eBS_NOBORDER) {
+            if (getBorderStyle() != eBS_NOBORDER)
+            {
                ++topItemLocation;
                --bottomItemLocation;
             }
             // If there are less items than will fill the menu, then fix
             //  bottomItemLocation.  (There is one item per row.)
-            if (numItems < mSubWinHeight) {
+            if (numItems < mSubWinHeight)
+            {
                bottomItemLocation = topItemLocation + numItems - 1;
             }
 
             // If the mouse event was in the list of menu items, then determine
             //  which item was clicked on and set pItemIndex.
-            if ((mMouse.y >= topItemLocation) && (mMouse.y <= bottomItemLocation)) {
+            if ((mMouse.y >= topItemLocation) && (mMouse.y <= bottomItemLocation))
+            {
                // Find the distance from the top row, and set pItemIndex based
                //  on mTopItemIndex and the distance from the top.
                int distFromTop = mMouse.y - topItemLocation;
@@ -1593,7 +1884,8 @@ bool cxMenu::mouseEvtWasInItemArea(int& pItemIndex) const {
 
 bool cxMenu::setOnSelectItemFunction(funcPtr4 pFunction, void *p1, void *p2,
                                      void *p3, void *p4, bool pExitAfterRun,
-                                     bool pRunOnLeaveFunction) {
+                                     bool pRunOnLeaveFunction)
+                                     {
    // Free the memory used by the current mOnSelectItemFunction, and then
    //  create it with the new options.
    freeOnSelectItemFunction();
@@ -1604,7 +1896,8 @@ bool cxMenu::setOnSelectItemFunction(funcPtr4 pFunction, void *p1, void *p2,
 
 bool cxMenu::setOnSelectItemFunction(funcPtr2 pFunction, void *p1, void *p2,
                                      bool pExitAfterRun,
-                                     bool pRunOnLeaveFunction) {
+                                     bool pRunOnLeaveFunction)
+                                     {
    // Free the memory used by the current mOnSelectItemFunction, and then
    //  create it with the new options.
    freeOnSelectItemFunction();
@@ -1614,7 +1907,8 @@ bool cxMenu::setOnSelectItemFunction(funcPtr2 pFunction, void *p1, void *p2,
 } // setOnSelectItemFunction
 
 bool cxMenu::setOnSelectItemFunction(funcPtr0 pFunction, bool pExitAfterRun,
-                                     bool pRunOnLeaveFunction) {
+                                     bool pRunOnLeaveFunction)
+                                     {
    // Free the memory used by the current mOnSelectItemFunction, and then
    //  create it with the new options.
    freeOnSelectItemFunction();
@@ -1623,21 +1917,26 @@ bool cxMenu::setOnSelectItemFunction(funcPtr0 pFunction, bool pExitAfterRun,
    return(mOnSelectItemFunction != nullptr);
 } // setOnSelectItemFunction
 
-shared_ptr<cxFunction> cxMenu::getOnSelectItemFunction() const {
+shared_ptr<cxFunction> cxMenu::getOnSelectItemFunction() const
+{
    return(mOnSelectItemFunction);
 } // getOnSelectItemFunction
 
 //// Protected functions
 
-void cxMenu::copyCxMenuStuff(const cxMenu* pThatMenu) {
-   if ((pThatMenu != nullptr) && (pThatMenu != this)) {
+void cxMenu::copyCxMenuStuff(const cxMenu* pThatMenu)
+{
+   if ((pThatMenu != nullptr) && (pThatMenu != this))
+   {
       freeSubWindow();
       // Copy the cxWindow stuff inherited from the parent, then copy
       //  this class' stuff
-      try {
+      try
+      {
          copyCxWinStuff((const cxWindow*)pThatMenu);
       }
-      catch (const cxWidgetsException& exc) {
+      catch (const cxWidgetsException& exc)
+      {
          throw(cxWidgetsException("Couldn't copy base cxWindow stuff (copying a cxMenu)."));
       }
 
@@ -1678,21 +1977,24 @@ void cxMenu::copyCxMenuStuff(const cxMenu* pThatMenu) {
    }
 } // copyCxMenuStuff
 
-int cxMenu::subWinTop() const {
+int cxMenu::subWinTop() const
+{
    int topRow, leftCol;
    getbegyx(mSubWindow, topRow, leftCol);
 
    return(topRow);
 } // subWinTop
 
-int cxMenu::subWinLeft() const {
+int cxMenu::subWinLeft() const
+{
    int topRow, leftCol;
    getbegyx(mSubWindow, topRow, leftCol);
-
+   (void)topRow;
    return(leftCol);
 } // subWinLeft
 
-long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
+long cxMenu::doInputLoop(bool& pRunOnLeaveFunction)
+{
    pRunOnLeaveFunction = true;
    // Set the default return code to cxID_QUIT to represent
    //  the user quitting out of the menu with no selection.
@@ -1705,11 +2007,13 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
 
    // If there is at least 1 menu item, then allow the user to make a
    //  selection.
-   if (mMessageLines.size() > 0) {
+   if (mMessageLines.size() > 0)
+   {
       // If there is at least 1 selectable menu item,
       //  then we can do the input loop.  Otherwise,
       //  just wait for a keypress.
-      if (mSelectableItemExists) {
+      if (mSelectableItemExists)
+      {
          // Go to the next selectable item
          goToSelectableItem(true, false);
          string searchStr;
@@ -1720,12 +2024,14 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
          bool selectItem = false; // Whether or not to do the "select item" behavior
          // Continue the input loop while continueOn is true, there is still
          //  at least 1 selectable item, and mLeaveNow is false.
-         while (continueOn && mSelectableItemExists && !mLeaveNow) {
+         while (continueOn && mSelectableItemExists && !mLeaveNow)
+         {
             selectItem = false;
 
             // Run the loop start function, and break from
             //  the input loop if its mExitAfterRun is true.
-            if (runLoopStartFunction()) {
+            if (runLoopStartFunction())
+            {
                break;
             }
 
@@ -1750,7 +2056,8 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
             //  the item hotkey info (so that if the key is a hotkey for
             //  an item, it will start at the beginning if more than 1
             //  item has the hotkey).
-            if (lastKey != mLastItemHotkey) {
+            if (lastKey != mLastItemHotkey)
+            {
                mItemHotkeyIndex = 0;
                mLastItemHotkey = NOKEY;
             }
@@ -1765,25 +2072,32 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
             //   - If the mouse button event was outside the window, then:
             //     - If the parent window is a cxPanel, then exit.
             //     - If this menu is in at least 1 parent menu, then exit.
-            if (lastKey == KEY_MOUSE) {
+            if (lastKey == KEY_MOUSE)
+            {
                mLastInputWasMouseEvent = true;
-               if (getmouse(&mMouse) == OK) {
+               if (getmouse(&mMouse) == OK)
+               {
                   // Run a function that may exist for the mouse state.  If
                   //  no function exists for the mouse state, then process
                   //  it here.
                   bool mouseFuncExists = false;
                   continueOn = handleFunctionForLastMouseState(&mouseFuncExists,
                                              &pRunOnLeaveFunction);
-                  if (!mouseFuncExists) {
+                  if (!mouseFuncExists)
+                  {
                      if (mouseEvtWasButtonEvt()) { // If it was a mouse button event
-                        if (mouseEvtWasInWindow()) {
-                           switch (mMouse.bstate) {
+                        if (mouseEvtWasInWindow())
+                        {
+                           switch (mMouse.bstate)
+                           {
                               case BUTTON1_CLICKED:
                               case BUTTON1_DOUBLE_CLICKED:
                                  {
                                     int itemIndex = -1;
-                                    if (mouseEvtWasInItemArea(itemIndex)) {
-                                       if (itemIndex > -1) {
+                                    if (mouseEvtWasInItemArea(itemIndex))
+                                    {
+                                       if (itemIndex > -1)
+                                       {
                                           // Set the current item
                                           setCurrentMenuItem(itemIndex, true);
                                           // Set selectItem to true so that the
@@ -1791,31 +2105,38 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
                                           selectItem = true;
                                        }
                                     }
-                                    else {
+                                    else
+                                    {
                                        // If there are borders, then handle scrolling.
                                        // If the user clicked the top or bottom arrow in
                                        //  the right border, then scroll up or down by 1.
                                        //  If the user clicked between the arrows, then
                                        //  scroll up or down by a page.
-                                       if (hasBorder()) {
+                                       if (hasBorder())
+                                       {
                                           // Do scrolling up/down by 1 if the user
                                           //  clicked in the right border just above
                                           //  the bottom or just below the top.
-                                          if (mMouse.x == right()) {
-                                             if (mMouse.y == top()+1) {
+                                          if (mMouse.x == right())
+                                          {
+                                             if (mMouse.y == top()+1)
+                                             {
                                                 // Scroll up by 1
                                                 scrollUpOne(continueOn);
                                              }
-                                             else if (mMouse.y == bottom()-1) {
+                                             else if (mMouse.y == bottom()-1)
+                                             {
                                                 // Scroll down by 1
                                                 scrollDownOne(continueOn);
                                              }
-                                             else {
+                                             else
+                                             {
                                                 // Do pagewise scrolling (note: the menu
                                                 //  should be at least 6 characters high
                                                 //  to have room for the areas to click
                                                 //  in on the border).
-                                                if (height() >= 6) {
+                                                if (height() >= 6)
+                                                {
                                                    // Find the vertical boundaries of
                                                    //  the click areas
                                                    int upperHalfTop = top() + 2;
@@ -1829,11 +2150,13 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
                                                    //  mouse was clicked in the bottom
                                                    //  half, do a page down.
                                                    if ((mMouse.y >= upperHalfTop) &&
-                                                         (mMouse.y <= upperHalfBottom)) {
+                                                         (mMouse.y <= upperHalfBottom))
+                                                         {
                                                       doPgUp();
                                                    }
                                                    else if ((mMouse.y >= bottomHalfTop) &&
-                                                         (mMouse.y <= bottomHalfBottom)) {
+                                                         (mMouse.y <= bottomHalfBottom))
+                                                         {
                                                       doPgDown();
                                                    }
                                                 }
@@ -1855,21 +2178,24 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
                               case BUTTON1_RELEASED:
                                  // If the user is moving the window, then go ahead and
                                  //  move it.
-                                 if (movingWin) {
+                                 if (movingWin)
+                                 {
                                     moveRelative(mMouse.y - pressedY, mMouse.x - pressedX, true);
                                     movingWin = false; // Reset the moving of the window
                                  }
                                  break;
                            }
                         }
-                        else {
+                        else
+                        {
                            // The mouse button event was outside the menu.  If
                            //  the parent window is a cxPanel, or if this menu
                            //  has at least 1 parent menu, then quit the input
                            //  loop.  This can allow the user to go to another
                            //  window (in a cxPanel) or go back up to the parent
                            //  menu.
-                           if (parentIsCxPanel() || (mNumParentMenus > 0)) {
+                           if (parentIsCxPanel() || (mNumParentMenus > 0))
+                           {
                               returnCode = cxID_EXIT;
                               continueOn = false;
                            }
@@ -1882,25 +2208,29 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
             // This is defined for versions of ncurses without mouse support.
             // This is here because the next block starts with "else if".  The
             //  code will go onto the next block because of the false.
-            if (false) {
+            if (false)
+            {
             }
 #endif
             // If the last key is in the quit keys, then quit and return
             //  cxID_QUIT.  If the key isn't there, look for it in
             //  the exit keys (if it's there, quit and return cxID_EXIT).
             //  If not there either, handle the key normally.
-            else if (hasQuitKey(lastKey)) {
+            else if (hasQuitKey(lastKey))
+            {
                returnCode = cxID_QUIT;
                continueOn = false;
             }
-            else if (hasExitKey(lastKey)) {
+            else if (hasExitKey(lastKey))
+            {
                returnCode = cxID_EXIT;
                continueOn = false;
             }
 
             // If continueOn was set to false, then break out of the
             //  while loop.
-            if (!continueOn) {
+            if (!continueOn)
+            {
                break;
             }
             // If the user pressed enter or tab, and if the menu item is not
@@ -1908,8 +2238,10 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
             //  runs so that the return code is available to the hotkey function.
             bool gotReturnCodeAlready = false;
             if ((lastKey == ENTER) || (lastKey == KEY_ENTER) ||
-                (lastKey == TAB) || (lastKey == SHIFT_TAB)) {
-               if (mItemTypes[mCurrentMenuItem] != cxITEM_SUBMENU) {
+                (lastKey == TAB) || (lastKey == SHIFT_TAB))
+                {
+               if (mItemTypes[mCurrentMenuItem] != cxITEM_SUBMENU)
+               {
                   returnCode = getCurrentItemReturnCode(lastKey, continueOn);
                   setReturnCode(returnCode);
                   gotReturnCodeAlready = true;
@@ -1925,7 +2257,8 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
             //  any of the items).
             lookForSelectableItem();
             // If mLeaveNow was set true, then stop the input loop.
-            if (mLeaveNow) {
+            if (mLeaveNow)
+            {
                // Update returnCode before leaving (exitNow() and quitNow()
                //  set it).
                returnCode = getReturnCode();
@@ -1933,41 +2266,52 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
                break;
             }
             // Stop the input loop if continueOn was set false.
-            if (!continueOn) {
+            if (!continueOn)
+            {
                // Set the return code to cxID_QUIT or cxID_EXIT, but not
                //  if the user pressed enter or tab or if the key is in
                //  the list of exit keys for the window.
-               if (lastKey == ESCAPE) {
+               if (lastKey == ESCAPE)
+               {
                   returnCode = cxID_QUIT;
                }
-               else {
+               else
+               {
                   if (((lastKey != ENTER) && (lastKey != KEY_ENTER) &&
-                      (lastKey != TAB)) || hasExitKey(lastKey)) {
+                      (lastKey != TAB)) || hasExitKey(lastKey))
+                      {
                      returnCode = cxID_EXIT;
                   }
                }
                break;
             }
 
-            if (!functionExists) {
+            if (!functionExists)
+            {
                //  Ideally, we would handle all keys in the
                //  switch statement, but C++ doesn't allow the
                //  use of a variable as a case of a switch
                //  statement, so we have to handle some keys
                //  in separate if tests.
-               if (lastKey == mSearchKey) {
+               if (lastKey == mSearchKey)
+               {
                   doSearch();
                }
-               else if (lastKey == mAltPgUpKey) {
+               else if (lastKey == mAltPgUpKey)
+               {
                   doPgUp();
                }
-               else if (lastKey == mAltPgDownKey) {
+               else if (lastKey == mAltPgDownKey)
+               {
                   doPgDown();
                }
-               else {
-                  switch(lastKey) {
+               else
+               {
+                  switch(lastKey)
+                  {
                      case ESCAPE: // Defined in cxKeyDefines.h
-                        if (mAllowQuit) {
+                        if (mAllowQuit)
+                        {
                            returnCode = cxID_QUIT;
                            continueOn = false;
                         }
@@ -1980,7 +2324,8 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
                         break;
                      case KEY_LEFT:
                         // Left arrow means the user wants to exit out of the menu
-                        if (mAllowQuit) {
+                        if (mAllowQuit)
+                        {
                            returnCode = cxID_QUIT;
                            continueOn = false;
                         }
@@ -1989,7 +2334,8 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
                         // If the currently selected menu item is a submenu
                         //  type, set selectItem to true so that the submenu
                         //  will be shown.
-                        if (mItemTypes[mCurrentMenuItem] == cxITEM_SUBMENU) {
+                        if (mItemTypes[mCurrentMenuItem] == cxITEM_SUBMENU)
+                        {
                            selectItem = true;
                         }
                         break;
@@ -2020,7 +2366,8 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
                      case TAB:
                         break;
                      case SHIFT_TAB:
-                        if (mAllowExit) {
+                        if (mAllowExit)
+                        {
                            returnCode = cxID_EXIT;
                            continueOn = false;
                         }
@@ -2043,14 +2390,16 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
                            //  not automatically selected.
                            char hotkey = tolower((char)lastKey);
                            unsigned numHotKeyEntries = mItemHotkeys.count(hotkey);
-                           if (numHotKeyEntries > 0) {
+                           if (numHotKeyEntries > 0)
+                           {
                               // mItemHotkeyIndex will need to be reset to 0
                               //  if it is >= the number of entries in
                               //  mItemHotkeys for the hotkey that was pressed,
                               //  or if the user pressed a different hotkey
                               //  than last time.
                               if ((mItemHotkeyIndex >= numHotKeyEntries) ||
-                                  (lastKey != mLastItemHotkey)) {
+                                  (lastKey != mLastItemHotkey))
+                                  {
                                  mItemHotkeyIndex = 0;
                               }
                               // Update mLastItemHotkey so we can test if
@@ -2063,12 +2412,14 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
                               // Increment the iterator based on mItemHotkeyIndex
                               //  so we're looking at the correct entry in
                               //  mItemHotkeys
-                              for (unsigned i = 0; i < mItemHotkeyIndex; ++i) {
+                              for (unsigned i = 0; i < mItemHotkeyIndex; ++i)
+                              {
                                  ++iter;
                               }
                               // Un-highlight the current menu item and
                               //  highlight the new menu item.
-                              if (mCurrentMenuItem != iter->second) {
+                              if (mCurrentMenuItem != iter->second)
+                              {
                                  // Un-highlight the current item
                                  int currentItemRow = mCurrentMenuItem - mTopMenuItem;
                                  drawMenuItem(mCurrentMenuItem, currentItemRow, false, false);
@@ -2087,14 +2438,16 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
                               //  area, then scroll the menu items so that it
                               //  is visible.
                               int bottomItem = mTopMenuItem + mSubWinHeight - 1;
-                              if (mCurrentMenuItem < mTopMenuItem) {
+                              if (mCurrentMenuItem < mTopMenuItem)
+                              {
                                  // The current menu item is above the top
                                  //  item - Scroll up so that the item is
                                  //  visible
                                  int scrollAmt = mTopMenuItem - mCurrentMenuItem;
                                  scrollItems(-scrollAmt, true);
                               }
-                              else if (mCurrentMenuItem > bottomItem) {
+                              else if (mCurrentMenuItem > bottomItem)
+                              {
                                  // The current menu item is below the bottom
                                  //  item  - Scroll down
                                  int scrollAmt = mCurrentMenuItem - bottomItem;
@@ -2104,27 +2457,32 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
                               // If there is only 1 entry in mItemHotkeys for the
                               //  hotkey that was pressed, then automatically
                               //  select it.
-                              if (numHotKeyEntries == 1) {
+                              if (numHotKeyEntries == 1)
+                              {
                                  // If the menu item is a submenu type, show its submenu.
                                  if ((mItemTypes[mCurrentMenuItem] == cxITEM_SUBMENU) ||
-                                     (mItemTypes[mCurrentMenuItem] == cxITEM_POPUPMENU)) {
+                                     (mItemTypes[mCurrentMenuItem] == cxITEM_POPUPMENU))
+                                     {
                                     returnCode = doSubmenu();
 
                                     // Return the return code of the submenu if the user didn't
                                     //  exit or quit.
                                     if ((returnCode != cxID_EXIT) &&
-                                        (returnCode != cxID_QUIT)) {
+                                        (returnCode != cxID_QUIT))
+                                        {
                                        return(returnCode);
                                     }
                                  }
-                                 else {
+                                 else
+                                 {
                                     // The menu item doesn't have a submenu..  Just
                                     //  return its return code.
                                     returnCode = mReturnCodes[mCurrentMenuItem];
                                     continueOn = false;
                                  }
                               }
-                              else {
+                              else
+                              {
                                  // There is more than 1 entry in mItemHotkeys
                                  //  for the hotkey that was pressed..
                                  //  Increment mItemHotkeyIndex so that we go
@@ -2141,31 +2499,38 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
             // If the user chose to select the item (via pressing the enter
             //  key or clicking on it), then if it's a submenu, show the
             //  submenu, but if not, select the item.
-            if (selectItem) {
+            if (selectItem)
+            {
                // If the currently selected menu item is a
                //  submenu type, tell it to show its submenu.
-               if (mItemTypes[mCurrentMenuItem] == cxITEM_SUBMENU) {
+               if (mItemTypes[mCurrentMenuItem] == cxITEM_SUBMENU)
+               {
                   returnCode = doSubmenu();
 
                   // Return the return code of the submenu if the user didn't
                   //  exit or quit.
-                  if ((returnCode != cxID_EXIT) && (returnCode != cxID_QUIT)) {
+                  if ((returnCode != cxID_EXIT) && (returnCode != cxID_QUIT))
+                  {
                      // Run the onSelectMenuItem function
                      bool exitAfterRun = false;
                      runOnSelectItemFunction(exitAfterRun, pRunOnLeaveFunction);
                      return(returnCode);
                   }
-                  else {
+                  else
+                  {
                      // If the submenu's last input was a mouse event, then
                      //  update mMouse, and see if the user clicked on an item
                      //  in this menu.  If so, highlight it.
-                     if (mSubMenus.find(mCurrentMenuItem) != mSubMenus.end()) {
+                     if (mSubMenus.find(mCurrentMenuItem) != mSubMenus.end())
+                     {
                         if (mSubMenus[mCurrentMenuItem]->mLastInputWasMouseEvent) {
 #ifdef NCURSES_MOUSE_VERSION
                            mMouse = mSubMenus[mCurrentMenuItem]->getMouseEvent();
                            int itemIndex = -1;
-                           if (mouseEvtWasInItemArea(itemIndex)) {
-                              if (itemIndex > -1) {
+                           if (mouseEvtWasInItemArea(itemIndex))
+                           {
+                              if (itemIndex > -1)
+                              {
                                  highlightItem(itemIndex);
                                  //selectItem = true;
                                  // Set the current item, and set selectItem to
@@ -2178,16 +2543,19 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
                      }
                   }
                }
-               else {
+               else
+               {
                   // For this case, we want to get the return code.
                   //  This is handled earlier so that the return code is
                   //  available to the hotkey functions.  If we already
                   //  got the return code, don't continue on; otherwise,
                   //  get the return code.
-                  if (gotReturnCodeAlready) {
+                  if (gotReturnCodeAlready)
+                  {
                      continueOn = false;
                   }
-                  else {
+                  else
+                  {
                      returnCode = getCurrentItemReturnCode(lastKey, continueOn);
                   }
                }
@@ -2208,18 +2576,22 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
          int subwinRow = mCurrentMenuItem - mTopMenuItem;
          drawMenuItem(mCurrentMenuItem, subwinRow, true, false);
       }
-      else {
+      else
+      {
          // There are no selectable items in the menu.
-         if (mWaitForInputIfEmpty) {
+         if (mWaitForInputIfEmpty)
+         {
             cxWindow::setLastKey(wgetch(mWindow));
             handleFunctionForLastKey();
          }
       }
    } // if (mMessageLines.size() > 0)
-   else {
+   else
+   {
       // There are no items in the menu, but at least show something and pause
       //  for user input.
-      if (mWaitForInputIfEmpty) {
+      if (mWaitForInputIfEmpty)
+      {
          cxWindow messageWindow(nullptr, top()+2, left()+2,
                      "Message", "This menu contains no items.", "");
          messageWindow.show();
@@ -2229,9 +2601,11 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
          // If the last keypress was a mouse event, then run an external
          //  function that may be set up for it.
 #ifdef NCURSES_MOUSE_VERSION
-         if (lastKey == KEY_MOUSE) {
+         if (lastKey == KEY_MOUSE)
+         {
             mLastInputWasMouseEvent = true;
-            if (getmouse(&mMouse) == OK) {
+            if (getmouse(&mMouse) == OK)
+            {
                // Run a function that may exist for the mouse state.
                handleFunctionForLastMouseState(nullptr, &pRunOnLeaveFunction);
             }
@@ -2240,13 +2614,16 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
          // This is defined for versions of ncurses without mouse support.
          // This is here because the next block starts with "else if".  The
          //  code will go onto the next block because of the false.
-         if (false) {
+         if (false)
+         {
          }
 #endif
-         else if (lastKey == ESC) {
+         else if (lastKey == ESC)
+         {
             returnCode = cxID_QUIT;
          }
-         else {
+         else
+         {
             returnCode = cxID_EXIT;
          }
       }
@@ -2258,17 +2635,21 @@ long cxMenu::doInputLoop(bool& pRunOnLeaveFunction) {
    return(returnCode);
 } // doInputLoop
 
-void cxMenu::enableAttrs(WINDOW *pWin, e_WidgetItems pItem) {
+void cxMenu::enableAttrs(WINDOW *pWin, e_WidgetItems pItem)
+{
    // If pItem is not one of the ones this class handles, just have
    //  the parent class (cxWindow) handle it.
-   if (pItem != eMENU_SELECTION) {
+   if (pItem != eMENU_SELECTION)
+   {
       cxWindow::enableAttrs(pWin, pItem);
    }
-   else {
+   else
+   {
       // attrSet is a pointer that will be set to point to the correct attribute
       //  set, depending on the value of pItem.
       set<attr_t>* attrSet = nullptr;
-      switch(pItem) {
+      switch(pItem)
+      {
          case eMENU_SELECTION: // Menu selection
             attrSet = &mMenuSelectionAttrs;
             break;
@@ -2286,34 +2667,43 @@ void cxMenu::enableAttrs(WINDOW *pWin, e_WidgetItems pItem) {
       }
 
       // Enable the attributes, if attrSet was set.
-      if (nullptr != attrSet) {
-         if (attrSet->size() > 0) {
+      if (nullptr != attrSet)
+      {
+         if (attrSet->size() > 0)
+         {
             set<attr_t>::const_iterator iter = attrSet->begin();
-            for (; iter != attrSet->end(); ++iter) {
+            for (; iter != attrSet->end(); ++iter)
+            {
                wattron(pWin, *iter);
             }
          }
-         else {
+         else
+         {
             cxBase::enableAttrs(pWin, pItem);
          }
       }
-      else {
+      else
+      {
          cxBase::enableAttrs(pWin, pItem);
       }
    }
 } // enableAttrs
 
-void cxMenu::disableAttrs(WINDOW *pWin, e_WidgetItems pItem) {
+void cxMenu::disableAttrs(WINDOW *pWin, e_WidgetItems pItem)
+{
    // If pItem is not one of the ones this class handles, just have
    //  the parent class (cxWindow) handle it.
-   if (pItem != eMENU_SELECTION) {
+   if (pItem != eMENU_SELECTION)
+   {
       cxWindow::disableAttrs(pWin, pItem);
    }
-   else {
+   else
+   {
       // attrSet is a pointer that will be set to point to the correct attribute
       //  set, depending on the value of pItem.
       set<attr_t>* attrSet = nullptr;
-      switch(pItem) {
+      switch(pItem)
+      {
          case eMENU_SELECTION: // Menu selection
             attrSet = &mMenuSelectionAttrs;
             break;
@@ -2331,18 +2721,23 @@ void cxMenu::disableAttrs(WINDOW *pWin, e_WidgetItems pItem) {
       }
 
       // Enable the attributes, if attrSet was set.
-      if (nullptr != attrSet) {
-         if (attrSet->size() > 0) {
+      if (nullptr != attrSet)
+      {
+         if (attrSet->size() > 0)
+         {
             set<attr_t>::const_iterator iter = attrSet->begin();
-            for (; iter != attrSet->end(); ++iter) {
+            for (; iter != attrSet->end(); ++iter)
+            {
                wattroff(pWin, *iter);
             }
          }
-         else {
+         else
+         {
             cxBase::disableAttrs(pWin, pItem);
          }
       }
-      else {
+      else
+      {
          cxBase::disableAttrs(pWin, pItem);
       }
    }
@@ -2352,10 +2747,12 @@ void cxMenu::disableAttrs(WINDOW *pWin, e_WidgetItems pItem) {
 
 // Returns the index of the bottommost item to show in the
 //  subwindow.
-inline int cxMenu::getBottomItemIndex() {
+inline int cxMenu::getBottomItemIndex()
+{
    int bottomMenuItem = mTopMenuItem + mSubWinHeight - 1;
    // Make sure the index is within bounds.
-   if (bottomMenuItem >= (int)mMessageLines.size()) {
+   if (bottomMenuItem >= (int)mMessageLines.size())
+   {
       bottomMenuItem = (int)mMessageLines.size() - 1;
    }
 
@@ -2365,18 +2762,22 @@ inline int cxMenu::getBottomItemIndex() {
 // Shows the submenu for the current menu item and returns the
 //  return code returned by the submenu.  Returns -1 if the
 //  current menu item isn't a submenu type.
-inline long cxMenu::doSubmenu() {
+inline long cxMenu::doSubmenu()
+{
    long returnCode = cxID_QUIT;
    cxMenu *subMenu = nullptr;
 
-   if ((unsigned)mCurrentMenuItem < mItemTypes.size()) {
+   if ((unsigned)mCurrentMenuItem < mItemTypes.size())
+   {
       // If a menu exists for this menu item, then check if
       //  this item is supposed to have one.  If it's a submenu,
       //  get the pointer to it and move the submenu so it appears
       //  to the right of this menu and aligned with the menu item.
       //  If it's a pop-up menu, just get the pointer to it.
-      if (mItemTypes[mCurrentMenuItem] == cxITEM_SUBMENU) {
-         if (mSubMenus.find(mCurrentMenuItem) != mSubMenus.end()) {
+      if (mItemTypes[mCurrentMenuItem] == cxITEM_SUBMENU)
+      {
+         if (mSubMenus.find(mCurrentMenuItem) != mSubMenus.end())
+         {
             // Move the item's submenu so that it's to the right
             //  of this menu.
             // itemRow is the row (relative to the menu) where the
@@ -2384,13 +2785,16 @@ inline long cxMenu::doSubmenu() {
             int itemRow = mCurrentMenuItem - mTopMenuItem + 1;
 
             subMenu = mSubMenus[mCurrentMenuItem];
-            if (subMenu != nullptr) {
+            if (subMenu != nullptr)
+            {
                subMenu->move(itemRow, right()+1, false);
             }
          }
       }
-      else if (mItemTypes[mCurrentMenuItem] == cxITEM_POPUPMENU) {
-         if (mSubMenus.find(mCurrentMenuItem) != mSubMenus.end()) {
+      else if (mItemTypes[mCurrentMenuItem] == cxITEM_POPUPMENU)
+      {
+         if (mSubMenus.find(mCurrentMenuItem) != mSubMenus.end())
+         {
             subMenu = mSubMenus[mCurrentMenuItem];
          }
       }
@@ -2398,7 +2802,8 @@ inline long cxMenu::doSubmenu() {
 
    // If we got a submenu for this item, show it and get
    //  its return code, etc.
-   if (subMenu != nullptr) {
+   if (subMenu != nullptr)
+   {
       returnCode = subMenu->showModal(true, true, true);
       subMenu->hide();
 
@@ -2407,7 +2812,8 @@ inline long cxMenu::doSubmenu() {
       //  so that submenus share the right boder line with this
       //  menu, so the border should be all we'd have to re-draw -
       //  but from testing, it seems we have to re-draw everything..
-      if ((returnCode == cxID_QUIT) || (returnCode == cxID_EXIT)) {
+      if ((returnCode == cxID_QUIT) || (returnCode == cxID_EXIT))
+      {
          drawBorder();
          drawTitle();
          drawStatus();
@@ -2427,15 +2833,18 @@ inline long cxMenu::doSubmenu() {
 // pSubWinRow: The row in the subwindow to write on
 // pRefreshSubwindow: Whether or not to refresh the subwindow
 // pHighlight: Whether or not to highlight the item
-void cxMenu::drawMenuItem(int pItemIndex, int pSubWinRow, bool pRefreshSubwindow, bool pHighlight) {
+void cxMenu::drawMenuItem(int pItemIndex, int pSubWinRow, bool pRefreshSubwindow, bool pHighlight)
+{
    string itemStr;
    // If pItemIndex is between 0 and the number of menu items, then use the
    //  string in mMessageLines at the given index.  Otherwise, use a string
    //  full of spaces that will fill the subwindow.
-   if ((pItemIndex >= 0) && ((unsigned)pItemIndex < numMenuItems())) {
+   if ((pItemIndex >= 0) && ((unsigned)pItemIndex < numMenuItems()))
+   {
       itemStr = mMessageLines[pItemIndex].substr(0, mSubWinWidth);
    }
-   else {
+   else
+   {
       itemStr.assign(mSubWinWidth, ' ');
    }
 
@@ -2443,7 +2852,8 @@ void cxMenu::drawMenuItem(int pItemIndex, int pSubWinRow, bool pRefreshSubwindow
    scrollok(mSubWindow, false);
    // If highlighting is to be used, enable the menu selection attributes (i.e., A_REVERSE)
    e_WidgetItems item = eMESSAGE;
-   if (pHighlight) {
+   if (pHighlight)
+   {
       item = eMENU_SELECTION;
       enableAttrs(mSubWindow, item);
    }
@@ -2458,32 +2868,38 @@ void cxMenu::drawMenuItem(int pItemIndex, int pSubWinRow, bool pRefreshSubwindow
    //  in the background color & overwrite stuff that may
    //  have been output previously).
    int endIndex = mSubWinWidth;
-   for (; currentCol < endIndex; ++currentCol) {
+   for (; currentCol < endIndex; ++currentCol)
+   {
       mvwaddch(mSubWindow, pSubWinRow, currentCol, ' ');
    }
    scrollok(mSubWindow, true);
 
    // Turn off the menu selection attributes
-   if (pHighlight) {
+   if (pHighlight)
+   {
       disableAttrs(mSubWindow, eMENU_SELECTION);
    }
 
    // Refresh the subwindow (if needed).
-   if (pRefreshSubwindow) {
+   if (pRefreshSubwindow)
+   {
       wrefresh(mSubWindow);
    }
 } // drawMenuItem
 
 // Scans a string for hotkeys and adds the hotkeys to mItemHotkeys, if the
 //  string contains one.
-void cxMenu::addHotKey(const string& pItemText) {
+void cxMenu::addHotKey(const string& pItemText)
+{
    set<char> hotkeys;
    // Get the hotkey characters from the text, converting their
    //  case to lowercase.
    cxBase::getHotkeyChars(pItemText, hotkeys, true, false);
    set<char>::const_iterator iter = hotkeys.begin();
-   for (; iter != hotkeys.end(); ++iter) {
-      if (mMessageLines.size() > 0) {
+   for (; iter != hotkeys.end(); ++iter)
+   {
+      if (mMessageLines.size() > 0)
+      {
          mItemHotkeys.insert(make_pair(*iter, mMessageLines.size()-1));
       }
    }
@@ -2491,19 +2907,24 @@ void cxMenu::addHotKey(const string& pItemText) {
 
 // Copies the current menu item's help string to the
 //  status string, and optionally updates the status.
-inline void cxMenu::useHelpAsStatus(bool pRefreshStatus) {
+inline void cxMenu::useHelpAsStatus(bool pRefreshStatus)
+{
    // Only do this if a custom status message isn't set.
-   if (!mCustomStatus) {
-      if (mCurrentMenuItem >= 0 && mCurrentMenuItem < (int)mHelpStrings.size()) {
+   if (!mCustomStatus)
+   {
+      if (mCurrentMenuItem >= 0 && mCurrentMenuItem < (int)mHelpStrings.size())
+      {
          string helpText = mHelpStrings[mCurrentMenuItem];
          // Truncate the help text if it's too long..  (Maybe we should
          //  resize the window instead, since a menu will likely be
          //  fairly narrow..  But we wouldn't want it to be too wide either..)
-         if ((int)helpText.length() > width()-2) {
+         if ((int)helpText.length() > width()-2)
+         {
             helpText = helpText.substr(0, width()-2);
          }
 
-         if (getStatus() != helpText) {
+         if (getStatus() != helpText)
+         {
             // Use the base class' setStatus() instead of this
             //  class' setStatus() so that mCustomStatus doesn't get
             //  set to true.
@@ -2516,98 +2937,124 @@ inline void cxMenu::useHelpAsStatus(bool pRefreshStatus) {
 // Goes through the menu items and resizes their text
 //  to make sure they're all exactly the width of the inside of
 //  this window.
-void cxMenu::fitItemsToWidth() {
+void cxMenu::fitItemsToWidth()
+{
    unsigned index = 0;  // Index for mItemTypes, etc.
    messageLineContainer::iterator iter = mMessageLines.begin();
-   for (; iter != mMessageLines.end(); ++iter) {
+   for (; iter != mMessageLines.end(); ++iter)
+   {
       // Shorten the menu item text if it's too long
-      if ((int)iter->length() > mSubWinWidth) {
+      if ((int)iter->length() > mSubWinWidth)
+      {
          *iter = iter->substr(0, mSubWinWidth);
       }
       ++index;
    }
 } // fitItemsToWidth
 
-void cxMenu::goToSelectableItem(bool pForward, bool pBringToTop) {
+void cxMenu::goToSelectableItem(bool pForward, bool pBringToTop)
+{
    // Do this if there is at least 1 menu item and not all menu items
    //  are unselectable.
    if ((mMessageLines.size() > 0) &&
-       (mUnselectableItems.size() < mMessageLines.size())) {
+       (mUnselectableItems.size() < mMessageLines.size()))
+       {
       // If mCurrentMenuItem is beyond the last or before the first
       //  item, then fix it.
-      if (mCurrentMenuItem >= (int)numMenuItems()) {
-         if (mWrap) {
-            if (pForward) {
+      if (mCurrentMenuItem >= (int)numMenuItems())
+      {
+         if (mWrap)
+         {
+            if (pForward)
+            {
                mCurrentMenuItem = 0;
             }
-            else {
+            else
+            {
                mCurrentMenuItem = (int)numMenuItems() - 1;
             }
             goToSelectableItem(pForward, pBringToTop);
          }
-         else {
+         else
+         {
             mCurrentMenuItem = (int)numMenuItems()-1;
             goToSelectableItem(pForward, pBringToTop);
          }
       }
-      else if (mCurrentMenuItem < 0) {
-         if (mWrap) {
-            if (pForward) {
+      else if (mCurrentMenuItem < 0)
+      {
+         if (mWrap)
+         {
+            if (pForward)
+            {
                mCurrentMenuItem = 0;
             }
-            else {
+            else
+            {
                mCurrentMenuItem = (int)numMenuItems() - 1;
             }
             goToSelectableItem(pForward, pBringToTop);
          }
-         else {
+         else
+         {
             mCurrentMenuItem = 0;
             goToSelectableItem(pForward, pBringToTop);
          }
       }
-      else {
+      else
+      {
          int currentItem = mCurrentMenuItem;
-         if (pForward) {
+         if (pForward)
+         {
             while (mUnselectableItems.find((unsigned)currentItem) !=
-                   mUnselectableItems.end()) {
+                   mUnselectableItems.end())
+                   {
                ++currentItem;
                // Wrap around if mCurrentMenuItem becomes too large and
                //  we're allowed to wrap.
-               if ((currentItem >= (int)mMessageLines.size()) && mWrap) {
+               if ((currentItem >= (int)mMessageLines.size()) && mWrap)
+               {
                   currentItem = 0;
                   while (mUnselectableItems.find((unsigned)currentItem) !=
-                         mUnselectableItems.end()) {
+                         mUnselectableItems.end())
+                         {
                      ++currentItem;
                   }
                }
             }
          }
-         else {
+         else
+         {
             while (mUnselectableItems.find((unsigned)mCurrentMenuItem) !=
-                   mUnselectableItems.end()) {
+                   mUnselectableItems.end())
+                   {
                --mCurrentMenuItem;
                // Wrap around if mCurrentMenuItem becomes negative
-               if (mCurrentMenuItem < 0) {
+               if (mCurrentMenuItem < 0)
+               {
                   mCurrentMenuItem = (int)mMessageLines.size() - 1;
                }
             }
          }
-   
+
          // If the current menu item is outside the current viewable
          //  area, then adjust the viewable area.
          if ((mCurrentMenuItem < mTopMenuItem) ||
-             (mCurrentMenuItem >= (mTopMenuItem+mSubWinHeight))) {
+             (mCurrentMenuItem >= (mTopMenuItem+mSubWinHeight)))
+             {
             setTopItem(mCurrentMenuItem, true);
          }
-   
-         if (pBringToTop) {
+
+         if (pBringToTop)
+         {
             bringToTop(false);
          }
       }
    }
 } // goToSelectableItem
 
-void cxMenu::doSearch() {
+void cxMenu::doSearch()
+{
    // newSearch tells us whether to do a new
    //  search or repeat the last search
    bool newSearch = false;
@@ -2623,7 +3070,8 @@ void cxMenu::doSearch() {
    searchInput.setLabelColor(eBRTCYAN_BLUE);
    // If mClearOnSearch is false, use mSearchText
    //  as the initial value for the input box.
-   if (!mClearOnSearch) {
+   if (!mClearOnSearch)
+   {
       searchInput.setValue(mSearchText);
    }
    // Set up a key for the input to clear the keyword.  This uses the return
@@ -2631,40 +3079,48 @@ void cxMenu::doSearch() {
    searchInput.setKeyFunction(cxBase::getMenuClearKeywordKey(), cxBase::noOp,
                               nullptr, nullptr, true, false, true);
 
-   if (searchInput.showModal() != ESC) {
+   if (searchInput.showModal() != ESC)
+   {
       mSearchText = searchInput.getValue();
       // If mSearchText differs from mLastSearchText,
       //  we should do a new search.
-      if (mSearchText != mLastSearchText) {
+      if (mSearchText != mLastSearchText)
+      {
          newSearch = true;
       }
       // Update mLastSearchText
       mLastSearchText = searchInput.getValue();
 
       // If mSearchText isn't blank, do the search.
-      if (mSearchText != "") {
+      if (mSearchText != "")
+      {
          int item = 0;
          // If we're to do a new search, start from
          //  the first item.  Otherwise, start from
          //  the currently-selected item.
-         if (newSearch) {
+         if (newSearch)
+         {
             item = 0;
          }
-         else {
+         else
+         {
             item = mCurrentMenuItem+1;
          }
 
          int numMenuItems = (int)mMessageLines.size();
          bool found = false;
-         for(; item < numMenuItems; ++item) {
+         for(; item < numMenuItems; ++item)
+         {
             // If we should do a case-sensitive search,
             //  leave the case alone.  Otherwise, convert
             //  both the menu item & search text to upper-case
             //  before searching.
-            if (mCaseSensitiveSearch) {
+            if (mCaseSensitiveSearch)
+            {
                found = Find(stringWithoutHotkeyChars(mMessageLines[item]), mSearchText);
             }
-            else {
+            else
+            {
                string menuItemUpper = stringWithoutHotkeyChars(mMessageLines[item]);
                string searchTextUpper = mSearchText;
                toUpper(menuItemUpper);
@@ -2672,8 +3128,10 @@ void cxMenu::doSearch() {
                found = Find(menuItemUpper, searchTextUpper);
             }
 
-            if (found) {
-               if (item != mCurrentMenuItem) {
+            if (found)
+            {
+               if (item != mCurrentMenuItem)
+               {
                   // Un-highlight the current menu item
                   int subwinRow = mCurrentMenuItem - mTopMenuItem;
                   drawMenuItem(mCurrentMenuItem, subwinRow, false, false);
@@ -2684,7 +3142,8 @@ void cxMenu::doSearch() {
                   //  or below the bottom menu item, then
                   //  scroll the items so that it's in view.
                   if ((item < mTopMenuItem) ||
-                      (item >= mTopMenuItem+mSubWinHeight)) {
+                      (item >= mTopMenuItem+mSubWinHeight))
+                      {
                      setTopItem(item, true);
                   }
                }
@@ -2693,7 +3152,8 @@ void cxMenu::doSearch() {
          }
 
          // Show a message if the item wasn't found.
-         if (!found) {
+         if (!found)
+         {
             cxWindow messageWin(this, 1, 1, 3, winWidth, "", "Not found");
             messageWin.center(true);
             messageWin.setBorderColor(eYELLOW_BLUE);
@@ -2705,7 +3165,8 @@ void cxMenu::doSearch() {
    }
 } // doSearch
 
-void cxMenu::scrollUpOne(bool& pContinueOn) {
+void cxMenu::scrollUpOne(bool& pContinueOn)
+{
    // Un-highlight the current menu item
    int subwinRow = mCurrentMenuItem - mTopMenuItem;
    drawMenuItem(mCurrentMenuItem, subwinRow, false, false);
@@ -2718,26 +3179,31 @@ void cxMenu::scrollUpOne(bool& pContinueOn) {
    //     goToSelectableItem() to skip past unselectable
    //     items.
    --mCurrentMenuItem;
-   if (mCurrentMenuItem < firstSelectableItem()) {
-      if (mExitWhenLeaveFirst) {
+   if (mCurrentMenuItem < firstSelectableItem())
+   {
+      if (mExitWhenLeaveFirst)
+      {
          pContinueOn = false;
          // Increment mCurrentMenuItem so that it is
          //  on a selectable item for the next time
          //  the menu is shown.
          ++mCurrentMenuItem;
       }
-      else {
+      else
+      {
          goToSelectableItem(false, false);
       }
    }
 
    // Scroll the menu up as needed
-   if (mCurrentMenuItem < mTopMenuItem) {
+   if (mCurrentMenuItem < mTopMenuItem)
+   {
       setTopItem((unsigned)mCurrentMenuItem, true);
    }
 } // scrollUpOne
 
-void cxMenu::scrollDownOne(bool& pContinueOn) {
+void cxMenu::scrollDownOne(bool& pContinueOn)
+{
    // Un-highlight the current menu item
    int subwinRow = mCurrentMenuItem - mTopMenuItem;
    drawMenuItem(mCurrentMenuItem, subwinRow, false, false);
@@ -2750,30 +3216,36 @@ void cxMenu::scrollDownOne(bool& pContinueOn) {
    //     goToSelectableItem() to skip past unselectable
    //     items.
    ++mCurrentMenuItem;
-   if (mCurrentMenuItem > lastSelectableItem()) {
-      if (mExitWhenLeaveLast) {
+   if (mCurrentMenuItem > lastSelectableItem())
+   {
+      if (mExitWhenLeaveLast)
+      {
          pContinueOn = false;
          // Decrement mCurrentMenuItem so that it is
          //  on a selectable item for the next time
          //  the menu is shown.
          --mCurrentMenuItem;
       }
-      else {
+      else
+      {
          goToSelectableItem(true, false);
       }
    }
 
    // Scroll the menu down if needed
-   if (mCurrentMenuItem > (mTopMenuItem + mSubWinHeight - 1)) {
+   if (mCurrentMenuItem > (mTopMenuItem + mSubWinHeight - 1))
+   {
       setBottomItem((unsigned)mCurrentMenuItem, true);
    }
 } // scrollDownOne
 
-inline void cxMenu::doPgUp() {
+inline void cxMenu::doPgUp()
+{
    // If the list is already at the top page and the user
    //  presses pageUp again, make the first item the
    //  current item.
-   if (mTopMenuItem == 0) {
+   if (mTopMenuItem == 0)
+   {
       mCurrentMenuItem = 0;
    }
    // Scroll up a page
@@ -2781,20 +3253,24 @@ inline void cxMenu::doPgUp() {
 } // doPgUp
 
 // Scrolls down one page
-inline void cxMenu::doPgDown() {
+inline void cxMenu::doPgDown()
+{
    // If there is more than a pagefull of menu items, then
    //  we will need to scroll.
-   if ((int)mMessageLines.size() > mSubWinHeight) {
+   if ((int)mMessageLines.size() > mSubWinHeight)
+   {
       // If the list is already on the last page and the user
       //  presses pageDown again, make the last item the
       //  current item.
-      if (mTopMenuItem == (int)mMessageLines.size() - mSubWinHeight) {
+      if (mTopMenuItem == (int)mMessageLines.size() - mSubWinHeight)
+      {
          mCurrentMenuItem = (int)mMessageLines.size() - 1;
       }
       // Scroll down a page
       scrollItems(mSubWinHeight, true);
    }
-   else {
+   else
+   {
       // There is less than a pagefull of menu items..  Go to
       //  the last menu item.
       // Un-highlight the current menu item
@@ -2808,7 +3284,8 @@ inline void cxMenu::doPgDown() {
    }
 } // doPgDown
 
-inline void cxMenu::reCreateSubWindow() {
+inline void cxMenu::reCreateSubWindow()
+{
    int menuHeight = height();
    int menuWidth = width();
 
@@ -2820,7 +3297,8 @@ inline void cxMenu::reCreateSubWindow() {
    int leftCol = 0;
    // If there is a border, adjust the subwindow height & width and top row &
    //  left column.
-   if (getBorderStyle() != eBS_NOBORDER) {
+   if (getBorderStyle() != eBS_NOBORDER)
+   {
       mSubWinHeight = menuHeight-2;
       mSubWinWidth = menuWidth-2;
       topRow = 1;
@@ -2829,7 +3307,8 @@ inline void cxMenu::reCreateSubWindow() {
    // Re-create the subwindow.  If derwin() can't create it, it will return
    //  nullptr, and we have a problem.
    mSubWindow = derwin(mWindow, mSubWinHeight, mSubWinWidth, topRow, leftCol);
-   if (mSubWindow == nullptr) {
+   if (mSubWindow == nullptr)
+   {
       // Free up the other memory used
       cxWindow::freeWindow();
       throw(cxWidgetsException("Couldn't re-create the ncurses subwindow (cxMenu::reCreateSubWindow()).  Subwindow height & width: " + toString(mSubWinHeight) + ", " + toString(mSubWinWidth) + "; menu height & width: " + toString(menuHeight) + ", " + toString(menuWidth) + "; begin X & Y: " + toString(topRow) + ", " + toString(leftCol)));
@@ -2839,17 +3318,21 @@ inline void cxMenu::reCreateSubWindow() {
    idlok(mSubWindow, true);
 } // reCreateSubWindow
 
-inline void cxMenu::freeSubWindow() {
-   if (mSubWindow != nullptr) {
+inline void cxMenu::freeSubWindow()
+{
+   if (mSubWindow != nullptr)
+   {
       delwin(mSubWindow);
       mSubWindow = nullptr;
    }
 } // freeSubWindow
 
-bool cxMenu::lookForSelectableItem() {
+bool cxMenu::lookForSelectableItem()
+{
    // If there are no items, then there are no
    //  selectable menu items.
-   if (numMenuItems() == 0) {
+   if (numMenuItems() == 0)
+   {
       mSelectableItemExists = false;
       // Make sure mUnselectableItems is empty.
       mUnselectableItems.clear();
@@ -2857,17 +3340,21 @@ bool cxMenu::lookForSelectableItem() {
    // If there are less unselectable items than there
    //  are items, then there must be at least one selectable
    //  item.
-   else if (mUnselectableItems.size() < numMenuItems()) {
+   else if (mUnselectableItems.size() < numMenuItems())
+   {
       mSelectableItemExists = true;
    }
-   else {
+   else
+   {
       // If there is any item index that doesn't exist in
       //  mUnselectableItems, then there is at least one
       //  selectable item.
       mSelectableItemExists = false;
       unsigned numItems = cxMenu::numMenuItems();
-      for (unsigned i = 0; i < numItems; ++i) {
-         if (mUnselectableItems.find(i) == mUnselectableItems.end()) {
+      for (unsigned i = 0; i < numItems; ++i)
+      {
+         if (mUnselectableItems.find(i) == mUnselectableItems.end())
+         {
             mSelectableItemExists = true;
             break;
          }
@@ -2878,12 +3365,15 @@ bool cxMenu::lookForSelectableItem() {
    //  submenus to see if they have any selectable item.  If a submenu
    //  has a selectable item, the user should still be able to get to
    //  it.
-   if (!mSelectableItemExists) {
+   if (!mSelectableItemExists)
+   {
       map<int, cxMenu*>::iterator iter = mSubMenus.begin();
-      for (; iter != mSubMenus.end(); ++iter) {
+      for (; iter != mSubMenus.end(); ++iter)
+      {
          mSelectableItemExists = iter->second->lookForSelectableItem();
          // Break out of this loop if mSelectableItems has been set true.
-         if (mSelectableItemExists) {
+         if (mSelectableItemExists)
+         {
             // Remove the index of the submenu item from mUnselectableItems.
             mUnselectableItems.erase(iter->first);
             break;
@@ -2894,10 +3384,12 @@ bool cxMenu::lookForSelectableItem() {
    return(mSelectableItemExists);
 } // lookForSelectableItem
 
-void cxMenu::doHome() {
+void cxMenu::doHome()
+{
    // Make the first item the current item,
    //  and scroll up to the top.
-   if (mCurrentMenuItem != 0) {
+   if (mCurrentMenuItem != 0)
+   {
       // Un-highlight the current menu item
       int subwinRow = mCurrentMenuItem - mTopMenuItem;
       drawMenuItem(mCurrentMenuItem, subwinRow, true, false);
@@ -2910,10 +3402,12 @@ void cxMenu::doHome() {
    }
 } // doHome
 
-void cxMenu::doEnd() {
+void cxMenu::doEnd()
+{
    // Make the last item the current item, and
    //  scroll down to the bottom page.
-   if (mCurrentMenuItem != (int)mMessageLines.size()-1) {
+   if (mCurrentMenuItem != (int)mMessageLines.size()-1)
+   {
       // Un-highlight the current menu item
       int subwinRow = mCurrentMenuItem - mTopMenuItem;
       drawMenuItem(mCurrentMenuItem, subwinRow, true, false);
@@ -2926,34 +3420,41 @@ void cxMenu::doEnd() {
    }
 } // doEnd
 
-long cxMenu::getCurrentItemReturnCode(const int& pLastKey, bool& pContinueOn) {
+long cxMenu::getCurrentItemReturnCode(const int& pLastKey, bool& pContinueOn)
+{
    long returnCode = 0L;
 
    // If the current menu item is a submenu type, then show
    //  its submenu and process the return code.  Otherwise,
    //  stop the input loop.
    if ((mItemTypes[mCurrentMenuItem] == cxITEM_SUBMENU) ||
-       (mItemTypes[mCurrentMenuItem] == cxITEM_POPUPMENU)) {
+       (mItemTypes[mCurrentMenuItem] == cxITEM_POPUPMENU))
+       {
       returnCode = doSubmenu();
 
       // Return the return code of the submenu if the user didn't
       //  exit or quit.
-      if ((returnCode != cxID_EXIT) && (returnCode != cxID_QUIT)) {
+      if ((returnCode != cxID_EXIT) && (returnCode != cxID_QUIT))
+      {
          return(returnCode);
       }
    }
-   else {
+   else
+   {
       // The current menu item is not a submenu type.
       // If the last keypress was a tab, then exit (if
       //  mAllowExit is true).  Otherwise, return the
       //  return code of the current menu item.
-      if (pLastKey == TAB) {
-         if (mAllowExit) {
+      if (pLastKey == TAB)
+      {
+         if (mAllowExit)
+         {
             returnCode = cxID_EXIT;
             pContinueOn = false;
          }
       }
-      else {
+      else
+      {
          returnCode = mReturnCodes[mCurrentMenuItem];
          pContinueOn = false;
       }
@@ -2962,15 +3463,19 @@ long cxMenu::getCurrentItemReturnCode(const int& pLastKey, bool& pContinueOn) {
    return(returnCode);
 } // getCurrentItemReturnCode
 
-int cxMenu::firstSelectableItem() const {
+int cxMenu::firstSelectableItem() const
+{
    int itemIndex = -1;
 
    // Go forward from the first item, and the first one that we find that is
    //  not in mUnselectableItems is the first selectable item.
    unsigned numMenuItems = mMessageLines.size();
-   if (numMenuItems > 0) {
-      for (unsigned i = 0; i < numMenuItems; ++i) {
-         if (mUnselectableItems.find(i) == mUnselectableItems.end()) {
+   if (numMenuItems > 0)
+   {
+      for (unsigned i = 0; i < numMenuItems; ++i)
+      {
+         if (mUnselectableItems.find(i) == mUnselectableItems.end())
+         {
             itemIndex = (int)i;
             break;
          }
@@ -2980,15 +3485,19 @@ int cxMenu::firstSelectableItem() const {
    return(itemIndex);
 } // firstSelectableItem
 
-int cxMenu::lastSelectableItem() const {
+int cxMenu::lastSelectableItem() const
+{
    int itemIndex = -1;
 
    // Go backward from the last item, and the first one that we find that is
    //  not in mUnselectableItems is the last selectable item.
    unsigned numMenuItems = mMessageLines.size();
-   if (numMenuItems > 0) {
-      for (unsigned i = numMenuItems - 1; i >= 0; --i) {
-         if (mUnselectableItems.find(i) == mUnselectableItems.end()) {
+   if (numMenuItems > 0)
+   {
+      for (unsigned i = numMenuItems - 1; i >= 0; --i)
+      {
+         if (mUnselectableItems.find(i) == mUnselectableItems.end())
+         {
             itemIndex = (int)i;
             break;
          }
@@ -2998,8 +3507,10 @@ int cxMenu::lastSelectableItem() const {
    return(itemIndex);
 } // lastSelectableItem
 
-void cxMenu::highlightItem(int pItemIndex) {
-   if (pItemIndex > 0) {
+void cxMenu::highlightItem(int pItemIndex)
+{
+   if (pItemIndex > 0)
+   {
       // Highlight the item in the window
       int winRow = mMouse.y - top() - 1;
       drawMenuItem(pItemIndex, winRow, true, true);
@@ -3008,40 +3519,51 @@ void cxMenu::highlightItem(int pItemIndex) {
    }
 } // highlightItem
 
-void cxMenu::freeOnSelectItemFunction() {
+void cxMenu::freeOnSelectItemFunction()
+{
    mOnSelectItemFunction.reset();
 } // freeOnSelectItemFunction
 
 void cxMenu::runOnSelectItemFunction(bool& pExitAfterRun,
-                                     bool& pRunOnLeaveFunction) {
+                                     bool& pRunOnLeaveFunction)
+                                     {
    pExitAfterRun = false;
    pRunOnLeaveFunction = true;
 
    // If mOnSelectItemFunction is not nullptr, then run it.
-   if (mOnSelectItemFunction != nullptr) {
+   if (mOnSelectItemFunction != nullptr)
+   {
       mOnSelectItemFunction->runFunction();
       pExitAfterRun = mOnSelectItemFunction->getExitAfterRun();
       pRunOnLeaveFunction = mOnSelectItemFunction->getRunOnLeaveFunction();
    }
 } // runOnSelectItemFunction
 
-void cxMenu::checkEventFunctionPointers(const cxMenu& pMenu) {
+void cxMenu::checkEventFunctionPointers(const cxMenu& pMenu)
+{
    shared_ptr<cxFunction> onSelectItemFunc = pMenu.mOnSelectItemFunction;
-   if (onSelectItemFunc != nullptr) {
-      if (onSelectItemFunc->cxTypeStr() == "cxFunction0") {
+   if (onSelectItemFunc != nullptr)
+   {
+      if (onSelectItemFunc->cxTypeStr() == "cxFunction0")
+      {
          const cxFunction0* iFunc0 = dynamic_cast<cxFunction0*>(onSelectItemFunc.get());
-         if (iFunc0 != nullptr) {
+         if (iFunc0 != nullptr)
+         {
             setOnSelectItemFunction(iFunc0->getFunction(),
                                     iFunc0->getExitAfterRun(),
                                     iFunc0->getRunOnLeaveFunction());
          }
       }
-      else if (onSelectItemFunc->cxTypeStr() == "cxFunction2") {
+      else if (onSelectItemFunc->cxTypeStr() == "cxFunction2")
+      {
          const cxFunction2* iFunc2 = dynamic_cast<cxFunction2*>(onSelectItemFunc.get());
-         if (iFunc2 != nullptr) {
+         if (iFunc2 != nullptr)
+         {
             void* params[] = { iFunc2->getParam1(), iFunc2->getParam2() };
-            for (int i = 0; i < 2; ++i) {
-               if (params[i] == (void*)(&pMenu)) {
+            for (int i = 0; i < 2; ++i)
+            {
+               if (params[i] == (void*)(&pMenu))
+               {
                   params[i] = (void*)this;
                }
             }
@@ -3050,13 +3572,17 @@ void cxMenu::checkEventFunctionPointers(const cxMenu& pMenu) {
                                     iFunc2->getRunOnLeaveFunction());
          }
       }
-      else if (onSelectItemFunc->cxTypeStr() == "cxFunction4") {
+      else if (onSelectItemFunc->cxTypeStr() == "cxFunction4")
+      {
          const cxFunction4* iFunc4 = dynamic_cast<cxFunction4*>(onSelectItemFunc.get());
-         if (iFunc4 != nullptr) {
+         if (iFunc4 != nullptr)
+         {
             void* params[] = { iFunc4->getParam1(), iFunc4->getParam2(),
                                iFunc4->getParam3(), iFunc4->getParam4() };
-            for (int i = 0; i < 4; ++i) {
-               if (params[i] == (void*)(&pMenu)) {
+            for (int i = 0; i < 4; ++i)
+            {
+               if (params[i] == (void*)(&pMenu))
+               {
                   params[i] = (void*)this;
                }
             }

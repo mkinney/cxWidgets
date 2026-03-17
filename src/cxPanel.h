@@ -8,7 +8,7 @@
 #include <vector>
 #include <memory>
 
-/** 
+/**
  * \brief cxPanel is a window that contains other windows.  When showModal()
  * \brief is called, focus will cycle through all the subwindows in the order
  * \brief they were added.<br>
@@ -39,7 +39,8 @@
  *     with the first argument false to avoid redrawing the whole screen.
  * </ul>
  */
-class cxPanel : public cxWindow {
+class cxPanel : public cxWindow
+{
    public:
       /**
        * \brief Default constructor.

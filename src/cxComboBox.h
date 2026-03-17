@@ -41,7 +41,8 @@
 #include <set>
 using std::set;
 
-class cxComboBox : public cxMultiLineInput {
+class cxComboBox : public cxMultiLineInput
+{
    public:
       /**
        * \brief Default constructor.
@@ -83,7 +84,7 @@ class cxComboBox : public cxMultiLineInput {
                        eInputOptions pInputOption = eINPUT_EDITABLE,
                        eInputTypes pInputType = eINPUT_TYPE_TEXT,
                        std::string *pExtValue = nullptr, bool pMenuEnabled = true,
-                       int pRightLabelOffset = 0, 
+                       int pRightLabelOffset = 0,
                        int pRightLabelHeight = 1,
                        int pRightLabelWidth = 5,
                        bool pShowRightLabel = false);

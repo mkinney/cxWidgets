@@ -21,7 +21,8 @@ using namespace cxBase;
 
 using namespace std;
 
-void wInfo(const cxWindow& w) {
+void wInfo(const cxWindow& w)
+{
    cout << "" << endl;
    cout << "top():" << w.top() << endl;
    cout << "left():" << w.left() << endl;
@@ -37,7 +38,8 @@ void wInfo(const cxWindow& w) {
 // compare the underlying "window" structure using the trace() functionality
 // of the ncurses_g library
 bool compareWin(int pRow, int pCol, int pHeight, int pWidth, const string& pTitle,
-                const string& pMessage, const string& pStatus) {
+                const string& pMessage, const string& pStatus)
+                {
    bool retval=false;
    ifstream traceFile;
    vector<string> expected;
@@ -51,9 +53,11 @@ bool compareWin(int pRow, int pCol, int pHeight, int pWidth, const string& pTitl
    //cout << "pWidth:" << pWidth << endl;
 
    // draw "box" in special chars...
-   for (int i=0; i<=(pHeight+pRow); ++i) {
-      for (int j=0; j<=(pWidth+pCol); ++j) {
-         if (i==pRow) { // Top row 
+   for (int i=0; i<=(pHeight+pRow); ++i)
+   {
+      for (int j=0; j<=(pWidth+pCol); ++j)
+      {
+         if (i==pRow) { // Top row
             if (j < pCol) { s+=" "; }
             if (j==pCol) { s+="l"; } // UL
             if ((j > pCol) && (j < (pCol+pWidth-1))) { s+="q"; } // top line
@@ -73,64 +77,77 @@ bool compareWin(int pRow, int pCol, int pHeight, int pWidth, const string& pTitl
          }
       }
       //cout << "s:" << s << endl;
-      if (i < (pHeight+pRow)) {
+      if (i < (pHeight+pRow))
+      {
          expected.push_back(s);
       }
       s="";
    }
 
    // draw "title"
-   for (int i=0; i< (int) pTitle.length(); ++i) {
+   for (int i=0; i< (int) pTitle.length(); ++i)
+   {
       expected[pRow][pCol+i+1]=pTitle[i];
    }
 
    // draw "message" (does not work on multi line text boxes... yet!)
-   for (int i=0; i< (int) pMessage.length(); ++i) {
+   for (int i=0; i< (int) pMessage.length(); ++i)
+   {
       expected[pRow+1][pCol+i+1]=pMessage[i];
    }
 
    // draw "status"
-   for (int i=0; i< (int) pStatus.length(); ++i) {
+   for (int i=0; i< (int) pStatus.length(); ++i)
+   {
       expected[pRow+pHeight-1][pCol+i+1]=pStatus[i];
    }
 
    // display "special" window... (useful in debugging this!)
-   for (vector<string>::iterator iter=expected.begin(); iter != expected.end(); ++iter) {
+   for (vector<string>::iterator iter=expected.begin(); iter != expected.end(); ++iter)
+   {
       s=*iter;
       //cout << "|" << s << "|" << endl;
    }
    //getch();
-   
+
    int failed=0;
 
    vector<string> got;
    traceFile.open("trace");
    string inLine;
    string line;
-   if (traceFile.good()) {
+   if (traceFile.good())
+   {
       bool foundTopRow = false;
       //messageBox("hello");
-      while (getline(traceFile, inLine)) {
+      while (getline(traceFile, inLine))
+      {
          line="";
-         if (inLine.length() > 6) {
+         if (inLine.length() > 6)
+         {
             // only read in "...win[" lines...
             //cout << "inLine:" << inLine << ":" << endl;
-            if (inLine.substr(0,6)=="...win") {
+            if (inLine.substr(0,6)=="...win")
+            {
                // compare with what we *should* have...
                size_t s=inLine.find("'");
                //size_t e=inLine.rfind("'");
                size_t e=inLine.find("'", s+1);
-               if (inLine.find("='l") != string::npos) {
+               if (inLine.find("='l") != string::npos)
+               {
                   foundTopRow = true;
                }
-               if (foundTopRow) {
-                  if ((s != string::npos) && (e != string::npos)) {
+               if (foundTopRow)
+               {
+                  if ((s != string::npos) && (e != string::npos))
+                  {
                      line=inLine.substr(s+1, e-s-1);
                      got.push_back(line);
                      line="";
                      //cout << "line:" << line << ":" << endl;
                   }
-                  else {
+                  else
+                  {
                      failed++;
                   }
                }
@@ -139,7 +156,8 @@ bool compareWin(int pRow, int pCol, int pHeight, int pWidth, const string& pTitl
       }
       traceFile.close();
 
-      if (expected.size() != got.size()) {
+      if (expected.size() != got.size())
+      {
           cerr << "Warning: expected window is not same size as what we got!" << endl;
           cerr << "expected.size():" << expected.size() << endl;
           cerr << "got.size():" << got.size() << endl;
@@ -150,27 +168,33 @@ bool compareWin(int pRow, int pCol, int pHeight, int pWidth, const string& pTitl
           messageBox(os.str());
           failed++;
       }
-      else {
+      else
+      {
          // now compare "got" with "expected"
-         for (int i=0; i < (int)expected.size(); ++i) {
-            if ((int)got.size() > i) {
-               if (expected[i] != got[i]) {
+         for (int i=0; i < (int)expected.size(); ++i)
+         {
+            if ((int)got.size() > i)
+            {
+               if (expected[i] != got[i])
+               {
                   failed++;
-                 
+
                   cerr << "Line(" << i << ") e:" << expected[i] << ": g:" << got[i] << ":" << endl;
                   std::ostringstream os;
                   os << "Line(" << i << ") e:" << expected[i] << ": g:" << got[i] << ":" << endl;
                   messageBox(os.str());
                }
             }
-            else {
+            else
+            {
                messageBox("Warning: got is not big enough!");
                failed++;
             }
          }
       }
    }
-   else {
+   else
+   {
       cerr << "Warning: could not open trace file." << endl;
       failed++;
    }
@@ -181,14 +205,16 @@ bool compareWin(int pRow, int pCol, int pHeight, int pWidth, const string& pTitl
 
 // The cxFunction class can be tested with this
 //  function.  This function
-string someFunction(void *p1, void *p2) {
+string someFunction(void *p1, void *p2)
+{
    return("arf");
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[])
+{
    cxBase::init();
 
-   { 
+   {
       // test 0 based
       cxWindow w(nullptr, 0, 0, 10, 20, "Test", "Test", "Test");
       assert(w.top()==0);
@@ -201,8 +227,8 @@ int main(int argc, char* argv[]) {
       assert(w.centerCol()==9);
    }
 
-   { 
-      // test with offsets to row/col 
+   {
+      // test with offsets to row/col
       cxWindow w(nullptr, 1, 2, 10, 20, "Test", "Test", "Test");
       assert(w.top()==1);
       assert(w.left()==2);
@@ -214,7 +240,7 @@ int main(int argc, char* argv[]) {
       assert(w.centerCol()==11);
    }
 
-   { 
+   {
       // test auto centered
       cxWindow w(nullptr, 0, 0, 24, 80, "Test", "Test", "Test");
       assert(w.top()==0);
@@ -239,7 +265,7 @@ int main(int argc, char* argv[]) {
    }
 
    {
-      // test if auto centered subwindow 
+      // test if auto centered subwindow
       cxWindow w(nullptr, 0, 0, 24, 80, "Test", "Test", "Test");
       cxWindow w3(&w, "XXX", "X", "X");
       assert(w3.top()==10);
@@ -265,9 +291,9 @@ int main(int argc, char* argv[]) {
       assert(w4.centerRow()==11);
       assert(w4.centerCol()==39);
    }
-      
+
    {
-      // test if auto centered subwindow 
+      // test if auto centered subwindow
       cxWindow w(nullptr, 0, 0, 24, 80, "Test", "Test", "Test");
       cxWindow w5(&w, "X", "X", "XXX");
       assert(w5.top()==10);
@@ -280,7 +306,7 @@ int main(int argc, char* argv[]) {
       assert(w5.centerCol()==39);
    }
 
-   { 
+   {
       // test with too small window for title
       cxWindow w(nullptr, 0, 0, 1, 1, "Test", "Test", "Test");
       assert(w.top()==0);
@@ -322,7 +348,7 @@ int main(int argc, char* argv[]) {
    }
 
    {
-      // test the screen positions... 
+      // test the screen positions...
       cxWindow w(nullptr, 0, 0, 8, 8, "ABCD", "EFGH", "IJKL");
       remove("trace");
       //trace(TRACE_UPDATE);

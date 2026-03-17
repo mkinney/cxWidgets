@@ -9,21 +9,26 @@ cxObject::cxObject()
 {
 }
 
-cxObject::~cxObject() {
+cxObject::~cxObject()
+{
 }
 
 // Mutator for useColors
-void cxObject::UseColors(bool useIt) {
+void cxObject::UseColors(bool useIt)
+{
    useColors = useIt && has_colors();
 }
 
 // Outputs a beep character
-void cxObject::beep() {
-   if (useBeeps) {
+void cxObject::beep()
+{
+   if (useBeeps)
+   {
       printf("\007");
    }
 } // beep
 
-std::string cxObject::cxTypeStr() const {
+std::string cxObject::cxTypeStr() const
+{
    return("cxObject");
 } // cxTypeStr

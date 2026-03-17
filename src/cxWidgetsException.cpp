@@ -8,13 +8,16 @@ cxWidgetsException::cxWidgetsException(const string& pErrorMsg)
 {
 }
 
-cxWidgetsException::~cxWidgetsException() {
+cxWidgetsException::~cxWidgetsException()
+{
 }
 
-const string& cxWidgetsException::getErrorMsg() const {
+const string& cxWidgetsException::getErrorMsg() const
+{
    return(mErrorMsg);
 }
 
-string cxWidgetsException::cxTypeStr() const {
+string cxWidgetsException::cxTypeStr() const
+{
    return("cxWidgetsException");
 } // cxTypeStr

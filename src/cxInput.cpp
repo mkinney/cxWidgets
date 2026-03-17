@@ -46,21 +46,24 @@ cxInput::cxInput(cxWindow *pParentWindow, int pRow,
    resize(1, pWidth, false);
 
    // Set up the X input cursor position
-   if (mMessageLines.size() > 0) {
+   if (mMessageLines.size() > 0)
+   {
       mInputStartX = (int)(cxBase::visualStrLen(mMessageLines[0]));
    }
 
    // If there's a border, the X & Y positions
    //  will both be 1, and the input length will
    //  be 2 less.
-   if (hasBorder()) {
+   if (hasBorder())
+   {
       ++mInputStartX;
       mYPos = 1;
    }
 
    // Figure out the length of input to accept (mInputLen)
    mRightMax = right();
-   if (!hasBorder()) {
+   if (!hasBorder())
+   {
       // There's no border, so the rightmost
       //  max. character position should be
       //  1 more.
@@ -69,21 +72,24 @@ cxInput::cxInput(cxWindow *pParentWindow, int pRow,
    mInputLen = width() - mInputStartX;
    // If there is a border, subtract 1 from mInputLen
    //  to account for the right border.
-   if (hasBorder()) {
+   if (hasBorder())
+   {
       --mInputLen;
    }
 
    // Reserve enough characters for mValue so that it
    //  shouldn't have to allocate more memory as text is
    //  added to it.
-   if (0 > mInputLen) {
+   if (0 > mInputLen)
+   {
       mInputLen = 0;
    }
    mValue.reserve(mInputLen);
 
    // If mExtValue is not nullptr, then update the value of
    //  this input.
-   if (mExtValue != nullptr) {
+   if (mExtValue != nullptr)
+   {
       setValue(*mExtValue);
    }
 
@@ -93,7 +99,8 @@ cxInput::cxInput(cxWindow *pParentWindow, int pRow,
    sigaddset(&mTimeoutSigaction.sa_mask, SIGALRM);
    mTimeoutSigaction.sa_flags = 0;
    mTimeoutSigaction.sa_handler = cxInput::idleTimeoutHandler;
-   if (sigaction(SIGALRM, &mTimeoutSigaction, nullptr) < 0) {
+   if (sigaction(SIGALRM, &mTimeoutSigaction, nullptr) < 0)
+   {
    }
 #endif
 
@@ -142,7 +149,8 @@ cxInput::cxInput(const cxInput& pThatInput)
 {
    // If mExtValue is not nullptr, then update the value of
    //  this input.
-   if (mExtValue != nullptr) {
+   if (mExtValue != nullptr)
+   {
       setValue(*mExtValue);
    }
 
@@ -193,7 +201,8 @@ cxInput::cxInput(const cxInput& pThatInput, cxMultiLineInput *pParentMLInput)
 {
    // If mExtValue is not nullptr, then update the value of
    //  this input.
-   if (mExtValue != nullptr) {
+   if (mExtValue != nullptr)
+   {
       setValue(*mExtValue);
    }
 
@@ -202,18 +211,22 @@ cxInput::cxInput(const cxInput& pThatInput, cxMultiLineInput *pParentMLInput)
    copyCxFunction(pThatInput, mValidatorFunction, pThatInput.mValidatorFunction);
 } // Second copy constructor
 
-cxInput::~cxInput() {
+cxInput::~cxInput()
+{
 }
 
-long cxInput::show(bool pBringToTop, bool pShowSubwindows) {
+long cxInput::show(bool pBringToTop, bool pShowSubwindows)
+{
    long returnVal = cxFIRST_AVAIL_RETURN_CODE;
    // Only show the input if it's enabled; otherwise,
    //  hide the input.
-   if (isEnabled()) {
+   if (isEnabled())
+   {
       // If the "external" user value pointer is not nullptr,
       //  update the input box value, just in case it
       //  has changed.
-      if (mExtValue != nullptr) {
+      if (mExtValue != nullptr)
+      {
          setValue(*mExtValue);
       }
 
@@ -222,17 +235,20 @@ long cxInput::show(bool pBringToTop, bool pShowSubwindows) {
       // Update this input's window
       cxBase::updateWindows();
    }
-   else {
+   else
+   {
       hide(false);
    }
 
    return(returnVal);
 } // show
 
-long cxInput::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows) {
+long cxInput::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows)
+{
    setReturnCode(cxFIRST_AVAIL_RETURN_CODE);
    // Only do this if the input is enabled.
-   if (isEnabled()) {
+   if (isEnabled())
+   {
       mIsModal = true;
       mHasFocus = true;
       mJustStartedFocus = true;
@@ -246,41 +262,50 @@ long cxInput::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows) 
       bool continueOn = !runOnFocusFunction() && !getLeaveNow();
 
       // Show the window
-      if (pShowSelf) {
+      if (pShowSelf)
+      {
          show(true, pShowSubwindows);
       }
-      else {
+      else
+      {
          // pShowSelf is false, so enable the value attributes here before the
          //  user starts typing. (they're normally enabled in show().)
-         if (eINPUT_EDITABLE == mInputOption) {
+         if (eINPUT_EDITABLE == mInputOption)
+         {
             enableAttrs(mWindow, eDATA_EDITABLE);
          }
-         else if (eINPUT_READONLY == mInputOption) {
+         else if (eINPUT_READONLY == mInputOption)
+         {
             enableAttrs(mWindow, eDATA_READONLY);
          }
       }
 
-      if (continueOn) {
+      if (continueOn)
+      {
          setReturnCode(cxID_EXIT);
 
          int prevCursorState = 0; // Previous cursor state
-         if (mShowCursor) {
+         if (mShowCursor)
+         {
             prevCursorState = curs_set(1); // Enable the cursor
          }
 
          // If this input is read-only, don't do any input
          //  processing.
-         if (mInputOption == eINPUT_READONLY) {
+         if (mInputOption == eINPUT_READONLY)
+         {
             // Disable the attributes & colors
             disableAttrs(mWindow, eDATA_READONLY);
-            if (useColors) {
+            if (useColors)
+            {
                wcolor_set(mWindow, 0, nullptr);
             }
             return(getReturnCode());
          }
 
          // Enable colors
-         if (useColors) {
+         if (useColors)
+         {
             wcolor_set(mWindow, mValueColorPair, nullptr);
          }
 
@@ -297,10 +322,12 @@ long cxInput::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows) 
          // If mMaxInputLength is less than the length that will fit inside the
          //  window, then use mMaxInputLength in calculating rightLimit;
          //  otherwise, use mInputLen.
-         if (mMaxInputLength < mInputLen) {
+         if (mMaxInputLength < mInputLen)
+         {
             rightLimit = mInputStartX + mMaxInputLength - 1;
          }
-         else {
+         else
+         {
             rightLimit = mInputStartX + mInputLen - 1;
          }
          // If the horizontal cursor position is beyond the
@@ -308,7 +335,8 @@ long cxInput::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows) 
          //  the window), then set x to the right limit so
          //  that doInputLoop will still do its loop at least
          //  once.
-         if (x > rightLimit) {
+         if (x > rightLimit)
+         {
             wmove(mWindow, mYPos, rightLimit);
             x = rightLimit;
          }
@@ -319,28 +347,35 @@ long cxInput::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows) 
          // Note: cxMultiLineInput has additional logic when it does this..  It
          //  has a list of keys that cause the input not to run the validator function
          //  when they are pressed (for keys that run a function).
-         if ((validatorFunctionIsSet()) && (getReturnCode() != cxID_QUIT)) {
+         if ((validatorFunctionIsSet()) && (getReturnCode() != cxID_QUIT))
+         {
             bool doValidation = true;
             // If mValidateOnReverse is false and the user pressed a
             //  key to navigate in reverse (i.e. shift-tab or the up
             //  arrow), then don't run the validator function.
-            if (!mValidateOnReverse) {
+            if (!mValidateOnReverse)
+            {
                if ((getLastKey() == SHIFT_TAB) ||
-                   (getLastKey() == KEY_UP)) {
+                   (getLastKey() == KEY_UP))
+                   {
                   doValidation = false;
                }
             }
-            if (doValidation) {
+            if (doValidation)
+            {
                while ((runValidatorFunction() != "") &&
-                      (getReturnCode() != cxID_QUIT)) {
+                      (getReturnCode() != cxID_QUIT))
+                      {
                   setReturnCode(doInputLoop(x, y, rightLimit, updatePrevInput, prevInput));
                   // If mValidateOnReverse is false, then check for
                   //  reverse navigation keys (shift-tab & up arrow).
                   //  If the user pressed those keys, then stop doing
                   //  doing validation.
-                  if (!mValidateOnReverse) {
+                  if (!mValidateOnReverse)
+                  {
                      int lastKey = getLastKey();
-                     if ((lastKey == SHIFT_TAB) || (lastKey == KEY_UP)) {
+                     if ((lastKey == SHIFT_TAB) || (lastKey == KEY_UP))
+                     {
                         break;
                      }
                   }
@@ -353,44 +388,53 @@ long cxInput::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows) 
 
          // Do the rest of this stuff if the user didn't press a key
          //  that's in mExitKeys.
-         if (!hasExitKey(cxWindow::getLastKey())) {
+         if (!hasExitKey(cxWindow::getLastKey()))
+         {
             // If masking is enabled, then have mValidator add the implied characters
             //  to mValue now (since it wasn't being done during input).
-            if (mMasked) {
+            if (mMasked)
+            {
                mValidator.addImpliedChars(mValue);
             }
 
             // Run the "on leave" function (if the user doesn't
             //  want to quit out of the input)
-            if (getReturnCode() != cxID_QUIT) {
+            if (getReturnCode() != cxID_QUIT)
+            {
                runOnLeaveFunction();
             }
          }
 
-         if (mShowCursor) {
+         if (mShowCursor)
+         {
             // Set the cursor mode back to the original state
             curs_set(prevCursorState);
          }
 
          // Disable the value attributes & color
          disableAttrs(mWindow, eDATA_EDITABLE);
-         if (useColors) {
+         if (useColors)
+         {
             wcolor_set(mWindow, 0, nullptr);
          }
 
          // If mSetReadOnlyOnLeave is true, set the input read-only.
-         if (mReadOnlyOnLeave) {
+         if (mReadOnlyOnLeave)
+         {
             setInputOption(eINPUT_READONLY);
          }
       }
-      else {
+      else
+      {
          mHasFocus = false;
          mIsModal = false;
          // Disable the attributes
-         if (eINPUT_EDITABLE == mInputOption) {
+         if (eINPUT_EDITABLE == mInputOption)
+         {
             enableAttrs(mWindow, eDATA_EDITABLE);
          }
-         else if (eINPUT_READONLY == mInputOption) {
+         else if (eINPUT_READONLY == mInputOption)
+         {
             enableAttrs(mWindow, eDATA_READONLY);
          }
       }
@@ -400,72 +444,90 @@ long cxInput::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows) 
 } // showModal
 
 // Returns the label for this input
-string cxInput::getLabel() const {
-   if (mMessageLines.size() > 0) {
+string cxInput::getLabel() const
+{
+   if (mMessageLines.size() > 0)
+   {
       return(*(mMessageLines.begin()));
    }
-   else {
+   else
+   {
       return("");
    }
 } // getLabel
 
-void cxInput::setLabel(const string& pLabel) {
+void cxInput::setLabel(const string& pLabel)
+{
    setMessage(pLabel);
 
    // Set up the X input cursor position, mInputStartX,
    //  and mInputLen again (see the constructor
    //  to see how they're initially set up).
-   if (mMessageLines.size() > 0) {
+   if (mMessageLines.size() > 0)
+   {
       mInputStartX = (int)(cxBase::visualStrLen(mMessageLines[0]));
    }
 
-   if (hasBorder()) {
+   if (hasBorder())
+   {
       ++mInputStartX;
    }
 
    mInputLen = width() - mInputStartX;
-   if (hasBorder()) {
+   if (hasBorder())
+   {
       --mInputLen;
    }
 
    // Truncate mValue if it's now too long for the window.
-   if (mValue.length() > (unsigned)mInputLen) {
+   if (mValue.length() > (unsigned)mInputLen)
+   {
       mValue = mValue.substr(0, mInputLen);
    }
 } // setLabel
 
-void cxInput::clearValue(bool pRefresh) {
+void cxInput::clearValue(bool pRefresh)
+{
    mValue.erase();
-   if (mExtValue != nullptr) {
+   if (mExtValue != nullptr)
+   {
       mExtValue->erase();
    }
    refreshValue(pRefresh);
 } // clearValue
 
-void cxInput::clear(bool pRefresh) {
+void cxInput::clear(bool pRefresh)
+{
    clearValue(pRefresh);
 } // clear
 
 // Returns the user's input
-string cxInput::getValue(bool pRemoveLeadingSpaces, bool pRemoveTrailingSpaces) const {
+string cxInput::getValue(bool pRemoveLeadingSpaces, bool pRemoveTrailingSpaces) const
+{
    string theValue;
 
-   if (mExtValue != nullptr) {
+   if (mExtValue != nullptr)
+   {
       theValue = *mExtValue;
    }
-   else {
+   else
+   {
       theValue = mValue;
    }
 
    mValidator.addImpliedChars(theValue);
 
    // Remove leading spaces from mValue, if pRemoveLeadingSpaces is true.
-   if (pRemoveLeadingSpaces) {
+   if (pRemoveLeadingSpaces)
+   {
       unsigned valueLen = theValue.length();
-      if (valueLen > 0) {
-         if (mValue[0] == ' ') {
+      if (valueLen > 0)
+      {
+         if (mValue[0] == ' ')
+         {
             unsigned i = 0;
-            while ((i < valueLen) && (theValue[i] == ' ')) {
+            while ((i < valueLen) && (theValue[i] == ' '))
+            {
                ++i;
             }
             theValue.erase(0, i);
@@ -474,12 +536,16 @@ string cxInput::getValue(bool pRemoveLeadingSpaces, bool pRemoveTrailingSpaces) 
    }
 
    // Remove trailing spaces from mValue, if pRemoveTrailingSpaces is true.
-   if (pRemoveTrailingSpaces) {
+   if (pRemoveTrailingSpaces)
+   {
       unsigned valueLen = theValue.length();
-      if (valueLen > 0) {
-         if (theValue[valueLen-1] == ' ') {
+      if (valueLen > 0)
+      {
+         if (theValue[valueLen-1] == ' ')
+         {
             unsigned i = valueLen - 1;
-            while (theValue[i] == ' ') {
+            while (theValue[i] == ' ')
+            {
                --i;
             }
             ++i; // Correction for off-by-1
@@ -492,26 +558,32 @@ string cxInput::getValue(bool pRemoveLeadingSpaces, bool pRemoveTrailingSpaces) 
 } // getValue
 
 // Sets the validator string
-void cxInput::setValidator(const string& pVString) {
+void cxInput::setValidator(const string& pVString)
+{
    mValidator.setValidatorStr(pVString);
 }
 
 // Returns the validator string.
-const string& cxInput::getValidatorStr() const {
+const string& cxInput::getValidatorStr() const
+{
    return(mValidator.getValidatorStr());
 } // getValidator
 
-int cxInput::getInputLen() const {
+int cxInput::getInputLen() const
+{
    return(mInputLen);
 } // getInputLen
 
-bool cxInput::setValue(const string& pValue, bool pRefresh) {
+bool cxInput::setValue(const string& pValue, bool pRefresh)
+{
    bool success = true;
 
-   if (pValue != getValue()) {
+   if (pValue != getValue())
+   {
       mValue = pValue;
 
-      if (pRefresh) {
+      if (pRefresh)
+      {
          show(false, false);
       }
    }
@@ -519,76 +591,94 @@ bool cxInput::setValue(const string& pValue, bool pRefresh) {
    return(success);
 } // setValue
 
-string* cxInput::getExtValue() const {
+string* cxInput::getExtValue() const
+{
    return(mExtValue);
 }
 
 // Setter for the "external" user value variable pointer.
 //  pExtval: The new pointer to the external variable.
 //  pRefresh: Whether or not to refresh the input.
-void cxInput::setExtValue(string *pExtVal, bool pRefresh) {
+void cxInput::setExtValue(string *pExtVal, bool pRefresh)
+{
    mExtValue = pExtVal;
-   if (mExtValue != nullptr) {
+   if (mExtValue != nullptr)
+   {
       // If pRefresh is true, then call show().  show() will
       //  update the value entered in this input box.
       //  Otherwise (if pRefresh is false), just update the
       //  value of this input.
-      if (pRefresh) {
+      if (pRefresh)
+      {
          show(false, false);
       }
-      else {
+      else
+      {
          setValue(*mExtValue);
       }
    }
 } // setExtValue
 
-bool cxInput::getExitOnFull() const {
+bool cxInput::getExitOnFull() const
+{
    return(mExitOnFull);
 }
 
-void cxInput::setExitOnFull(bool pExitOnFull) {
+void cxInput::setExitOnFull(bool pExitOnFull)
+{
    mExitOnFull = pExitOnFull;
 }
 
-bool cxInput::getExitOnBackspaceAtFront() const {
+bool cxInput::getExitOnBackspaceAtFront() const
+{
    return(mExitOnBackspaceAtFront);
 } // getExitOnBackspaceAtFront
 
-void cxInput::setExitOnBackspaceAtFront(bool pExitOnBackspaceAtFront) {
+void cxInput::setExitOnBackspaceAtFront(bool pExitOnBackspaceAtFront)
+{
    mExitOnBackspaceAtFront = pExitOnBackspaceAtFront;
 } // setExitOnBackspaceAtFront
 
-bool cxInput::getMustFill() const {
+bool cxInput::getMustFill() const
+{
    return(mMustFill);
 }
 
-void cxInput::setMustFill(bool pMustFill) {
+void cxInput::setMustFill(bool pMustFill)
+{
    mMustFill = pMustFill;
 } // setMustFill
 
-int cxInput::getInputOption() const {
+int cxInput::getInputOption() const
+{
    return(mInputOption);
 } // getKind
 
-void cxInput::setInputOption(eInputOptions pInputOption) {
+void cxInput::setInputOption(eInputOptions pInputOption)
+{
    // If pInputOption isn't eINPUT_READONLY, check to see
    //  that the input can be set editable before
    //  setting it.
-   if (pInputOption != eINPUT_READONLY) {
-      if (mCanBeEditable) {
+   if (pInputOption != eINPUT_READONLY)
+   {
+      if (mCanBeEditable)
+      {
          mInputOption = pInputOption;
       }
-      else {
+      else
+      {
          mInputOption = eINPUT_READONLY;
       }
    }
-   else {
+   else
+   {
       mInputOption = pInputOption;
    }
 } // setInputOption
 
 // Sets the horizontal (x) cursor position
-void cxInput::setCursorX(int pCursorX) {
+void cxInput::setCursorX(int pCursorX)
+{
    // If there is a border, the bounds
    //  are between mInputStartX and right()-1, and
    //  the row is 1.  If there is no
@@ -596,29 +686,35 @@ void cxInput::setCursorX(int pCursorX) {
    //  right(), and the row is 0.
    int rightmost = right();
    int row = 0;
-   if (hasBorder()) {
+   if (hasBorder())
+   {
       --rightmost;
       row = 1;
    }
 
-   if (pCursorX < mInputStartX) {
+   if (pCursorX < mInputStartX)
+   {
       wmove(mWindow, row, mInputStartX);
    }
-   else if ((pCursorX >= mInputStartX) && (pCursorX < rightmost)) {
+   else if ((pCursorX >= mInputStartX) && (pCursorX < rightmost))
+   {
       wmove(mWindow, row, pCursorX);
    }
 } // setCursorX
 
-bool cxInput::move(int pNewRow, int pNewCol, bool pRefresh) {
+bool cxInput::move(int pNewRow, int pNewCol, bool pRefresh)
+{
    // False is passed for the refresh parameter to cxWindow::move()
    //  because mRightMax needs to be updated after the window
    //  is moved..  So the refresh is done later.
    bool moved = cxWindow::move(pNewRow, pNewCol, false);
 
-   if (moved) {
+   if (moved)
+   {
       mRightMax = right();
 
-      if (pRefresh) {
+      if (pRefresh)
+      {
          show(false, false);
       }
    }
@@ -626,13 +722,15 @@ bool cxInput::move(int pNewRow, int pNewCol, bool pRefresh) {
    return(moved);
 } // move
 
-void cxInput::resize(int pNewHeight, int pNewWidth, bool pRefresh) {
+void cxInput::resize(int pNewHeight, int pNewWidth, bool pRefresh)
+{
    // Always use a height of 1 when re-sizing
    cxWindow::resize(1, pNewWidth, pRefresh);
 
    // Update the rightmost valid position & input length
    mRightMax = right();
-   if (!hasBorder()) {
+   if (!hasBorder())
+   {
       // There's no border, so the rightmost
       //  max. character position should be
       //  1 more.
@@ -641,7 +739,8 @@ void cxInput::resize(int pNewHeight, int pNewWidth, bool pRefresh) {
    mInputLen = width() - mInputStartX;
    // If there is a border, subtract 1 from mInputLen
    //  to account for the right border.
-   if (hasBorder()) {
+   if (hasBorder())
+   {
       --mInputLen;
    }
 } // resize
@@ -650,28 +749,34 @@ void cxInput::resize(int pNewHeight, int pNewWidth, bool pRefresh) {
 //  This was added for cxMultiLineInput so that it could
 //  check function keys (so that checking function keys
 //  wouldn't stop at this class).
-void cxInput::setExitOnFKey(bool pExitOnFunctionKey) {
+void cxInput::setExitOnFKey(bool pExitOnFunctionKey)
+{
    mExitOnFunctionKey = pExitOnFunctionKey;
 }
 
-bool cxInput::textIsValid() const {
+bool cxInput::textIsValid() const
+{
    return(mValidator.textIsValid(mValue));
 } // textIsValid
 
-bool cxInput::textIsValid(const string& pText) const {
+bool cxInput::textIsValid(const string& pText) const
+{
    return(mValidator.textIsValid(pText));
 } // textIsValid
 
 //// Private helper functions
 
-void cxInput::getInputText(string& pValue, int pX, bool pCheckPrintable) {
+void cxInput::getInputText(string& pValue, int pX, bool pCheckPrintable)
+{
    bool getText = true;
    // See if we should check whether the last key pressed is a printable
    //  character
-   if (pCheckPrintable) {
+   if (pCheckPrintable)
+   {
       getText = isPrintable(cxWindow::getLastKey());
    }
-   if (getText) {
+   if (getText)
+   {
       pValue.erase();
 
       // mvwinchnstr() is used to extract the characters that
@@ -687,10 +792,12 @@ void cxInput::getInputText(string& pValue, int pX, bool pCheckPrintable) {
       // Get the text in the window from mInputStartX up to the cursor
       //  position.  If there is a border, the input will be on row 1;
       //  without a border, the input will be on row 0.
-      if (hasBorder()) {
+      if (hasBorder())
+      {
          numChars = mvwinchnstr(mWindow, 1, mInputStartX, buffer, pX - mInputStartX + 1);
       }
-      else {
+      else
+      {
          numChars = mvwinchnstr(mWindow, 0, mInputStartX, buffer, pX - mInputStartX + 1);
       }
       // The ncurses data type 'chtype' contains both the
@@ -699,8 +806,10 @@ void cxInput::getInputText(string& pValue, int pX, bool pCheckPrintable) {
       //  each character with A_CHARTEXT before adding it.
       // If mvwinchnstr didn't return an error, we can go
       //  ahead and do this.
-      if (numChars != ERR) {
-         for (int i = 0; i < numChars; ++i) {
+      if (numChars != ERR)
+      {
+         for (int i = 0; i < numChars; ++i)
+         {
             pValue += (buffer[i] & A_CHARTEXT);
          }
       }
@@ -716,12 +825,16 @@ void cxInput::getInputText(string& pValue, int pX, bool pCheckPrintable) {
 //  y: The current vertical cursor position
 //  x: The current horizontal cursor position
 //  prevInput: The previous contents of the input
-inline void cxInput::doBackspace(int y, int x, string& prevInput) {
-   if (x >= mInputStartX) {
-      if (mValue.length() > 0) {
+inline void cxInput::doBackspace(int y, int x, string& prevInput)
+{
+   if (x >= mInputStartX)
+   {
+      if (mValue.length() > 0)
+      {
          mValue.erase(mValue.length()-1);
       }
-      if (prevInput.length() > 0) {
+      if (prevInput.length() > 0)
+      {
          prevInput.erase(prevInput.length()-1);
       }
 
@@ -729,26 +842,31 @@ inline void cxInput::doBackspace(int y, int x, string& prevInput) {
       mvwaddch(mWindow, y, mInputStartX+(int)prevInput.length(), ' ');
 
       // Make sure the cursor is in the right place
-      if (x > mInputStartX) {
+      if (x > mInputStartX)
+      {
          wmove(mWindow, y, x-1);
       }
-      else {
+      else
+      {
          wmove(mWindow, y, mInputStartX);
       }
    }
 } // doBackspace
 
-void cxInput::setLabelColor(e_cxColors pColor) {
+void cxInput::setLabelColor(e_cxColors pColor)
+{
    // Note: The window's message is the label.
    setMessageColor(pColor);
 }
 
-e_cxColors cxInput::getLabelColor() const {
+e_cxColors cxInput::getLabelColor() const
+{
    // Note: The window's message is the label.
    return(getItemColor(eMESSAGE));
 }
 
-void cxInput::setValueColor(e_cxColors pColor) {
+void cxInput::setValueColor(e_cxColors pColor)
+{
    // Setting a color could require a bold attribute..   setElementColor
    //  will set the correct attribute for the color.
    attr_t tmpAttr = 0;
@@ -758,28 +876,35 @@ void cxInput::setValueColor(e_cxColors pColor) {
    addAttr(eDATA_READONLY, tmpAttr);
 } // setValueColor
 
-e_cxColors cxInput::getValueColor() const {
+e_cxColors cxInput::getValueColor() const
+{
    e_cxColors color = eDEFAULT;
 
-   if (mInputOption == eINPUT_EDITABLE) {
+   if (mInputOption == eINPUT_EDITABLE)
+   {
       color = getItemColor(eDATA_EDITABLE);
    }
-   else if (mInputOption == eINPUT_READONLY) {
+   else if (mInputOption == eINPUT_READONLY)
+   {
       color = getItemColor(eDATA_READONLY);
    }
 
    return(color);
 } // getValueColor
 
-void cxInput::setColor(e_WidgetItems pItem, e_cxColors pColor) {
+void cxInput::setColor(e_WidgetItems pItem, e_cxColors pColor)
+{
    // If pItem is not one of the ones this class handles, just have
    //  the parent class (cxWindow) handle it.
    if ((pItem != eLABEL) && (pItem != eDATA_READONLY) &&
-       (pItem != eDATA_EDITABLE) && (pItem != eDATA) && (pItem != eMESSAGE)) {
+       (pItem != eDATA_EDITABLE) && (pItem != eDATA) && (pItem != eMESSAGE))
+       {
       cxWindow::setColor(pItem, pColor);
    }
-   else {
-       switch(pItem) {
+   else
+   {
+       switch(pItem)
+       {
           case eLABEL:
              setLabelColor(pColor);
              break;
@@ -801,12 +926,15 @@ void cxInput::setColor(e_WidgetItems pItem, e_cxColors pColor) {
    }
 } // setColor
 
-void cxInput::toggleCursor(bool pShowCursor) {
+void cxInput::toggleCursor(bool pShowCursor)
+{
    mShowCursor = pShowCursor;
 }
 
-string cxInput::clearInput(void* theInput, void* unused) {
-   if (theInput != nullptr) {
+string cxInput::clearInput(void* theInput, void* unused)
+{
+   if (theInput != nullptr)
+   {
       cxInput *pInput = (cxInput*)theInput;
       pInput->setValue("");
       // Refresh the window
@@ -817,71 +945,84 @@ string cxInput::clearInput(void* theInput, void* unused) {
 } // clearInput
 
 bool cxInput::setValidatorFunction(funcPtr4 pFunction, void *p1, void *p2,
-                                   void *p3, void *p4) {
+                                   void *p3, void *p4)
+                                   {
    bool setIt = false;
    // Free the memory used by mValidatorFunction, and then update it with the
    //  given parameters.
    clearValidatorFunction();
-   if (pFunction != nullptr) {
+   if (pFunction != nullptr)
+   {
       mValidatorFunction = make_shared<cxFunction4>(pFunction, p1, p2, p3, p4, false, false, true);
       setIt = (mValidatorFunction != nullptr);
    }
-   else {
+   else
+   {
       setIt = true;
    }
 
    return(setIt);
 } // setValidatorFunction
 
-bool cxInput::setValidatorFunction(funcPtr2 pFunction, void *p1, void *p2) {
+bool cxInput::setValidatorFunction(funcPtr2 pFunction, void *p1, void *p2)
+{
    bool setIt = false;
    // Free the memory used by mValidatorFunction, and then update it with the
    //  given parameters.
    clearValidatorFunction();
-   if (pFunction != nullptr) {
+   if (pFunction != nullptr)
+   {
       mValidatorFunction = make_shared<cxFunction2>(pFunction, p1, p2, false, false, true);
       setIt = (mValidatorFunction != nullptr);
    }
-   else {
+   else
+   {
       setIt = true;
    }
 
    return(setIt);
 } // setValidatorFunction
 
-bool cxInput::setValidatorFunction(funcPtr0 pFunction) {
+bool cxInput::setValidatorFunction(funcPtr0 pFunction)
+{
    bool setIt = false;
    // Free the memory used by mValidatorFunction, and then update it with the
    //  given parameters.
    clearValidatorFunction();
-   if (pFunction != nullptr) {
+   if (pFunction != nullptr)
+   {
       mValidatorFunction = make_shared<cxFunction0>(pFunction, false, false, true);
       setIt = (mValidatorFunction != nullptr);
    }
-   else {
+   else
+   {
       setIt = true;
    }
 
    return(setIt);
 } // setValidatorFunction
 
-void cxInput::clearValidatorFunction() {
+void cxInput::clearValidatorFunction()
+{
    mValidatorFunction.reset();
 } // clearValidatorFunction
 
-bool cxInput::setOnKeyFunction(const shared_ptr<cxFunction>& pFunction) {
+bool cxInput::setOnKeyFunction(const shared_ptr<cxFunction>& pFunction)
+{
    clearOnKeyFunction();
    mOnKeyFunction = pFunction;
    return true;
 } // setOnKeyFunction
 
 bool cxInput::setOnKeyFunction(funcPtr4 pFunction, void *p1, void *p2,
-                               void *p3, void *p4) {
+                               void *p3, void *p4)
+                               {
    bool setIt = false;
    // Free the memory used by mOnKeyFunction, and then update it with the
    //  given parameters.
    clearOnKeyFunction();
-   if (pFunction != nullptr) {
+   if (pFunction != nullptr)
+   {
       mOnKeyFunction = make_shared<cxFunction4>(pFunction, p1, p2, p3, p4, false, false, true);
       setIt = (mOnKeyFunction != nullptr);
    }
@@ -889,12 +1030,14 @@ bool cxInput::setOnKeyFunction(funcPtr4 pFunction, void *p1, void *p2,
    return(setIt);
 } // setOnKeyFunction
 
-bool cxInput::setOnKeyFunction(funcPtr2 pFunction, void *p1, void *p2) {
+bool cxInput::setOnKeyFunction(funcPtr2 pFunction, void *p1, void *p2)
+{
    bool setIt = false;
    // Free the memory used by mOnKeyFunction, and then update it with the
    //  given parameters.
    clearOnKeyFunction();
-   if (pFunction != nullptr) {
+   if (pFunction != nullptr)
+   {
       mOnKeyFunction = make_shared<cxFunction2>(pFunction, p1, p2, false, false, true);
       setIt = (mOnKeyFunction != nullptr);
    }
@@ -902,12 +1045,14 @@ bool cxInput::setOnKeyFunction(funcPtr2 pFunction, void *p1, void *p2) {
    return(setIt);
 } // setOnKeyFunction
 
-bool cxInput::setOnKeyFunction(funcPtr0 pFunction) {
+bool cxInput::setOnKeyFunction(funcPtr0 pFunction)
+{
    bool setIt = false;
    // Free the memory used by mOnKeyFunction, and then update it with the
    //  given parameters.
    clearOnKeyFunction();
-   if (pFunction != nullptr) {
+   if (pFunction != nullptr)
+   {
       mOnKeyFunction = make_shared<cxFunction0>(pFunction, false, false, true);
       setIt = (mOnKeyFunction != nullptr);
    }
@@ -915,66 +1060,82 @@ bool cxInput::setOnKeyFunction(funcPtr0 pFunction) {
    return(setIt);
 } // setOnKeyFunction
 
-void cxInput::toggleOnKeyFunction(bool pRunOnKeyFunction) {
+void cxInput::toggleOnKeyFunction(bool pRunOnKeyFunction)
+{
    mRunOnKeyFunction = pRunOnKeyFunction;
 } // toggleOnKeyFunction
 
-void cxInput::clearOnKeyFunction() {
+void cxInput::clearOnKeyFunction()
+{
    mOnKeyFunction.reset();
 } // clearOnKeyFunction
 
-bool cxInput::onKeyFunctionEnabled() const {
+bool cxInput::onKeyFunctionEnabled() const
+{
    return(mRunOnKeyFunction);
 } // onKeyFunctionEnabled
 
-bool cxInput::isFull() const {
+bool cxInput::isFull() const
+{
    return(((int)mValue.length() >= mInputLen) ||
           ((int)mValue.length() >= mMaxInputLength));
 } // isFull
 
-int cxInput::maxValueLen() const {
+int cxInput::maxValueLen() const
+{
    return(mInputLen);
 } // maxValueLen
 
-bool cxInput::hasFocus() const {
+bool cxInput::hasFocus() const
+{
    return(mHasFocus);
 } // hasFocus
 
-void cxInput::setReadOnlyOnLeave(bool pReadOnlyOnLeave) {
+void cxInput::setReadOnlyOnLeave(bool pReadOnlyOnLeave)
+{
    mReadOnlyOnLeave = pReadOnlyOnLeave;
 } // setReadOnlyOnLeave
 
-bool cxInput::canBeEditable() const {
+bool cxInput::canBeEditable() const
+{
    return(mCanBeEditable);
 } // canBeEditable
 
-void cxInput::setCanBeEditable(bool pCanBeEditable) {
+void cxInput::setCanBeEditable(bool pCanBeEditable)
+{
    mCanBeEditable = pCanBeEditable;
 
    // If mCanbeEditable is now false, set the kind
    //  to eINPUT_READONLY.
-   if (!mCanBeEditable) {
+   if (!mCanBeEditable)
+   {
       setInputOption(eINPUT_READONLY);
    }
 } // setCanBeEditable
 
-void cxInput::setBorderStyle(eBorderStyle pBorderStyle) {
-   if (getBorderStyle() != pBorderStyle) {
+void cxInput::setBorderStyle(eBorderStyle pBorderStyle)
+{
+   if (getBorderStyle() != pBorderStyle)
+   {
       cxWindow::setBorderStyle(pBorderStyle);
 
       // Make sure the window is still wide enough to hold the
       //  label, input (keep mInputLen the same), and borders.
       int newWidth = width();
-      if (hasBorder()) {
-         if (newWidth < (int)visualStrLen(getLabel()) + mInputLen + 2) {
+      if (hasBorder())
+      {
+         if (newWidth < (int)visualStrLen(getLabel()) + mInputLen + 2)
+         {
             newWidth = (int)visualStrLen(getLabel()) + mInputLen + 2;
          }
          mYPos = 1;
          ++mInputStartX;
          resize(3, newWidth, false);
       }
-      else {
-         if (newWidth < (int)visualStrLen(getLabel()) + mInputLen) {
+      else
+      {
+         if (newWidth < (int)visualStrLen(getLabel()) + mInputLen)
+         {
             newWidth = (int)visualStrLen(getLabel()) + mInputLen;
          }
          mYPos = 0;
@@ -984,18 +1145,22 @@ void cxInput::setBorderStyle(eBorderStyle pBorderStyle) {
    }
 } // setBorderStyle
 
-void cxInput::refreshValue(bool pRefresh) {
+void cxInput::refreshValue(bool pRefresh)
+{
    // TODO: Grab the text out of the window and compare it to mValue.  If they
    //  differ, then go ahead and refresh the value in the window.
 
    // Enable the value attributes and the color.
-   if (eINPUT_EDITABLE == mInputOption) {
+   if (eINPUT_EDITABLE == mInputOption)
+   {
       enableAttrs(mWindow, eDATA_EDITABLE);
    }
-   else if (eINPUT_READONLY == mInputOption) {
+   else if (eINPUT_READONLY == mInputOption)
+   {
       enableAttrs(mWindow, eDATA_READONLY);
    }
-   if (useColors) {
+   if (useColors)
+   {
       wcolor_set(mWindow, mValueColorPair, nullptr);
    }
 
@@ -1006,7 +1171,8 @@ void cxInput::refreshValue(bool pRefresh) {
    // We use mvwprintw here to fill the entire space
    //  so that the value color is used throughout
    //  the entire space.
-   if (mMasked) {
+   if (mMasked)
+   {
       // Create a string full of mask characters
       //  and display it.
       string maskedValue(mValue.length(), mMaskChar);
@@ -1014,7 +1180,8 @@ void cxInput::refreshValue(bool pRefresh) {
       os << "%-" << mInputLen << "s";
       mvwprintw(mWindow, mYPos, mInputStartX, (char*)os.str().c_str(), maskedValue.c_str());
    }
-   else {
+   else
+   {
       std::ostringstream os;
       os << "%-" << mInputLen << "s";
       mvwprintw(mWindow, mYPos, mInputStartX, (char*)os.str().c_str(), mValue.c_str());
@@ -1024,94 +1191,118 @@ void cxInput::refreshValue(bool pRefresh) {
    //  (so that when showModal() is called, it will be ready to
    //  accept input).  Otherwise, disable the main value attribute,
    //  extra value attributes, and value color, if focus is not set
-   if (mHasFocus) {
-      if (mCursorAfterInput) {
+   if (mHasFocus)
+   {
+      if (mCursorAfterInput)
+      {
          wmove(mWindow, mYPos, mInputStartX+(int)mValue.length());
       }
-      else {
+      else
+      {
          // Place the cursor after the label
          wmove(mWindow, mYPos, mInputStartX);
       }
    }
-   else {
+   else
+   {
       // Disable the value attributes
-      if (eINPUT_EDITABLE == mInputOption) {
+      if (eINPUT_EDITABLE == mInputOption)
+      {
          enableAttrs(mWindow, eDATA_EDITABLE);
       }
-      else if (eINPUT_READONLY == mInputOption) {
+      else if (eINPUT_READONLY == mInputOption)
+      {
          enableAttrs(mWindow, eDATA_READONLY);
       }
-      if (useColors) {
+      if (useColors)
+      {
          wcolor_set(mWindow, 0, nullptr);
       }
    }
 
    // If pRefresh is true, update this input's window
-   if (pRefresh) {
+   if (pRefresh)
+   {
       cxBase::updateWindows();
    }
 } // refreshValue
 
-void cxInput::trapNonAssignedFKeys(bool pTrapNonAssignedFKeys) {
+void cxInput::trapNonAssignedFKeys(bool pTrapNonAssignedFKeys)
+{
    mTrapNonAssignedFKeys = pTrapNonAssignedFKeys;
 } // trapNonAssignedFKeys
 
-void cxInput::enableInputLoop(bool pDoInputLoop) {
+void cxInput::enableInputLoop(bool pDoInputLoop)
+{
    mDoInputLoop = pDoInputLoop;
 } // enableInputLoop
 
-bool cxInput::inputLoopEnabled() const {
+bool cxInput::inputLoopEnabled() const
+{
    return(mDoInputLoop);
 } // inputLoopEnabled
 
-bool cxInput::isEditable() const {
+bool cxInput::isEditable() const
+{
    return((getInputOption() != eINPUT_READONLY) && isEnabled() &&
           inputLoopEnabled());
 } // isEditable
 
-bool cxInput::getCursorLeftAlign() const {
+bool cxInput::getCursorLeftAlign() const
+{
    return(!mCursorAfterInput);
 } // getCursorAfterInput
 
-void cxInput::setCursorLeftAlign(bool pCursorLeftAlign) {
+void cxInput::setCursorLeftAlign(bool pCursorLeftAlign)
+{
    // mCursorAfterInput should be the opposite of what pCursorLeftAlign is.
    mCursorAfterInput = !pCursorLeftAlign;
 } // setCursorAfterInput
 
-void cxInput::setValidateOnReverse(bool pValidateOnReverse) {
+void cxInput::setValidateOnReverse(bool pValidateOnReverse)
+{
    mValidateOnReverse = pValidateOnReverse;
 } // setValidateOnReverse
 
-bool cxInput::getValidateOnReverse() const {
+bool cxInput::getValidateOnReverse() const
+{
    return(mValidateOnReverse);
 } // getValidateOnReverse
 
-void cxInput::setLastKey(int pLastKey) {
+void cxInput::setLastKey(int pLastKey)
+{
    cxWindow::setLastKey(pLastKey);
    // If this input is in a cxMultiLineInput, its last key
    //  needs to be set too.
-   if (mParentMLInput != nullptr) {
+   if (mParentMLInput != nullptr)
+   {
       mParentMLInput->setLastKey(pLastKey);
    }
 } // setLastKey
 
-bool cxInput::modalGetsKeypress() const {
+bool cxInput::modalGetsKeypress() const
+{
    return(isEnabled() && (getInputOption() == eINPUT_EDITABLE));
 } // modalGetsKeypress
 
-bool cxInput::runOnFocusFunction(string *pFunctionRetval) {
+bool cxInput::runOnFocusFunction(string *pFunctionRetval)
+{
    bool exitInputLoop = false;
 
-   if (mOnFocusFunction != nullptr) {
-      if (onFocusFunctionIsSet()) {
+   if (mOnFocusFunction != nullptr)
+   {
+      if (onFocusFunctionIsSet())
+      {
          exitInputLoop = mOnFocusFunction->getExitAfterRun();
          string funcRetval = mOnFocusFunction->runFunction();
 
-         if (mOnFocusFunction->getUseReturnVal()) {
+         if (mOnFocusFunction->getUseReturnVal())
+         {
             setValue(funcRetval);
          }
 
-         if (nullptr != pFunctionRetval) {
+         if (nullptr != pFunctionRetval)
+         {
             *pFunctionRetval = funcRetval;
          }
       }
@@ -1120,13 +1311,16 @@ bool cxInput::runOnFocusFunction(string *pFunctionRetval) {
    return(exitInputLoop);
 } // runOnFocusFunction
 
-cxWindow* cxInput::getParent() const {
+cxWindow* cxInput::getParent() const
+{
    cxWindow *parentWindow = nullptr;
 
-   if (mParentMLInput != nullptr) {
+   if (mParentMLInput != nullptr)
+   {
       parentWindow = mParentMLInput;
    }
-   else {
+   else
+   {
       // mParentMultiForm is nullptr
       parentWindow = cxWindow::getParent();
    }
@@ -1134,18 +1328,22 @@ cxWindow* cxInput::getParent() const {
    return(parentWindow);
 } // getParent
 
-void cxInput::addAttr(e_WidgetItems pItem, attr_t pAttr) {
+void cxInput::addAttr(e_WidgetItems pItem, attr_t pAttr)
+{
    // If pItem is not one of the ones this class handles, just have
    //  the parent class (cxWindow) handle it.
    if ((pItem != eLABEL) && (pItem != eDATA_READONLY) &&
-       (pItem != eDATA_EDITABLE) && (pItem != eMESSAGE)) {
+       (pItem != eDATA_EDITABLE) && (pItem != eMESSAGE))
+       {
       cxWindow::addAttr(pItem, pAttr);
    }
-   else {
+   else
+   {
       // attrSet is a pointer that will be set to point to the correct attribute
       //  set, depending on the value of pItem.
       set<attr_t>* attrSet = nullptr;
-      switch(pItem) {
+      switch(pItem)
+      {
          case eLABEL:          // Labels
             attrSet = &mLabelAttrs;
             break;
@@ -1167,24 +1365,29 @@ void cxInput::addAttr(e_WidgetItems pItem, attr_t pAttr) {
       }
 
       // Insert the attribute, if attrSet was set.
-      if (nullptr != attrSet) {
+      if (nullptr != attrSet)
+      {
          attrSet->insert(pAttr);
       }
    }
 } // addAttr
 
-void cxInput::setAttr(e_WidgetItems pItem, attr_t pAttr) {
+void cxInput::setAttr(e_WidgetItems pItem, attr_t pAttr)
+{
    // If pItem is not one of the ones this class handles, just have
    //  the parent class (cxWindow) handle it.
    if ((pItem != eLABEL) && (pItem != eDATA_READONLY) &&
-       (pItem != eDATA_EDITABLE) && (pItem != eMESSAGE)) {
+       (pItem != eDATA_EDITABLE) && (pItem != eMESSAGE))
+       {
       cxWindow::setAttr(pItem, pAttr);
    }
-   else {
+   else
+   {
       // attrSet is a pointer that will be set to point to the correct attribute
       //  set, depending on the value of pItem.
       set<attr_t>* attrSet = nullptr;
-      switch(pItem) {
+      switch(pItem)
+      {
          case eLABEL:          // Labels
             attrSet = &mLabelAttrs;
             break;
@@ -1206,25 +1409,30 @@ void cxInput::setAttr(e_WidgetItems pItem, attr_t pAttr) {
       }
 
       // Set the attribute, if attrSet was set.
-      if (nullptr != attrSet) {
+      if (nullptr != attrSet)
+      {
          attrSet->clear();
          attrSet->insert(pAttr);
       }
    }
 } // setAttr
 
-void cxInput::removeAttr(e_WidgetItems pItem, attr_t pAttr) {
+void cxInput::removeAttr(e_WidgetItems pItem, attr_t pAttr)
+{
    // If pItem is not one of the ones this class handles, just have
    //  the parent class (cxWindow) handle it.
    if ((pItem != eLABEL) && (pItem != eDATA_READONLY) &&
-       (pItem != eDATA_EDITABLE)) {
+       (pItem != eDATA_EDITABLE))
+       {
       cxWindow::removeAttr(pItem, pAttr);
    }
-   else {
+   else
+   {
       // attrSet is a pointer that will be set to point to the correct attribute
       //  set, depending on the value of pItem.
       set<attr_t>* attrSet = nullptr;
-      switch(pItem) {
+      switch(pItem)
+      {
          case eLABEL:          // Labels
             attrSet = &mLabelAttrs;
             break;
@@ -1246,24 +1454,29 @@ void cxInput::removeAttr(e_WidgetItems pItem, attr_t pAttr) {
       }
 
       // Remove the attribute, if attrSet was set.
-      if (nullptr != attrSet) {
+      if (nullptr != attrSet)
+      {
          attrSet->erase(pAttr);
       }
    }
 } // removeAttr
 
-void cxInput::removeAttrs(e_WidgetItems pItem) {
+void cxInput::removeAttrs(e_WidgetItems pItem)
+{
    // If pItem is not one of the ones this class handles, just have
    //  the parent class (cxWindow) handle it.
    if ((pItem != eLABEL) && (pItem != eDATA_READONLY) &&
-       (pItem != eDATA_EDITABLE)) {
+       (pItem != eDATA_EDITABLE))
+       {
       cxWindow::removeAttrs(pItem);
    }
-   else {
+   else
+   {
       // attrSet is a pointer that will be set to point to the correct attribute
       //  set, depending on the value of pItem.
       set<attr_t>* attrSet = nullptr;
-      switch(pItem) {
+      switch(pItem)
+      {
          case eLABEL:          // Labels
             attrSet = &mLabelAttrs;
             break;
@@ -1285,23 +1498,28 @@ void cxInput::removeAttrs(e_WidgetItems pItem) {
       }
 
       // Remove the attributes, if attrSet was set.
-      if (nullptr != attrSet) {
+      if (nullptr != attrSet)
+      {
          attrSet->clear();
       }
    }
 } // removeAttrs
 
-void cxInput::getAttrs(e_WidgetItems pItem, set<attr_t>& pAttrs) const {
+void cxInput::getAttrs(e_WidgetItems pItem, set<attr_t>& pAttrs) const
+{
    pAttrs.clear();
 
    // If pItem is not one of the ones this class handles, just have
    //  the parent class (cxWindow) handle it.
    if ((pItem != eLABEL) && (pItem != eDATA_READONLY) &&
-       (pItem != eDATA_EDITABLE)) {
+       (pItem != eDATA_EDITABLE))
+       {
       cxWindow::getAttrs(pItem, pAttrs);
    }
-   else {
-      switch(pItem) {
+   else
+   {
+      switch(pItem)
+      {
          case eLABEL:          // Labels
             pAttrs = mLabelAttrs;
             break;
@@ -1324,11 +1542,14 @@ void cxInput::getAttrs(e_WidgetItems pItem, set<attr_t>& pAttrs) const {
    }
 } // getAttrs
 
-string cxInput::runValidatorFunction() const {
+string cxInput::runValidatorFunction() const
+{
    string retval;
 
-   if (mValidatorFunction != nullptr) {
-      if (mValidatorFunction->functionIsSet()) {
+   if (mValidatorFunction != nullptr)
+   {
+      if (mValidatorFunction->functionIsSet())
+      {
          retval = mValidatorFunction->runFunction();
       }
    }
@@ -1336,64 +1557,79 @@ string cxInput::runValidatorFunction() const {
    return(retval);
 } // runValidatorFunction
 
-void cxInput::setTimeout(int pTimeout) {
+void cxInput::setTimeout(int pTimeout)
+{
    mTimeout = pTimeout;
 } // setTimeout
 
-int cxInput::getTimeout() const {
+int cxInput::getTimeout() const
+{
    return(mTimeout);
 } // getTimeout
 
-string cxInput::cxTypeStr() const {
+string cxInput::cxTypeStr() const
+{
    return("cxInput");
 } // cxTypeStr
 
-void cxInput::setForceUpper(bool pForceUpper) {
+void cxInput::setForceUpper(bool pForceUpper)
+{
    mForceUpper = pForceUpper;
 } // forceUpper
 
-bool cxInput::getForceUpper() const {
+bool cxInput::getForceUpper() const
+{
    return(mForceUpper);
 } // forceUpper
 
-void cxInput::setMaxInputLength(int pLength) {
-   if (pLength >= 0) {
+void cxInput::setMaxInputLength(int pLength)
+{
+   if (pLength >= 0)
+   {
       mMaxInputLength = pLength;
    }
 } // setMaxInputLength
 
-int cxInput::getMaxInputLength() const {
+int cxInput::getMaxInputLength() const
+{
    return(mMaxInputLength);
 } // getMaxInputLength
 
 //// Protected functions
 
 bool cxInput::handleFunctionForLastKey(bool *pFunctionExists,
-                                       bool *pRunOnLeaveFunction) {
+                                       bool *pRunOnLeaveFunction)
+                                       {
    // continueOn is whether or not to continue the input loop.
    bool continueOn = true;
 
    // If pFunctionExists or pRunOnLeaveFunction are non-nullptr, then default
    //  them.
-   if (pFunctionExists != nullptr) {
+   if (pFunctionExists != nullptr)
+   {
       *pFunctionExists = false;
    }
-   if (pRunOnLeaveFunction != nullptr) {
+   if (pRunOnLeaveFunction != nullptr)
+   {
       *pRunOnLeaveFunction = true;
    }
 
    int lastKey = cxWindow::getLastKey();
-   if (mKeyFunctions.find(lastKey) != mKeyFunctions.end()) {
+   if (mKeyFunctions.find(lastKey) != mKeyFunctions.end())
+   {
       shared_ptr<cxFunction> iFunc = mKeyFunctions[lastKey];
       // The cxFunction pointers in mKeyFunctions shouldn't be nullptr, but
       //  check just in case.
-      if (iFunc != nullptr) {
+      if (iFunc != nullptr)
+      {
          // If pFunctionExists is non-nullptr, set it to true, since
          //  a function was found for the last keypress.
-         if (pFunctionExists != nullptr) {
+         if (pFunctionExists != nullptr)
+         {
             *pFunctionExists = true;
          }
-         if (pRunOnLeaveFunction != nullptr) {
+         if (pRunOnLeaveFunction != nullptr)
+         {
             *pRunOnLeaveFunction = iFunc->getRunOnLeaveFunction();
          }
 
@@ -1402,7 +1638,8 @@ bool cxInput::handleFunctionForLastKey(bool *pFunctionExists,
 
          // If the return value of the function is to be used,
          //  then use its return value as the value for this field.
-         if (iFunc->getUseReturnVal()) {
+         if (iFunc->getUseReturnVal())
+         {
             mValue = functionRetval;
             // Refresh the new value in this input.
             mvwaddnstr(mWindow, mYPos, mInputStartX, mValue.c_str(),
@@ -1413,11 +1650,13 @@ bool cxInput::handleFunctionForLastKey(bool *pFunctionExists,
 
          // If the 'mExitAfterRun' value this field function is true,
          //  then exit the input loop.
-         if (iFunc->getExitAfterRun()) {
+         if (iFunc->getExitAfterRun())
+         {
             continueOn = false;
          }
 
-         if (mExitOnFunctionKey) {
+         if (mExitOnFunctionKey)
+         {
             continueOn = false;
          }
       }
@@ -1426,19 +1665,23 @@ bool cxInput::handleFunctionForLastKey(bool *pFunctionExists,
    return(continueOn);
 } // handleFunctionForLastKey
 
-void cxInput::enableAttrs(WINDOW *pWin, e_WidgetItems pItem) {
+void cxInput::enableAttrs(WINDOW *pWin, e_WidgetItems pItem)
+{
    // If pItem is not one of the ones this class handles, just have
    //  the parent class (cxWindow) handle it.
    if ((pItem != eLABEL) && (pItem != eDATA_READONLY) &&
-       (pItem != eDATA_EDITABLE)) {
+       (pItem != eDATA_EDITABLE))
+       {
       cxWindow::enableAttrs(pWin, pItem);
    }
-   else {
+   else
+   {
       // attrSet is a pointer that will be set to point to the correct attribute
       //  set, depending on the value of pItem.
       set<attr_t>* attrSet = nullptr;
 
-      switch(pItem) {
+      switch(pItem)
+      {
          case eLABEL:          // Labels
             attrSet = &mLabelAttrs;
             break;
@@ -1460,38 +1703,47 @@ void cxInput::enableAttrs(WINDOW *pWin, e_WidgetItems pItem) {
       }
 
       // Enable the attributes, if attrSet was set.
-      if (nullptr != attrSet) {
+      if (nullptr != attrSet)
+      {
          // If attrSet has at least 1 attribute, disable them; otherwise, disable
          //  the cxBase attributes.
-         if (attrSet->size() > 0) {
+         if (attrSet->size() > 0)
+         {
             set<attr_t>::const_iterator iter = attrSet->begin();
-            for (; iter != attrSet->end(); ++iter) {
+            for (; iter != attrSet->end(); ++iter)
+            {
                wattron(pWin, *iter);
             }
          }
-         else {
+         else
+         {
             cxBase::enableAttrs(pWin, pItem);
          }
       }
-      else {
+      else
+      {
          cxBase::enableAttrs(pWin, pItem);
       }
    }
 } // enableAttrs
 
-void cxInput::disableAttrs(WINDOW *pWin, e_WidgetItems pItem) {
+void cxInput::disableAttrs(WINDOW *pWin, e_WidgetItems pItem)
+{
    // If pItem is not one of the ones this class handles, just have
    //  the parent class (cxWindow) handle it.
    if ((pItem != eLABEL) && (pItem != eDATA_READONLY) &&
-       (pItem != eDATA_EDITABLE)) {
+       (pItem != eDATA_EDITABLE))
+       {
       cxWindow::disableAttrs(pWin, pItem);
    }
-   else {
+   else
+   {
       // attrSet is a pointer that will be set to point to the correct attribute
       //  set, depending on the value of pItem.
       set<attr_t>* attrSet = nullptr;
 
-      switch(pItem) {
+      switch(pItem)
+      {
          case eLABEL:          // Labels
             attrSet = &mLabelAttrs;
             break;
@@ -1513,37 +1765,45 @@ void cxInput::disableAttrs(WINDOW *pWin, e_WidgetItems pItem) {
       }
 
       // Disable the attributes, if attrSet was set.
-      if (nullptr != attrSet) {
+      if (nullptr != attrSet)
+      {
          // If attrSet has at least 1 attribute, disable them; otherwise, disable
          //  the cxBase attributes.
-         if (attrSet->size() > 0) {
+         if (attrSet->size() > 0)
+         {
             set<attr_t>::const_iterator iter = attrSet->begin();
-            for (; iter != attrSet->end(); ++iter) {
+            for (; iter != attrSet->end(); ++iter)
+            {
                wattroff(pWin, *iter);
             }
          }
-         else {
+         else
+         {
             cxBase::disableAttrs(pWin, pItem);
          }
       }
-      else {
+      else
+      {
          cxBase::disableAttrs(pWin, pItem);
       }
    }
 } // disableAttrs
 
-e_cxColors cxInput::getItemColor(e_WidgetItems pItem) const {
+e_cxColors cxInput::getItemColor(e_WidgetItems pItem) const
+{
    // If pItem is not something specifically used by this class, return
    //  the value of cxWindow::getItemColor().
    if ((pItem != eLABEL) && (pItem != eDATA_READONLY) &&
-       (pItem != eDATA_EDITABLE)) {
+       (pItem != eDATA_EDITABLE))
+       {
       return(cxWindow::getItemColor(pItem));
    }
 
    // Figure out which member color pair & attribute set to check
    short colorPair = 0;
    set<attr_t> attrSet;
-   switch(pItem) {
+   switch(pItem)
+   {
       case eLABEL:          // Input labels
          attrSet = mLabelAttrs;
          break;
@@ -1568,8 +1828,10 @@ e_cxColors cxInput::getItemColor(e_WidgetItems pItem) const {
    e_cxColors color = (e_cxColors)colorPair; // This will be returned
    // If the attribute set contains A_BOLD, then check the color (if brown,
    //  then the actual color is yellow, etc.).
-   if (attrSet.find(A_BOLD) != attrSet.end()) {
-      switch(colorPair) {
+   if (attrSet.find(A_BOLD) != attrSet.end())
+   {
+      switch(colorPair)
+      {
          case eBROWN_BLACK:
             color = eYELLOW_BLACK;
             break;
@@ -1590,32 +1852,40 @@ e_cxColors cxInput::getItemColor(e_WidgetItems pItem) const {
 
 //// Private helper functions
 
-inline void cxInput::enableValueAttrs() {
-   if (eINPUT_EDITABLE == mInputOption) {
+inline void cxInput::enableValueAttrs()
+{
+   if (eINPUT_EDITABLE == mInputOption)
+   {
       enableAttrs(mWindow, eDATA_EDITABLE);
    }
-   else if (eINPUT_READONLY == mInputOption) {
+   else if (eINPUT_READONLY == mInputOption)
+   {
       enableAttrs(mWindow, eDATA_READONLY);
    }
 } // enableValueAttrs
 
-inline void cxInput::disableValueAttrs() {
-   if (eINPUT_EDITABLE == mInputOption) {
+inline void cxInput::disableValueAttrs()
+{
+   if (eINPUT_EDITABLE == mInputOption)
+   {
       disableAttrs(mWindow, eDATA_EDITABLE);
    }
-   else if (eINPUT_READONLY == mInputOption) {
+   else if (eINPUT_READONLY == mInputOption)
+   {
       disableAttrs(mWindow, eDATA_READONLY);
    }
 } // disableValueAttrs
 
 long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
-                          string& prevInput) {
+                          string& prevInput)
+                          {
    setReturnCode(cxID_EXIT);
 
    // Enable the message attributes and turn on the
    //  value color
    enableValueAttrs();
-   if (useColors) {
+   if (useColors)
+   {
       wcolor_set(mWindow, mValueColorPair, nullptr);
    }
 
@@ -1636,7 +1906,8 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
    // highestX stores The highest horizontal position reached + 1 (to help
    //  in getting the final input text once the input loop is finished).
    int highestX = mInputStartX + (int)(mValue.length()) - 1;
-   while((x <= rightLimit) && continueOn && (getInputOption() != eINPUT_READONLY && !getLeaveNow())) {
+   while((x <= rightLimit) && continueOn && (getInputOption() != eINPUT_READONLY && !getLeaveNow()))
+   {
       // Make sure the cursor is enabled (sometimes it would disappear for
       //  some reason).
       curs_set(1);
@@ -1644,34 +1915,40 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
       //  then add the implied characters to mValue and output masking
       //  characters in the window.  If no masking is to be done, output
       //  the value with no masking.
-      if (mMasked) {
+      if (mMasked)
+      {
          mValidator.addImpliedChars(mValue);
 
          wmove(mWindow, y, mInputStartX);
          unsigned valueLen = mValue.length();
-         for (unsigned i = 0; i < valueLen; ++i) {
+         for (unsigned i = 0; i < valueLen; ++i)
+         {
             waddch(mWindow, mMaskChar);
          }
       }
-      else {
+      else
+      {
          // Add the implied characters from the validator to prevInput,
          //  but only if updatePrevInput is true (it could have been
          //  set false in the last iteration if the user pressed a
          //  backspace).
-         if (updatePrevInput) {
+         if (updatePrevInput)
+         {
             mValidator.addImpliedChars(prevInput);
          }
 
          // Write prevInput to the window
          // Get the current cursor position (curY, curX), in case moveCursor
          //  is false.
-         if (writeValue) {
+         if (writeValue)
+         {
             int curY = 0, curX = 0;
             getyx(mWindow, curY, curX);
             mvwaddstr(mWindow, y, mInputStartX, prevInput.c_str());
             // If moveCursor is false, move the cursor back to the
             //  start of the input value.
-            if (!moveCursor) {
+            if (!moveCursor)
+            {
                wmove(mWindow, curY, curX);
             }
          }
@@ -1680,13 +1957,16 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
       // If focus just started and mCursorAfterInput is
       //  false, place the cursor after the label (rather
       //  than leave it after the input text).
-      if (mJustStartedFocus && !mCursorAfterInput) {
+      if (mJustStartedFocus && !mCursorAfterInput)
+      {
          // Place the cursor after the label
-         if (moveCursor) {
+         if (moveCursor)
+         {
             wmove(mWindow, mYPos, mInputStartX);
          }
       }
-      else {
+      else
+      {
          // If mValue has the same length as the validator string,
          //  place the cursor at the last character of the
          //  input in the window.  Otherwise, place the cursor
@@ -1695,14 +1975,18 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
          //  but it needs to always be done after the value is written
          //  to the window.
          if ((mValidator.getValidatorStr().length() > 0) &&
-             (mValue.length() == mValidator.getValidatorStr().length())) {
+             (mValue.length() == mValidator.getValidatorStr().length()))
+             {
             prevInput = mValue; // prevInput needs to be updated here
-            if (moveCursor) {
+            if (moveCursor)
+            {
                wmove(mWindow, mYPos, mInputStartX+(int)mValue.length()-1);
             }
          }
-         else {
-            if (moveCursor) {
+         else
+         {
+            if (moveCursor)
+            {
                wmove(mWindow, mYPos, mInputStartX+(int)mValue.length());
             }
          }
@@ -1716,21 +2000,29 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
       //  If the focus has just started, don't exit.
       //  Otherwise, if we're to exit when full, go ahead & exit.
       //     Otherwise, don't exit.
-      if (hasBorder()) {
-         if (x > rightLimit) {
-            if (mJustStartedFocus) {
-               if (moveCursor) {
+      if (hasBorder())
+      {
+         if (x > rightLimit)
+         {
+            if (mJustStartedFocus)
+            {
+               if (moveCursor)
+               {
                   wmove(mWindow, mYPos, rightLimit);
                   getyx(mWindow, y, x);
                }
             }
-            else {
-               if (mExitOnFull) {
+            else
+            {
+               if (mExitOnFull)
+               {
                   setReturnCode(cxID_EXIT);
                   break;
                }
-               else {
-                  if (moveCursor) {
+               else
+               {
+                  if (moveCursor)
+                  {
                      wmove(mWindow, mYPos, rightLimit);
                      getyx(mWindow, y, x);
                   }
@@ -1744,7 +2036,8 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
       updatePrevInput = true;
 
       // Don't let the user move the cursor into the label
-      if (x < mInputStartX) {
+      if (x < mInputStartX)
+      {
          wmove(mWindow, y, mInputStartX);
          getyx(mWindow, y, x);
       }
@@ -1757,7 +2050,8 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
 #endif
       int lastKey = wgetch(mWindow);
       // Upper-case the character if mForceUpper is true
-      if (mForceUpper) {
+      if (mForceUpper)
+      {
          lastKey = toupper(lastKey);
       }
 #ifdef WANT_TIMEOUT
@@ -1766,7 +2060,8 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
       setLastKey(lastKey);
       // If mLeaveNow was set (i.e., from a call to exitNow() or quitNow(),
       //  then return now.
-      if (getLeaveNow()) {
+      if (getLeaveNow())
+      {
          return(getReturnCode());
       }
 #ifdef NCURSES_MOUSE_VERSION
@@ -1780,32 +2075,41 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
       //      out of the input loop (allowing the user to go to another
       //      window or input inside of a cxMultiLineInput).
       //      Otherwise, continue on (to simulate nothing happening).
-      if (lastKey == KEY_MOUSE) {
-         if (getmouse(&mMouse) == OK) {
+      if (lastKey == KEY_MOUSE)
+      {
+         if (getmouse(&mMouse) == OK)
+         {
             // Run a function that may exist for the mouse state.  If
             //  no function exists for the mouse state, then process
             //  it here.
             bool mouseFuncExists = false;
             continueOn = handleFunctionForLastMouseState(&mouseFuncExists);
-            if (!mouseFuncExists) {
-               if (mouseEvtWasButtonEvt()) {
-                  if (mouseEvtWasInWindow()) {
+            if (!mouseFuncExists)
+            {
+               if (mouseEvtWasButtonEvt())
+               {
+                  if (mouseEvtWasInWindow())
+                  {
                      continue;
                   }
-                  else {
-                     if (parentIsCxPanel() || (mParentMLInput != nullptr)) {
+                  else
+                  {
+                     if (parentIsCxPanel() || (mParentMLInput != nullptr))
+                     {
                         setReturnCode(cxID_QUIT);
                         continueOn = false;
                         break;
                      }
-                     else {
+                     else
+                     {
                         continue;
                      }
                   }
                }
             }
          }
-         else {
+         else
+         {
             // getmouse failed..  just continue to the next iteration of the
             //  input loop.
             continue;
@@ -1816,33 +2120,40 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
       //  cxID_QUIT.  If the key isn't there, look for it in
       //  the exit keys (if it's there, quit and return cxID_EXIT).
       //  If not there either, handle the key in a switch.
-      if (hasQuitKey(lastKey)) {
+      if (hasQuitKey(lastKey))
+      {
          setReturnCode(cxID_QUIT);
          continueOn = false;
       }
-      else if (hasExitKey(lastKey)) {
+      else if (hasExitKey(lastKey))
+      {
          setReturnCode(cxID_EXIT);
          continueOn = false;
       }
       // If the key is the input clear key, then clear the
       //  input value.  (Ideally, we'd handle this in the switch, but
       //  you must use const values in a switch).
-      else if (lastKey == cxInput::inputClearKey) {
+      else if (lastKey == cxInput::inputClearKey)
+      {
          // If this input is part of a multi-line input, then
          //  exit the input loop so that the multi-line input can
          //  catch the key and clear all of its inputs.  Otherwise,
          //  go ahead and clear the value of this input.
-         if (mParentMLInput != nullptr) {
+         if (mParentMLInput != nullptr)
+         {
             continueOn = false;
          }
-         else {
+         else
+         {
             prevInput = "";
             setValue("", true);
          }
       }
-      else {
+      else
+      {
          // Perform some action based on the last key pressed
-         switch(lastKey) {
+         switch(lastKey)
+         {
             case ESCAPE: // Defined in cxKeyDefines.h
                setReturnCode(cxID_QUIT);
                continueOn = false;
@@ -1862,10 +2173,12 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
                //  previous input in a cxForm.
                // For enter or down arrow, interpret that
                //  as a successful exit.
-               if (lastKey) {
+               if (lastKey)
+               {
                   setReturnCode(cxID_QUIT);
                }
-               else {
+               else
+               {
                   setReturnCode(cxID_EXIT);
                }
                continueOn = false;
@@ -1904,20 +2217,23 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
             case KEY_DC:    // Delete character
             case '\b':      // Backspace character
                // If the cursor was in the first position
-               if (x == mInputStartX) {
+               if (x == mInputStartX)
+               {
                   // The cursor was in the first input position
 
                   // If the value currently has only 1 character, then remove
                   //  it (that's probably what the user intended).  Check
                   //  prevInput rather than mValue because it's more up to date.
-                  if (prevInput.length() == 1) {
+                  if (prevInput.length() == 1)
+                  {
                      prevInput = "";
                      mValue = "";
                      // Don't update prevInput later, because we just did now.
                      updatePrevInput = false;
                      // Because we have 1 less character, decrement highestX if
                      //  it's still greater than the starting X position-1.
-                     if (highestX > mInputStartX-1) {
+                     if (highestX > mInputStartX-1)
+                     {
                         --highestX;
                      }
                      // Write a space to clear out the input
@@ -1930,16 +2246,19 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
 
                   // If mExitOnBackspaceAtFront is true, then don't continue
                   //  the input loop.
-                  if (mExitOnBackspaceAtFront) {
+                  if (mExitOnBackspaceAtFront)
+                  {
                      continueOn = false;
                   }
                }
-               else if (x >= highestX) {
+               else if (x >= highestX)
+               {
                   // The cursor was at the end of the value.
                   doBackspace(y, x, prevInput);
                   // Decrement highestX if it's still greater than the
                   //  starting X position-1
-                  if (highestX > mInputStartX-1) {
+                  if (highestX > mInputStartX-1)
+                  {
                      --highestX;
                   }
                   // Don't update prevInput
@@ -1948,7 +2267,8 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
                   wmove(mWindow, y, x-1);
                   moveCursor = false;
                }
-               else {
+               else
+               {
                   // The cursor was somewhere in the middle.  Delete the
                   //  character at the cursor position from the value.
                   int pos = x - mInputStartX - 1;
@@ -1958,7 +2278,8 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
 
                   // Because we have 1 less character, decrement highestX if
                   //  it's still greater than the starting X position-1.
-                  if (highestX > mInputStartX-1) {
+                  if (highestX > mInputStartX-1)
+                  {
                      --highestX;
                   }
 
@@ -1985,13 +2306,16 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
                // If the user is using a Wyse50 terminal, then
                //  do a backspace.  Otherwise, let the user move
                //  the cursor over without deleting.
-               if (cxBase::termType == "wy50") {
+               if (cxBase::termType == "wy50")
+               {
                   doBackspace(y, x, prevInput);
                   // Don't update prevInput
                   updatePrevInput = false;
                }
-               else {
-                  if (!mMasked) {
+               else
+               {
+                  if (!mMasked)
+                  {
                      wmove(mWindow, y, x-1);
                   }
                }
@@ -2004,7 +2328,8 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
                //  input.
                // Note: x - mInputStartX is the position of the cursor where
                //  a horizontal value of 0 is the position after the label.
-               if (!mMasked && ((x - mInputStartX) < (int)(cxInput::getValue().length()))) {
+               if (!mMasked && ((x - mInputStartX) < (int)(cxInput::getValue().length())))
+               {
                   wmove(mWindow, y, x+1);
                }
                // Don't move the cursor next time around
@@ -2015,7 +2340,8 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
             // Process any other key
             default:
                // Update highestX if appropriate.
-               if (isPrintable(lastKey) && (x > highestX)) {
+               if (isPrintable(lastKey) && (x > highestX))
+               {
                   highestX = x;
                }
 
@@ -2029,14 +2355,18 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
 
                   // If no function exists for the current key, then treat it
                   //  as another keypress from the user.
-                  if (!functionExists) {
-                     if (isPrintable(lastKey)) {
+                  if (!functionExists)
+                  {
+                     if (isPrintable(lastKey))
+                     {
                         // Deal with input masking
-                        if (mMasked) {
+                        if (mMasked)
+                        {
                            mValue += char(lastKey);
                            waddch(mWindow, mMaskChar);
                         }
-                        else {
+                        else
+                        {
                            // Add the key to the window and input if the user
                            //  typed a printable character.
                            waddch(mWindow, char(lastKey));
@@ -2054,31 +2384,39 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
                      //  has enough characters.
                      int lastCapIndex = indexOfLastCap(mValidator.getValidatorStr());
                      bool canValidate = true;
-                     if (lastCapIndex > -1) {
+                     if (lastCapIndex > -1)
+                     {
                         canValidate = (mValue.length() >= (unsigned)lastCapIndex + 1);
                      }
-                     if (canValidate) {
-                        if (mValidator.textIsValid(mValue)) {
+                     if (canValidate)
+                     {
+                        if (mValidator.textIsValid(mValue))
+                        {
                            // If the length of the input matches
                            //  the length of the validator string,
                            //  place the cursor at the last
                            //  character in the window.
                            if ((unsigned)(x - mInputStartX + 1) ==
-                               mValidator.getValidatorStr().length()) {
+                               mValidator.getValidatorStr().length())
+                               {
                               wmove(mWindow, y, x-1);
                            }
                         }
-                        else {
+                        else
+                        {
                            // The text is not valid at this point, so we have
                            //  to deal with it.
                            // Remove the invalid character from mValue and prevInput.
-                           if (mValue.length() > 0) {
+                           if (mValue.length() > 0)
+                           {
                               mValue.erase(mValue.length()-1);
                            }
-                           if (!mMasked) {
+                           if (!mMasked)
+                           {
                               // No masking - Remove the invalid character from
                               //  prevInput
-                              if (prevInput.length() > 0) {
+                              if (prevInput.length() > 0)
+                              {
                                  // Updated 2/26
                                  //prevInput.erase(prevInput.length()-1);
                               }
@@ -2090,10 +2428,12 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
                            //  character at this position, or a space if there
                            //  was no previous character at this location.  Also,
                            //  this only makes sense if masking is not being done.
-                           if (((int)prevInput.length() > x - mInputStartX) && (!mMasked)) {
+                           if (((int)prevInput.length() > x - mInputStartX) && (!mMasked))
+                           {
                               waddch(mWindow, prevInput[x - mInputStartX]);
                            }
-                           else {
+                           else
+                           {
                               waddch(mWindow, ' ');
                            }
                            // Move the cursor back 1 position to the left,
@@ -2101,7 +2441,8 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
                            //  rightmost edge (this is an edge case that
                            //  seemed to be erasing the last character if it
                            //  was valid).
-                           if (x < (mRightMax - left())) {
+                           if (x < (mRightMax - left()))
+                           {
                               wmove(mWindow, y, x-1);
                            }
 
@@ -2116,18 +2457,22 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
                   // Check the parent multi-line input to see if what the user
                   //  has typed is in its list of valid values, and if so, try
                   //  to fill in the rest.
-                  if (mParentMLInput != nullptr) {
+                  if (mParentMLInput != nullptr)
+                  {
                      mParentMLInput->autoFillFromValidOptions(true);
                      // If this input is full, then stop.
-                     if (isFull()) {
+                     if (isFull())
+                     {
                         continueOn = false;
                      }
-                     else {
+                     else
+                     {
                         // x needs to be updated to reflect where the cursor
                         //  is.
                         x = mInputStartX + (int)(mValue.length()) - 1;
                         // Also update highestX if we need to.
-                        if (x > highestX) {
+                        if (x > highestX)
+                        {
                            highestX = x;
                         }
                         updatePrevInput = true;
@@ -2142,13 +2487,15 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
          //  input value, keep track of whether the value was shortened,
          //  in which case the focus should stay on the input.
          bool valueShortened = false;
-         if (mRunOnKeyFunction) {
+         if (mRunOnKeyFunction)
+         {
             // Keep track of the input value before & after the onKey function
             //  runs so that we can tell if it was shortened.
             string oldValue = getValue();
             runOnKeyFunction();
             string newValue = getValue();
-            if (newValue.length() < oldValue.length()) {
+            if (newValue.length() < oldValue.length())
+            {
                valueShortened = true;
             }
          }
@@ -2173,8 +2520,10 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
          */
 
          // Update prevInput for this iteration (if no masking)
-         if (!mMasked) {
-            if (updatePrevInput) {
+         if (!mMasked)
+         {
+            if (updatePrevInput)
+            {
                getInputText(prevInput, highestX, true);
                wmove(mWindow, y, x); // because getInputText() moves the cursor.
             }
@@ -2188,8 +2537,10 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
          //  reaches the limit at the end of this loop, then exit if
          //  mExitOnFull is true, and if the input was not shortened in the
          //  process of the user typing (i.e., by an onKey function).
-         if (!hasBorder()) {
-            if ((x == rightLimit) && mExitOnFull && !valueShortened) {
+         if (!hasBorder())
+         {
+            if ((x == rightLimit) && mExitOnFull && !valueShortened)
+            {
                setReturnCode(cxID_EXIT);
                break;
             }
@@ -2212,12 +2563,14 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
    }
    // If masking is not being used, make sure mValue is updated by grabbing
    //  the text from the input between mInputStartX and highestX.
-   if (!mMasked) {
+   if (!mMasked)
+   {
       getInputText(mValue, highestX, false);
    }
 
    // Turn off the value color and disable the message attributes
-   if (useColors) {
+   if (useColors)
+   {
       wcolor_set(mWindow, 0, nullptr);
    }
    disableValueAttrs();
@@ -2230,11 +2583,13 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
 
 // This is private so that it can't be called from the
 //  outside.
-void cxInput::setHotkeyHighlighting(bool pMessageUnderlines) {
+void cxInput::setHotkeyHighlighting(bool pMessageUnderlines)
+{
    cxWindow::setHotkeyHighlighting(pMessageUnderlines);
 } // setHotkeyHighlighting
 
-void cxInput::draw() {
+void cxInput::draw()
+{
    // Make sure the data attributes are disabled before writing the
    //  label
    disableAttrs(mWindow, eDATA_EDITABLE);
@@ -2247,10 +2602,12 @@ void cxInput::draw() {
    //  the read-only attributes, depending on whether this input is
    //  editable or read-only.
    disableAttrs(mWindow, eLABEL);
-   if (eINPUT_EDITABLE == mInputOption) {
+   if (eINPUT_EDITABLE == mInputOption)
+   {
       enableAttrs(mWindow, eDATA_EDITABLE);
    }
-   else if (eINPUT_READONLY == mInputOption) {
+   else if (eINPUT_READONLY == mInputOption)
+   {
       enableAttrs(mWindow, eDATA_READONLY);
    }
    // Draw the value portion of the input, but don't refresh it on the
@@ -2258,45 +2615,57 @@ void cxInput::draw() {
    refreshValue(false);
    // If the input is not being shown modally, disable the data attributes
    //  here (otherwise, they will be disabled in showModal()).
-   if (!mIsModal) {
-      if (eINPUT_EDITABLE == mInputOption) {
+   if (!mIsModal)
+   {
+      if (eINPUT_EDITABLE == mInputOption)
+      {
          disableAttrs(mWindow, eDATA_EDITABLE);
       }
-      else if (eINPUT_READONLY == mInputOption) {
+      else if (eINPUT_READONLY == mInputOption)
+      {
          disableAttrs(mWindow, eDATA_READONLY);
       }
    }
 } // draw
 
 #ifdef WANT_TIMEOUT
-void cxInput::idleTimeoutHandler(int pSignal) {
+void cxInput::idleTimeoutHandler(int pSignal)
+{
    // A window that has focus should be the topmost window on the stack.
    cxWindow *topWindow = cxBase::getTopWindow();
-   if (topWindow != nullptr) {
-      try {
+   if (topWindow != nullptr)
+   {
+      try
+      {
          cxInput *iInput = dynamic_cast<cxInput*>(topWindow);
-         if (iInput != nullptr) {
+         if (iInput != nullptr)
+         {
             // If the input's parent multi-line input is not nullptr, call exitNow()
             //  on it.  Otherwise, call exitNow() on the single-line input.
-            if (iInput->mParentMLInput != nullptr) {
+            if (iInput->mParentMLInput != nullptr)
+            {
                iInput->mParentMLInput->quitNow();
             }
-            else {
+            else
+            {
                topWindow->quitNow();
             }
          }
       }
-      catch (const std::bad_cast& e) {
+      catch (const std::bad_cast& e)
+      {
          // The dynamic_cast failed
       }
    }
 } // idleTimeoutHandler
 #endif
 
-string cxInput::runOnKeyFunction() const {
+string cxInput::runOnKeyFunction() const
+{
    string retval;
 
-   if (mOnKeyFunction != nullptr) {
+   if (mOnKeyFunction != nullptr)
+   {
       retval = mOnKeyFunction->runFunction();
    }
 
@@ -2304,42 +2673,54 @@ string cxInput::runOnKeyFunction() const {
 } // runOnKeyFunction
 
 void cxInput::copyCxFunction(const cxInput& pThatInput, /*OUT*/std::shared_ptr<cxFunction>& pDestFunc,
-                             /*IN*/const std::shared_ptr<cxFunction>& pSrcFunc) {
+                             /*IN*/const std::shared_ptr<cxFunction>& pSrcFunc)
+                             {
    // This function is for copying cxInput objects and is intended for use with
    //  mOnKeyFunction and mValidatorFunction.
    // If pDestFunc is not nullptr, then free the memory used by it.
-   if (pDestFunc != nullptr) {
+   if (pDestFunc != nullptr)
+   {
       pDestFunc.reset();
    }
 
    // Copy the other cxFunction pointer.
-   if (pSrcFunc.get() != nullptr) {
+   if (pSrcFunc.get() != nullptr)
+   {
       // We'll need to check what type of cxFunction it is so we can
       // create it properly.
-      if (pSrcFunc->cxTypeStr() == "cxFunction0") {
+      if (pSrcFunc->cxTypeStr() == "cxFunction0")
+      {
          const cxFunction0 *iFunc0 = dynamic_cast<cxFunction0*>(pSrcFunc.get());
-         if (iFunc0 != nullptr) {
+         if (iFunc0 != nullptr)
+         {
             pDestFunc = make_shared<cxFunction0>(iFunc0->getFunction(),
                                         iFunc0->getUseReturnVal(),
                                         iFunc0->getExitAfterRun(),
                                         iFunc0->getRunOnLeaveFunction());
          }
       }
-      else if (pSrcFunc->cxTypeStr() == "cxFunction2") {
+      else if (pSrcFunc->cxTypeStr() == "cxFunction2")
+      {
          const cxFunction2 *iFunc2 = dynamic_cast<cxFunction2*>(pSrcFunc.get());
-         if (iFunc2 != nullptr) {
+         if (iFunc2 != nullptr)
+         {
             // When creating mOnKeyFunction, if any of its parameters point to
             // pThatInput, have them point to this one instead.  Or if they
             // point to the other input's parent multi-line input, have them
             // point to this one's parent multi-line input instead.
             void* params[2] = { iFunc2->getParam1(), iFunc2->getParam2() };
-            for (int i = 0; i < 2; ++i) {
-               if (params[i] == &pThatInput) {
+            for (int i = 0; i < 2; ++i)
+            {
+               if (params[i] == &pThatInput)
+               {
                   params[i] = this;
                }
-               else {
-                  if (pThatInput.mParentMLInput != nullptr) {
-                     if (params[i] == pThatInput.mParentMLInput) {
+               else
+               {
+                  if (pThatInput.mParentMLInput != nullptr)
+                  {
+                     if (params[i] == pThatInput.mParentMLInput)
+                     {
                         params[i] = mParentMLInput;
                      }
                   }
@@ -2351,22 +2732,29 @@ void cxInput::copyCxFunction(const cxInput& pThatInput, /*OUT*/std::shared_ptr<c
                                         iFunc2->getRunOnLeaveFunction());
          }
       }
-      else if (pSrcFunc->cxTypeStr() == "cxFunction4") {
+      else if (pSrcFunc->cxTypeStr() == "cxFunction4")
+      {
          const cxFunction4 *iFunc4 = dynamic_cast<cxFunction4*>(pSrcFunc.get());
-         if (iFunc4 != nullptr) {
+         if (iFunc4 != nullptr)
+         {
             // When creating mOnKeyFunction, if any of its parameters point to
             // pThatInput, have them point to this one instead.  Or if they
             // point to the other input's parent multi-line input, have them
             // point to this one's parent multi-line input instead.
             void* params[4] = { iFunc4->getParam1(), iFunc4->getParam2(),
                                 iFunc4->getParam3(), iFunc4->getParam4()  };
-            for (int i = 0; i < 4; ++i) {
-               if (params[i] == &pThatInput) {
+            for (int i = 0; i < 4; ++i)
+            {
+               if (params[i] == &pThatInput)
+               {
                   params[i] = this;
                }
-               else {
-                  if (pThatInput.mParentMLInput != nullptr) {
-                     if (params[i] == pThatInput.mParentMLInput) {
+               else
+               {
+                  if (pThatInput.mParentMLInput != nullptr)
+                  {
+                     if (params[i] == pThatInput.mParentMLInput)
+                     {
                         params[i] = mParentMLInput;
                      }
                   }
@@ -2382,10 +2770,12 @@ void cxInput::copyCxFunction(const cxInput& pThatInput, /*OUT*/std::shared_ptr<c
    }
 } // copyCxFunction
 
-bool cxInput::validatorFunctionIsSet() const {
+bool cxInput::validatorFunctionIsSet() const
+{
    bool isSet = false;
 
-   if (mValidatorFunction != nullptr) {
+   if (mValidatorFunction != nullptr)
+   {
       isSet = (mValidatorFunction->functionIsSet());
    }
 

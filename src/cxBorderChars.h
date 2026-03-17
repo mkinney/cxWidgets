@@ -1,7 +1,7 @@
 #ifndef __CXBORDERCHARS_H__
 #define __CXBORDERCHARS_H__
 
-/** 
+/**
  * \brief cxBorderChars.h - Defines border characters to be used
  * in drawing a box (i.e., in cxWindow and all its derivitives)
  *
@@ -24,7 +24,8 @@
 * Member variables are left (left side), right (right side), top (top line), bottom (bottom line), topLeft (top left corner),
 * topRight (top right corner), bottomLeft (bottom left corner), and bottomRight (bottom right corner).
 */
-struct cxBorderChars {
+struct cxBorderChars
+{
    cxBorderChars(eBorderStyle pBorderStyle = eBS_SINGLE_LINE);
 
    chtype left = ACS_VLINE;

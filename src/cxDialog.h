@@ -10,18 +10,19 @@
 /** \class cxDialog
  * \brief Represents a dialog window on the screen (i.e., something to be shown
  * \brief  modally).
- *  Can contain a title, status, and message to appear within the window.  
+ *  Can contain a title, status, and message to appear within the window.
  *
  * \author $Author: erico $
  * \version $Revision: 1.13 $
  * \date $Date: 2007/12/04 00:23:46 $
 */
-class cxDialog : public cxWindow {
+class cxDialog : public cxWindow
+{
    public:
       /**
        * Default constructor--all parameters have default values available
        * @param pParentWindow Pointer to parent window
-       * @param pRow The row of the upper-left corner	
+       * @param pRow The row of the upper-left corner
        * @param pCol The column of the upper-left corner
        * @param pHeight The height of the dialog
        * @param pWidth The width of the dialog
@@ -39,7 +40,7 @@ class cxDialog : public cxWindow {
       /**
        * Constructor overload
        * @param pParentWindow Pointer to parent window
-       * @param pRow The row of the upper-left corner	
+       * @param pRow The row of the upper-left corner
        * @param pCol The column of the upper-left corner
        * @param pTitle The title to appear at the top of the dialog
        * @param pMessage The message to appear with the dialog

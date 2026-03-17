@@ -12,7 +12,8 @@
 /**
  * \enum eInputTypes Specifies different types of inputs (text, numeric, etc.)
  */
-enum eInputTypes {
+enum eInputTypes
+{
    eINPUT_TYPE_TEXT = 0,
    eINPUT_TYPE_NUMERIC_FLOATING_PT,
    eINPUT_TYPE_NUMERIC_WHOLE

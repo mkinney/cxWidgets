@@ -192,7 +192,8 @@ typedef std::deque<std::string> messageLineContainer;
  * \version $Revision: 1.155 $
  * \date $Date: 2007/12/04 00:23:46 $
 */
-class cxWindow : public cxObject {
+class cxWindow : public cxObject
+{
    public:
       /**
        * \brief Default constructor.
@@ -718,7 +719,7 @@ class cxWindow : public cxObject {
        * @param pRight draw the right border
        */
       virtual void drawBorder(int pRow, int pCol, int pHeight, int pWidth,
-                              bool pTop=true, bool pBottom=true, 
+                              bool pTop=true, bool pBottom=true,
                               bool pLeft=true, bool pRight=true);
 
       /**
@@ -947,7 +948,7 @@ class cxWindow : public cxObject {
        */
       eBorderStyle getBorderStyle() const;
 
-      /** 
+      /**
        * @brief Does this window have a border?
        * @return bool true if it does have a border, false otherwise
        */
@@ -2356,46 +2357,46 @@ class cxWindow : public cxObject {
       MEVENT getMouseEvent() const;
 #endif
 
-      /** 
+      /**
        * @brief Get the contents of a portion of the window. (for debugging/testing)
-       * 
-       * @param pRow the starting row 
+       *
+       * @param pRow the starting row
        * @param pCol the starting column
        * @param pNumber number of characters to get
-       * 
-       * @return the "string" value of the 
+       *
+       * @return the "string" value of the
        */
       std::string getString(int pRow, int pCol, int pNumber);
 
-      /** 
+      /**
        * @brief Display information about a window (for debugging/testing)
        * @return information about a window
        */
       void info();
 
       /**
-       * \brief Sets whether or not to display the top border 
+       * \brief Sets whether or not to display the top border
        * \brief (Note: Only applicable if mBorderStyle != eBS_NOBORDER.)
        * @param pToggle If true, then the top border will be displayed
        */
       virtual void toggleBorderTop(bool pToggle);
 
       /**
-       * \brief Sets whether or not to display the bottom border 
+       * \brief Sets whether or not to display the bottom border
        * \brief (Note: Only applicable if mBorderStyle != eBS_NOBORDER.)
        * @param pToggle If true, then the bottom border will be displayed
        */
       virtual void toggleBorderBottom(bool pToggle);
 
       /**
-       * \brief Sets whether or not to display the left border 
+       * \brief Sets whether or not to display the left border
        * \brief (Note: Only applicable if mBorderStyle != eBS_NOBORDER.)
        * @param pToggle If true, then the left border will be displayed
        */
       virtual void toggleBorderLeft(bool pToggle);
 
       /**
-       * \brief Sets whether or not to display the right border 
+       * \brief Sets whether or not to display the right border
        * \brief (Note: Only applicable if mBorderStyle != eBS_NOBORDER.)
        * @param pToggle If true, then the right border will be displayed
        */

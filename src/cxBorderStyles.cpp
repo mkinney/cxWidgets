@@ -3,8 +3,10 @@
 #include "cxBorderStyles.h"
 using std::string;
 
-string eBorderStyleToStr(eBorderStyle borderStyle) {
-    switch (borderStyle) {
+string eBorderStyleToStr(eBorderStyle borderStyle)
+{
+    switch (borderStyle)
+    {
         case eBS_NOBORDER:
             return "No Border";
         case eBS_SINGLE_LINE:

@@ -8,7 +8,8 @@
 /**
  * \enum eHPosition Defines values for horizontal positioning.
  */
-enum eHPosition {
+enum eHPosition
+{
    eHP_CENTER = 0,
    eHP_LEFT,
    eHP_RIGHT
@@ -17,7 +18,8 @@ enum eHPosition {
 /**
  * \enum eVPosition Defines values for vertical positioning.
  */
-enum eVPosition {
+enum eVPosition
+{
    eVP_CENTER = 0,
    eVP_TOP,
    eVP_BOTTOM

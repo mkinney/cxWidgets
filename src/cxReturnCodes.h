@@ -19,7 +19,8 @@
 * that need return codes, this is the first return code you
 * should use.
 */
-enum eReturnCode {
+enum eReturnCode
+{
    cxID_OK = -400L,
    cxID_CANCEL = -399L,
    cxID_EXIT = -398L,

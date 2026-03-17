@@ -5,8 +5,10 @@
 #include <cctype> // For isprint()
 using std::string;
 
-string cxValidators::intOnKeyValidator(void *theInput, void *clearOnSpace) {
-   if (theInput == nullptr) {
+string cxValidators::intOnKeyValidator(void *theInput, void *clearOnSpace)
+{
+   if (theInput == nullptr)
+   {
       return("");
    }
 
@@ -14,27 +16,34 @@ string cxValidators::intOnKeyValidator(void *theInput, void *clearOnSpace) {
 
    cxMultiLineInput *pInput = static_cast<cxMultiLineInput*>(theInput);
    // Only do this stuff if the user pressed a printable key.
-   if (isprint(pInput->getLastKey())) {
+   if (isprint(pInput->getLastKey()))
+   {
       bool updateIt = false;
 
       string value = pInput->getValue();
       size_t valueLen = value.length();
       // Remove leading zeros
-      if (valueLen > 0) {
+      if (valueLen > 0)
+      {
          bool allZeros = true;
          string::iterator iter = value.begin();
-         for (; iter != value.end(); ++iter) {
-            if (*iter != '0') {
+         for (; iter != value.end(); ++iter)
+         {
+            if (*iter != '0')
+            {
                allZeros = false;
                break;
             }
          }
-         if (allZeros) {
+         if (allZeros)
+         {
             value = "0";
             updateIt = true;
          }
-         else {
-            if (value[0] == '0') {
+         else
+         {
+            if (value[0] == '0')
+            {
                updateIt = true;
                size_t leadingZerosBegin = 0;
                size_t leadingZerosEnd = value.find_first_not_of('0', 0);
@@ -44,8 +53,10 @@ string cxValidators::intOnKeyValidator(void *theInput, void *clearOnSpace) {
 
          valueLen = value.length();
       }
-      if (valueLen > 0) {
-         switch(value[valueLen-1]) {
+      if (valueLen > 0)
+      {
+         switch(value[valueLen-1])
+         {
             // Digits are OK.
             case '0':
             case '1':
@@ -66,26 +77,31 @@ string cxValidators::intOnKeyValidator(void *theInput, void *clearOnSpace) {
                   // Does it have a negative sign?
                   size_t negLocation = value.find_last_of('-');
                   bool hasNeg = (negLocation != string::npos);
-                  if (hasNeg && (negLocation > 0)) {
+                  if (hasNeg && (negLocation > 0))
+                  {
                      value.erase(valueLen-1);
                      updateIt = true;
                   }
                }
                break;
             case ' ':
-               if (clearOnSpace != nullptr) {
+               if (clearOnSpace != nullptr)
+               {
                   bool *pClearOnSpace = (bool*)clearOnSpace;
-                  if (*pClearOnSpace) {
+                  if (*pClearOnSpace)
+                  {
                      value = "";
                      updateIt = true;
                   }
-                  else {
+                  else
+                  {
                      // Remove the space from the value
                      value.erase(valueLen-1);
                      updateIt = true;
                   }
                }
-               else {
+               else
+               {
                   // Spaces are invalid
                   value.erase(valueLen-1);
                   updateIt = true;
@@ -100,7 +116,8 @@ string cxValidators::intOnKeyValidator(void *theInput, void *clearOnSpace) {
          }
       }
 
-      if (updateIt) {
+      if (updateIt)
+      {
          // Refresh just the value portion of the input (no need to
          //  redraw the label)
          pInput->setValue(value, false);
@@ -115,8 +132,10 @@ string cxValidators::intOnKeyValidator(void *theInput, void *clearOnSpace) {
    return(retval);
 } // intOnKeyValidator
 
-string cxValidators::floatingPtOnKeyValidator(void *theInput, void *clearOnSpace) {
-   if (nullptr == theInput) {
+string cxValidators::floatingPtOnKeyValidator(void *theInput, void *clearOnSpace)
+{
+   if (nullptr == theInput)
+   {
       return("");
    }
 
@@ -125,28 +144,35 @@ string cxValidators::floatingPtOnKeyValidator(void *theInput, void *clearOnSpace
    cxMultiLineInput *pInput = static_cast<cxMultiLineInput*>(theInput);
    // Only do this stuff if the user pressed a printable key.
    int lastKey = pInput->getLastKey();
-   if (isprint(lastKey)) {
+   if (isprint(lastKey))
+   {
       bool updateIt = false;
 
       string value = pInput->getValue();
       size_t valueLen = value.length();
       // Remove leading zeros.  But if the string is
       //  all zeros, then leave one zero.
-      if (valueLen > 0) {
+      if (valueLen > 0)
+      {
          bool allZeros = true;
          string::iterator iter = value.begin();
-         for (; iter != value.end(); ++iter) {
-            if (*iter != '0') {
+         for (; iter != value.end(); ++iter)
+         {
+            if (*iter != '0')
+            {
                allZeros = false;
                break;
             }
          }
-         if (allZeros) {
+         if (allZeros)
+         {
             value = "0";
             updateIt = true;
          }
-         else {
-            if (value[0] == '0') {
+         else
+         {
+            if (value[0] == '0')
+            {
                updateIt = true;
                size_t leadingZerosBegin = 0;
                size_t leadingZerosEnd = value.find_first_not_of('0', 0);
@@ -156,8 +182,10 @@ string cxValidators::floatingPtOnKeyValidator(void *theInput, void *clearOnSpace
 
          valueLen = value.length();
       }
-      if (valueLen > 0) {
-         switch(value[valueLen-1]) {
+      if (valueLen > 0)
+      {
+         switch(value[valueLen-1])
+         {
             // Digits are OK.
             case '0':
             case '1':
@@ -177,8 +205,10 @@ string cxValidators::floatingPtOnKeyValidator(void *theInput, void *clearOnSpace
                   bool hasDecPt = (decPtLocation != string::npos);
                   // If the value already has a decimal point and it is not
                   //  the last character, remove the last character.
-                  if (hasDecPt) {
-                     if (decPtLocation != valueLen-1) {
+                  if (hasDecPt)
+                  {
+                     if (decPtLocation != valueLen-1)
+                     {
                         value.erase(valueLen-1);
                         updateIt = true;
                      }
@@ -186,19 +216,23 @@ string cxValidators::floatingPtOnKeyValidator(void *theInput, void *clearOnSpace
                }
                break;
             case ' ':
-               if (clearOnSpace != nullptr) {
+               if (clearOnSpace != nullptr)
+               {
                   bool *pClearOnSpace = (bool*)clearOnSpace;
-                  if (*pClearOnSpace) {
+                  if (*pClearOnSpace)
+                  {
                      value = "";
                      updateIt = true;
                   }
-                  else {
+                  else
+                  {
                      // Remove the space from the value
                      value.erase(valueLen-1);
                      updateIt = true;
                   }
                }
-               else {
+               else
+               {
                   // Spaces are invalid
                   value.erase(valueLen-1);
                   updateIt = true;
@@ -212,7 +246,8 @@ string cxValidators::floatingPtOnKeyValidator(void *theInput, void *clearOnSpace
                   // Does it have a negative sign?
                   size_t negLocation = value.find_last_of('-');
                   bool hasNeg = (negLocation != string::npos);
-                  if (hasNeg && (negLocation > 0)) {
+                  if (hasNeg && (negLocation > 0))
+                  {
                      value.erase(valueLen-1);
                      updateIt = true;
                   }
@@ -227,7 +262,8 @@ string cxValidators::floatingPtOnKeyValidator(void *theInput, void *clearOnSpace
          }
       }
 
-      if (updateIt) {
+      if (updateIt)
+      {
          // Refresh just the value portion of the input (no need to
          //  redraw the label)
          pInput->setValue(value, false);
@@ -242,39 +278,49 @@ string cxValidators::floatingPtOnKeyValidator(void *theInput, void *clearOnSpace
    return(retval);
 } // floatingPtOnKeyValidator
 
-bool cxValidators::isValidFloatingPtNumStr(const string& pNumStr) {
+bool cxValidators::isValidFloatingPtNumStr(const string& pNumStr)
+{
    bool valid = true;
 
-   if (pNumStr != "") {
+   if (pNumStr != "")
+   {
       // Make sure the first character is a digit, minus sign, or a decimal
       //  point.
       bool foundDecimalPt = (pNumStr[0] == '.');
-      if ((isdigit(pNumStr[0]) != 0) || (pNumStr[0] == '-') || foundDecimalPt) {
+      if ((isdigit(pNumStr[0]) != 0) || (pNumStr[0] == '-') || foundDecimalPt)
+      {
          // Test to make sure that each character after the first is a digit or
          //  a decimal point (but there should only be one decimal point).
-         for (unsigned i = 1; i < pNumStr.length(); ++i) {
+         for (unsigned i = 1; i < pNumStr.length(); ++i)
+         {
             // Digits are valid.
-            if (isdigit(pNumStr[i]) != 0) {
+            if (isdigit(pNumStr[i]) != 0)
+            {
             }
             // If the character is a decimal point and we've already found a
             //  decimal point, then the value is invalid.
-            else if (pNumStr[i] == '.') {
-               if (foundDecimalPt) {
+            else if (pNumStr[i] == '.')
+            {
+               if (foundDecimalPt)
+               {
                   valid = false;
                   break;
                }
-               else {
+               else
+               {
                   foundDecimalPt = true;
                }
             }
             // All other characters are invalid.
-            else {
+            else
+            {
                valid = false;
                break;
             }
          }
       }
-      else {
+      else
+      {
          valid = false;
       }
    }
@@ -282,21 +328,27 @@ bool cxValidators::isValidFloatingPtNumStr(const string& pNumStr) {
    return(valid);
 } // isValidFloatingPtNumStr
 
-bool cxValidators::isValidWholeNumStr(const string& pNumStr) {
+bool cxValidators::isValidWholeNumStr(const string& pNumStr)
+{
    bool valid = true;
-   
-   if (pNumStr != "") {
+
+   if (pNumStr != "")
+   {
       // Make sure the first character is a digit or a minus sign
-      if ((isdigit(pNumStr[0]) != 0) || (pNumStr[0] == '-')) {
+      if ((isdigit(pNumStr[0]) != 0) || (pNumStr[0] == '-'))
+      {
          // Make sure each number after the first is a digit.
-         for (unsigned i = 1; i < pNumStr.length(); ++i) {
-            if (isdigit(pNumStr[i]) == 0) {
+         for (unsigned i = 1; i < pNumStr.length(); ++i)
+         {
+            if (isdigit(pNumStr[i]) == 0)
+            {
                valid = false;
                break;
             }
          }
       }
-      else {
+      else
+      {
          valid = false;
       }
    }

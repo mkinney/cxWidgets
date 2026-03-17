@@ -50,7 +50,8 @@ std::string someFunc(void*, void*, void*, void*)
  * \version $Revision: 1.21 $
  * \date $Date: 2007/12/04 00:23:46 $
  */
-class cxScrolledWindow : public cxWindow {
+class cxScrolledWindow : public cxWindow
+{
    public:
       /**
        * \brief Default constructor.

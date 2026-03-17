@@ -2,8 +2,10 @@
 
 #include "cxBorderChars.h"
 
-cxBorderChars::cxBorderChars(eBorderStyle pBorderStyle) {
-   switch (pBorderStyle) {
+cxBorderChars::cxBorderChars(eBorderStyle pBorderStyle)
+{
+   switch (pBorderStyle)
+   {
       case eBS_SINGLE_LINE:
       default:
          left = right = ACS_VLINE;

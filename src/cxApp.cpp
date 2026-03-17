@@ -5,29 +5,36 @@ cxApp::cxApp()
 {
 }
 
-cxApp::~cxApp() {
+cxApp::~cxApp()
+{
 }
 
-long cxApp::mainLoop() {
+long cxApp::mainLoop()
+{
    return(cxID_EXIT);
 }
 
-long cxApp::onRun() {
+long cxApp::onRun()
+{
    return(cxID_EXIT);
 }
 
-long cxApp::run() {
+long cxApp::run()
+{
    return(onRun());
 }
 
-long cxApp::onInit() {
+long cxApp::onInit()
+{
    return(cxID_EXIT);
 }
 
-long cxApp::onExit() {
+long cxApp::onExit()
+{
    return(cxID_EXIT);
 }
 
-std::string cxApp::cxTypeStr() const {
+std::string cxApp::cxTypeStr() const
+{
    return("cxApp");
 } // cxTypeStr

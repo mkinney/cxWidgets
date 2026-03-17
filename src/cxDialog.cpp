@@ -38,15 +38,19 @@ cxDialog::cxDialog(cxWindow *pParentWindow, const string& pMessage)
 {
 }
 
-cxDialog::~cxDialog() {
+cxDialog::~cxDialog()
+{
 }
 
-long cxDialog::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows) {
+long cxDialog::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows)
+{
    // Only do the input loop if the dialog is enabled.
-   if (isEnabled()) {
+   if (isEnabled())
+   {
       mIsModal = true;
 
-      if (pShowSelf) {
+      if (pShowSelf)
+      {
          show(pBringToTop, pShowSubwindows);
       }
       setReturnCode(cxID_QUIT);
@@ -58,12 +62,14 @@ long cxDialog::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows)
 
       // Do the input loop
       bool continueOn = true;
-      while (continueOn) {
+      while (continueOn)
+      {
          int c = wgetch(mWindow);
 
          // Note: Cannot use switch statement due to mKeyCancel
          // not being a "const int". Blech!
-         switch(c) {
+         switch(c)
+         {
             case ESCAPE: // Defined in cxKeyDefines.h
                setReturnCode(cxID_QUIT);
                continueOn=false;
@@ -75,14 +81,17 @@ long cxDialog::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows)
                break;
 #ifdef NCURSES_MOUSE_VERSION
             case KEY_MOUSE:
-               if (getmouse(&mMouse) == OK) {
+               if (getmouse(&mMouse) == OK)
+               {
                   // Run a function that may exist for the mouse state.  If
                   //  no function exists for the mouse state, then process
                   //  it here.
                   bool mouseFuncExists = false;
                   continueOn = handleFunctionForLastMouseState(&mouseFuncExists);
-                  if (!mouseFuncExists) {
-                     switch (mMouse.bstate) {
+                  if (!mouseFuncExists)
+                  {
+                     switch (mMouse.bstate)
+                     {
                         case BUTTON1_PRESSED:
                            // Update pressedX and pressedY
                            pressedX = mMouse.x;
@@ -94,7 +103,8 @@ long cxDialog::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows)
                         case BUTTON1_RELEASED:
                            // If the user is moving the window, then go ahead
                            //  and move it.
-                           if (movingWin) {
+                           if (movingWin)
+                           {
                               moveRelative(mMouse.y - pressedY, mMouse.x
                                            - pressedX, true);
                               movingWin=false; // reset the moving of the window
@@ -118,6 +128,7 @@ long cxDialog::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows)
    return(getReturnCode());
 } // showModal
 
-string cxDialog::cxTypeStr() const {
+string cxDialog::cxTypeStr() const
+{
    return("cxDialog");
 } // cxTypeStr

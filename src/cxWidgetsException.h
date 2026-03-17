@@ -19,7 +19,8 @@
  * \version $Revision: 1.4 $
  * \date $Date: 2007/12/04 00:23:46 $
 */
-class cxWidgetsException {
+class cxWidgetsException
+{
    public:
       /**
        * \brief Default constructor

@@ -6,7 +6,8 @@
 // This file defines an enumeration for message dialog styles, which control
 //  what buttons are shown on a message dialog.
 
-enum eMessageDialogStyles {
+enum eMessageDialogStyles
+{
    cxYES = 2,          // Show Yes button
    cxOK = 4,           // Show OK button
    cxNO = 8,           // Show No button

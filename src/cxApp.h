@@ -2,7 +2,7 @@
 #define __CXAPP_H__
 
 /*
- * 
+ *
  * cxApp.h - application framework
  *
  * Copyright (c) 2005-2007 Michael H. Kinney
@@ -19,7 +19,8 @@
  * \brief Holds application setup & exit logic, as well as the application's main frame.
  * \brief <b>This class is not finished yet and currently shouldn't be used.</a>
  */
-class cxApp : public cxObject {
+class cxApp : public cxObject
+{
    public:
       cxApp();
 

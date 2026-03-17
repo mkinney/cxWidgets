@@ -52,16 +52,19 @@ cxFileViewer::cxFileViewer(const cxFileViewer& pThatFileViewer)
    setLoopEndFunction(loopEndFunc);
 }
 
-cxFileViewer::~cxFileViewer() {
+cxFileViewer::~cxFileViewer()
+{
 }
 
-long cxFileViewer::show(bool pBringToTop, bool pShowSubwindows) {
+long cxFileViewer::show(bool pBringToTop, bool pShowSubwindows)
+{
    long retval = cxScrolledWindow::show(pBringToTop, pShowSubwindows);
    displayLineNumbers();
    return(retval);
 } // show
 
-void cxFileViewer::load() {
+void cxFileViewer::load()
+{
    mMessageLines.clear();
 
    // TODO: how to exclude binary files...
@@ -70,12 +73,16 @@ void cxFileViewer::load() {
    string line;
 
    inFile.open(mFilename.c_str());
-   if (inFile.good()) {
+   if (inFile.good())
+   {
       // read lines into mMessageLines;
-      while (getline(inFile, line)) {
+      while (getline(inFile, line))
+      {
          // only display "printable" characters
-         for (size_t i=0; i<line.length(); ++i) {
-            if (!isprint(line[i])) {
+         for (size_t i=0; i<line.length(); ++i)
+         {
+            if (!isprint(line[i]))
+            {
                line[i]=' ';
             }
          }
@@ -86,33 +93,41 @@ void cxFileViewer::load() {
    }
 } // load
 
-int cxFileViewer::widestLine() {
+int cxFileViewer::widestLine()
+{
    int widest=0;
    string tmpString;
    for (messageLineContainer::iterator iter=mMessageLines.begin();
-        iter != mMessageLines.end(); ++iter) {
+        iter != mMessageLines.end(); ++iter)
+        {
       tmpString=*iter;
-      if ((int)tmpString.length() > widest) {
+      if ((int)tmpString.length() > widest)
+      {
          widest=tmpString.length();
       }
    }
    return(widest);
 } // widestLine
 
-string cxFileViewer::cxTypeStr() const {
+string cxFileViewer::cxTypeStr() const
+{
    return("cxFileViewer");
 } // cxTypeStr
 
 //// Protected functions
 
-void cxFileViewer::copyCxFileViewerStuff(const cxFileViewer* pThatFileViewer) {
-   if ((pThatFileViewer != nullptr) && (pThatFileViewer != this)) {
+void cxFileViewer::copyCxFileViewerStuff(const cxFileViewer* pThatFileViewer)
+{
+   if ((pThatFileViewer != nullptr) && (pThatFileViewer != this))
+   {
       // Copy the cxWindow stuff inherited from the parent, then copy
       //  this class' stuff
-      try {
+      try
+      {
          copyCxWinStuff((const cxWindow*)pThatFileViewer);
       }
-      catch (const cxWidgetsException& exc) {
+      catch (const cxWidgetsException& exc)
+      {
          // Free up the other memory used
          cxWindow::freeWindow();
          throw(cxWidgetsException("Couldn't copy base cxWindow stuff (copying a cxFileViewer)."));
@@ -126,7 +141,8 @@ void cxFileViewer::copyCxFileViewerStuff(const cxFileViewer* pThatFileViewer) {
 
 //// Private helper functions
 
-void cxFileViewer::displayLineNumbers() {
+void cxFileViewer::displayLineNumbers()
+{
    int lineNumber = getLineNumber();
    int subWinHeight = getSubWinHeight();
 
@@ -135,31 +151,36 @@ void cxFileViewer::displayLineNumbers() {
    // For the last line #, if there aren't enough line numbers
    //  to fill the subwindow, then use mMessageLines.size()
    //  as the last line #.
-   if (mMessageLines.size() < (unsigned)subWinHeight) {
+   if (mMessageLines.size() < (unsigned)subWinHeight)
+   {
       lastLineNum = (int)mMessageLines.size();
    }
 
    // Enable the status attributes
    enableAttrs(mWindow, eSTATUS);
-   if (useColors) {
+   if (useColors)
+   {
       wcolor_set(mWindow, mStatusColorPair, nullptr);
    }
    mvwprintw(mWindow, bottom()-top(), right()-left()-10, "%4d-%-4d", firstLineNum, lastLineNum);
    // Disable the attributes
    disableAttrs(mWindow, eSTATUS);
    // Disable the colors
-   if (useColors) {
+   if (useColors)
+   {
       wcolor_set(mWindow, 0, nullptr);
    }
    wrefresh(mWindow);
 } // displayLineNumbers
 
-string cxFileViewer::updateLineNumbers(cxFileViewer& pFileViewer) {
+string cxFileViewer::updateLineNumbers(cxFileViewer& pFileViewer)
+{
    pFileViewer.displayLineNumbers();
    return("");
 } // updateLineNumbers
 
 // This is private so that it can't be called from the outside
-void cxFileViewer::setLoopEndFunction(const std::shared_ptr<cxFunction>& pFuncPtr) {
+void cxFileViewer::setLoopEndFunction(const std::shared_ptr<cxFunction>& pFuncPtr)
+{
    cxScrolledWindow::setLoopEndFunction(pFuncPtr);
 } // setLoopEndFunction

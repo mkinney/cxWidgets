@@ -27,7 +27,8 @@
 
 // This is used in append() for specifying the type of input to append, either
 //  a cxMultiLineInput or a cxComboBox.
-enum eInputType {
+enum eInputType
+{
    eIT_CXMULTILINEINPUT,
    eIT_CXCOMBOBOX
 };
@@ -80,7 +81,8 @@ typedef std::pair<std::shared_ptr<cxComboBox>, std::shared_ptr<cxComboBox> > cxC
  * call to trapNonAssignedFKeys().
  *
  */
-class cxForm : public cxWindow {
+class cxForm : public cxWindow
+{
    public:
       /**
        * Default constructor.  All parameters have default values.
@@ -2625,7 +2627,7 @@ when the user presses the 'n' key.
        * \brief the form is editable (by index)
        *
        * @param pIndex The index of the input
-       * 
+       *
        * @return Whether or not the input is editable
        */
       virtual bool isEditable(int pIndex) const;

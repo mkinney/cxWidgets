@@ -2,7 +2,7 @@
 #define __CXFRAME_H__
 
 /*
- * cxFrame.h -frame work 
+ * cxFrame.h -frame work
  *
  * Copyright (C) 2005-2007 Michael H. Kinney
  *
@@ -15,7 +15,7 @@
 #include "cxWindow.h"
 #include "cxMenu.h"
 
-/** 
+/**
  * \brief Similar to wxFrame and other frame classes in GUI frameworks, this
  * \brief class represents a window that contains a title, possibly a menu bar,
  * \brief a status bar, and contains another window for the view area.
@@ -24,7 +24,8 @@
  * \brief cxWindow-based object.
  * \brief <b>This class is not finished yet and currently shouldn't be used.</b>
  */
-class cxFrame : public cxWindow {
+class cxFrame : public cxWindow
+{
    // TODO: Write this class
    public:
       /**

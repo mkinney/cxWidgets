@@ -22,7 +22,7 @@ using namespace std;
 
 /*
 string arrowUp(void *theForm, void *theCount, void *foo3, void *foo4) {
-   //pForm->setCurrentInput(bName); 
+   //pForm->setCurrentInput(bName);
    return("");
 }
 
@@ -31,7 +31,7 @@ string endB1(void *theForm, void *theCount, void *foo3, void *foo4) {
    cxForm *pForm=(cxForm*)theForm;
    (*i)++;
    std::ostringstream os;
-   os << (*i); 
+   os << (*i);
    string aName="A" + os.str();
    string bName="B" + os.str();
    //messageBox("bName:" + bName);
@@ -41,14 +41,16 @@ string endB1(void *theForm, void *theCount, void *foo3, void *foo4) {
    if (*i > 1) {
       pForm->setOnKeyFunction(bName, arrowUp, pForm, i, nullptr, nullptr, false);
    }
-   pForm->setCurrentInput(bName); 
-   //pForm->show(); 
+   pForm->setCurrentInput(bName);
+   //pForm->show();
    return("");
 }
 */
 
-string updateMenu(void *theComboBox, void *unused, void *unused2, void *unused3) {
-   if (theComboBox == nullptr) {
+string updateMenu(void *theComboBox, void *unused, void *unused2, void *unused3)
+{
+   if (theComboBox == nullptr)
+   {
       return("");
    }
 
@@ -58,9 +60,11 @@ string updateMenu(void *theComboBox, void *unused, void *unused2, void *unused3)
    return("");
 } // updateMenu
 
-string onFocus(void *theComboBox, void *unused2, void *unused3, void *unused4) {
+string onFocus(void *theComboBox, void *unused2, void *unused3, void *unused4)
+{
    //messageBox("onFocus function");
-   if (theComboBox == nullptr) {
+   if (theComboBox == nullptr)
+   {
       return("");
    }
 
@@ -76,7 +80,8 @@ string onFocus(void *theComboBox, void *unused2, void *unused3, void *unused4) {
 
 
 //// MAIN ////
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[])
+{
    cxBase::init();
 
    cxForm iForm(nullptr, 2, 2, 9, 20, "Test");

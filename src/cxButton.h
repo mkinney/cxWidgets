@@ -25,7 +25,8 @@
 #include <string>
 #include <memory>
 
-class cxButton : public cxWindow {
+class cxButton : public cxWindow
+{
    public:
       /**
        * \brief Default constructor

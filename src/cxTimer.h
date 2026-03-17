@@ -14,7 +14,8 @@
  * \brief a specified number of milliseconds.  <b>This class is not
  * \brief finished yet and currently shouldn't be used</b>.
  */
-class cxTimer {
+class cxTimer
+{
    public:
       /**
        * \brief Constructor

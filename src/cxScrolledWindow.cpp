@@ -123,18 +123,22 @@ cxScrolledWindow::cxScrolledWindow(const cxScrolledWindow& pThatWindow)
    reCreateSubWindow();
 }
 
-cxScrolledWindow::~cxScrolledWindow() {
-   if (mSubWindow != nullptr) {
+cxScrolledWindow::~cxScrolledWindow()
+{
+   if (mSubWindow != nullptr)
+   {
       delwin(mSubWindow);
       mSubWindow = nullptr;
    }
 }
 
-long cxScrolledWindow::show(bool pBringToTop, bool pShowSubwindows) {
+long cxScrolledWindow::show(bool pBringToTop, bool pShowSubwindows)
+{
    long retval = cxID_EXIT;
 
    // Only do this if the window is enabled.
-   if (isEnabled()) {
+   if (isEnabled())
+   {
       drawBorder();
       drawTitle();
       drawStatus();
@@ -146,35 +150,42 @@ long cxScrolledWindow::show(bool pBringToTop, bool pShowSubwindows) {
       // Make sure this window is not hidden
       unhide();
       wrefresh(mSubWindow);
-      if (pBringToTop) {
+      if (pBringToTop)
+      {
          bringToTop();
       }
-      else {
+      else
+      {
          // Update the physical screen (bringToTop() calls doUpdate(), so that
          //  would've been done if pBringToTop was true).
          doupdate();
       }
    }
-   else {
+   else
+   {
       hide(false);
    }
 
    return(retval);
 } // show
 
-long cxScrolledWindow::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows) {
+long cxScrolledWindow::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows)
+{
    setReturnCode(cxID_EXIT);
 
    // Only do the input loop if the window is enabled.
-   if (isEnabled()) {
+   if (isEnabled())
+   {
       mIsModal = true;
 
       // Run the onFocus function.  If runOnFocusFunction() returns true, that
       //  means we should exit.. so only do the input loop if it returns false.
       //  Also, check to make sure that getLeaveNow() returns false, in case
       //  the onFocus function called exitNow() or quitNow().
-      if (!runOnFocusFunction() && !getLeaveNow()) {
-         if (pShowSelf) {
+      if (!runOnFocusFunction() && !getLeaveNow())
+      {
+         if (pShowSelf)
+         {
             show(pBringToTop, pShowSubwindows);
          }
          // Disable the cursor, and save the current cursor state so that it
@@ -183,16 +194,19 @@ long cxScrolledWindow::showModal(bool pShowSelf, bool pBringToTop, bool pShowSub
          bool runOnLeaveFunc = true;
          setReturnCode(doInputLoop(runOnLeaveFunc));
          // Set the cursor state back to what it was
-         if (oldCursorState != ERR) {
+         if (oldCursorState != ERR)
+         {
             curs_set(oldCursorState);
          }
          mIsModal = false;
          // Run the onLeave function
-         if (runOnLeaveFunc) {
+         if (runOnLeaveFunc)
+         {
             runOnLeaveFunction();
          }
       }
-      else {
+      else
+      {
          mIsModal = false;
       }
    }
@@ -200,51 +214,64 @@ long cxScrolledWindow::showModal(bool pShowSelf, bool pBringToTop, bool pShowSub
    return(getReturnCode());
 } // showModal
 
-void cxScrolledWindow::scrollWin(int pVertScrollAmt, int pHorizScrollAmt, bool pRefresh) {
+void cxScrolledWindow::scrollWin(int pVertScrollAmt, int pHorizScrollAmt, bool pRefresh)
+{
    // Scroll vertically
-   if (pVertScrollAmt != 0) {
+   if (pVertScrollAmt != 0)
+   {
       // Scroll by pVertScrollAmt
       mLineNumber += pVertScrollAmt;
 
       // If mLineNumber is negative, or if there are less lines in mMessageLines
       //  than can fill the subwindow, then mLineNumber should be 0 (don't scroll
       //  out of bounds).
-      if ((mLineNumber < 0) || (mMessageLines.size() < (unsigned)mSubWinHeight)) {
+      if ((mLineNumber < 0) || (mMessageLines.size() < (unsigned)mSubWinHeight))
+      {
          mLineNumber = 0;
       }
-      else {
-         if (mMessageLines.size() >= (unsigned)mSubWinHeight) {
+      else
+      {
+         if (mMessageLines.size() >= (unsigned)mSubWinHeight)
+         {
             // Only let them scroll down to the last page worth of the file.
-            if (mLineNumber > ((int)mMessageLines.size() - mSubWinHeight)) {
+            if (mLineNumber > ((int)mMessageLines.size() - mSubWinHeight))
+            {
                mLineNumber = (int)mMessageLines.size() - mSubWinHeight;
             }
          }
       }
    }
    // Scroll horizontally
-   if (pHorizScrollAmt != 0) {
+   if (pHorizScrollAmt != 0)
+   {
       mHScrollOffset += pHorizScrollAmt;
-      if (mHScrollOffset < 0) {
+      if (mHScrollOffset < 0)
+      {
          mHScrollOffset = 0;
       }
    }
 
    // Refresh the window if there was any scrolling and the user wants to
    //  refresh.
-   if ((pVertScrollAmt != 0) || (pHorizScrollAmt != 0)) {
+   if ((pVertScrollAmt != 0) || (pHorizScrollAmt != 0))
+   {
       drawMessage();
-      if (pRefresh) {
+      if (pRefresh)
+      {
          wrefresh(mSubWindow);
       }
    }
 } // scrollWin
 
-void cxScrolledWindow::drawMessage() {
+void cxScrolledWindow::drawMessage()
+{
    // If the window is big enough, then do it.
-   if ((mSubWinHeight >= 1) && (mSubWinWidth >= 1)) {
+   if ((mSubWinHeight >= 1) && (mSubWinWidth >= 1))
+   {
       // Enable the message attributes and message color.
       enableAttrs(mSubWindow, eMESSAGE);
-      if (useColors) {
+      if (useColors)
+      {
          wcolor_set(mSubWindow, mMessageColorPair, nullptr);
       }
 
@@ -261,15 +288,18 @@ void cxScrolledWindow::drawMessage() {
       const int maxLineNumber = mLineNumber + mSubWinHeight;
       int currentSubWinRow = 0;
       // Write each line in mMessageLines to the subwindow.
-      for (int i = mLineNumber; i < maxLineNumber; ++i) {
+      for (int i = mLineNumber; i < maxLineNumber; ++i)
+      {
          mvwprintw(mSubWindow, currentSubWinRow, 0, (char*)format.str().c_str(),
                    getLine(i).c_str());
          ++currentSubWinRow;
       }
       // If mMessageLines doesn't have enough lines to fill mSubWindow, then
       //  fill in the rest of mSubWindow with spaces (to fill in the color).
-      if (mMessageLines.size() < (unsigned)mSubWinHeight) {
-         for (int i = (int)mMessageLines.size(); i < mSubWinHeight; ++i) {
+      if (mMessageLines.size() < (unsigned)mSubWinHeight)
+      {
+         for (int i = (int)mMessageLines.size(); i < mSubWinHeight; ++i)
+         {
             mvwprintw(mSubWindow, i, 0, (char*)format.str().c_str(), " ");
          }
       }
@@ -278,13 +308,15 @@ void cxScrolledWindow::drawMessage() {
 
       // Disable the message attributes and message color.
       disableAttrs(mSubWindow, eMESSAGE);
-      if (useColors) {
+      if (useColors)
+      {
          wcolor_set(mSubWindow, 0, nullptr);
       }
    }
 } // drawMessage
 
-bool cxScrolledWindow::move(int pNewRow, int pNewCol, bool pRefresh) {
+bool cxScrolledWindow::move(int pNewRow, int pNewCol, bool pRefresh)
+{
    // When we move the window, we should be able to move the subwindow
    //  by calling mvwin, as in the code below, but this seems to cause
    //  the menu to have refresh issues on some platforms.
@@ -310,10 +342,12 @@ bool cxScrolledWindow::move(int pNewRow, int pNewCol, bool pRefresh) {
    // If we re-create the subwindow after the move, as follows, it seems to
    //  look okay.
    bool moved = cxWindow::move(pNewRow, pNewCol, false);
-   if (moved) {
+   if (moved)
+   {
       reCreateSubWindow();
       // Refresh the window if pRefresh is true.
-      if (pRefresh) {
+      if (pRefresh)
+      {
          show(false, false);
       }
    }
@@ -321,7 +355,8 @@ bool cxScrolledWindow::move(int pNewRow, int pNewCol, bool pRefresh) {
    return(moved);
 } // move
 
-void cxScrolledWindow::resize(int pNewHeight, int pNewWidth, bool pRefresh) {
+void cxScrolledWindow::resize(int pNewHeight, int pNewWidth, bool pRefresh)
+{
    cxWindow::resize(pNewHeight, pNewWidth, pRefresh);
 
    init(top(), left(), pNewHeight, pNewWidth, getTitle(), getMessage(),
@@ -330,53 +365,65 @@ void cxScrolledWindow::resize(int pNewHeight, int pNewWidth, bool pRefresh) {
    // Re-create mSubWindow
    reCreateSubWindow();
 
-   if (pRefresh) {
+   if (pRefresh)
+   {
       show(false, false);
    }
 } // resize
 
-cxScrolledWindow& cxScrolledWindow::operator =(const cxScrolledWindow& pThatWindow) {
+cxScrolledWindow& cxScrolledWindow::operator =(const cxScrolledWindow& pThatWindow)
+{
    // Only try to copy pThatWindow if it's a different instance.
-   if (&pThatWindow != this) {
+   if (&pThatWindow != this)
+   {
       copyCxScrolledWindowStuff(&pThatWindow);
    }
 
    return(*this);
 } // operator =
 
-void cxScrolledWindow::setSearchKey(int pKey) {
+void cxScrolledWindow::setSearchKey(int pKey)
+{
    mSearchKey = pKey;
 } // setSearchKey
 
-void cxScrolledWindow::setGoToKey(int pKey) {
+void cxScrolledWindow::setGoToKey(int pKey)
+{
    mGoToKey = pKey;
 } // setGoToKey
 
-void cxScrolledWindow::useLastKeyword(bool pUseLastKeyword) {
+void cxScrolledWindow::useLastKeyword(bool pUseLastKeyword)
+{
    mUseLastKeyword = pUseLastKeyword;
 } // useLastKeyword
 
-void cxScrolledWindow::setAltPgUpKey(int pKey) {
+void cxScrolledWindow::setAltPgUpKey(int pKey)
+{
    mAltPgUpKey = pKey;
 } // setAltPgUpKey
 
-void cxScrolledWindow::setAltPgDownKey(int pKey) {
+void cxScrolledWindow::setAltPgDownKey(int pKey)
+{
    mAltPgDownKey = pKey;
 } // setAltPgDownKey
 
-void cxScrolledWindow::setLoopStartFunction(const shared_ptr<cxFunction>& pFuncPtr) {
+void cxScrolledWindow::setLoopStartFunction(const shared_ptr<cxFunction>& pFuncPtr)
+{
    mLoopStartFunction = pFuncPtr;
 } // setLoopStartFunction
 
-void cxScrolledWindow::setLoopEndFunction(const shared_ptr<cxFunction>& pFuncPtr) {
+void cxScrolledWindow::setLoopEndFunction(const shared_ptr<cxFunction>& pFuncPtr)
+{
    mLoopEndFunction = pFuncPtr;
 } // setLoopEndFunction
 
-string cxScrolledWindow::cxTypeStr() const {
+string cxScrolledWindow::cxTypeStr() const
+{
    return("cxScrolledWindow");
 } // cxTypeStr
 
-void cxScrolledWindow::drawBorder() {
+void cxScrolledWindow::drawBorder()
+{
    cxWindow::drawBorder();
 
    // On the right border, display up & down arrows directly under the top
@@ -386,10 +433,12 @@ void cxScrolledWindow::drawBorder() {
    //  which puts border characters across the entire bottom border.
    // Make sure the window has a border and there is enough space to draw
    //  the arrows.
-   if (hasBorder() && (height() > 4)) {
+   if (hasBorder() && (height() > 4))
+   {
       // Enable the border attributes
       enableAttrs(mWindow, eBORDER);
-      if (useColors) {
+      if (useColors)
+      {
          wcolor_set(mWindow, mBorderColorPair, nullptr);
       }
 
@@ -398,7 +447,8 @@ void cxScrolledWindow::drawBorder() {
 
       // Disable the border attributes
       disableAttrs(mWindow, eBORDER);
-      if (useColors) {
+      if (useColors)
+      {
          wcolor_set(mWindow, 0, nullptr);
       }
    }
@@ -406,8 +456,10 @@ void cxScrolledWindow::drawBorder() {
 
 //// Protected functions
 
-void cxScrolledWindow::reCreateSubWindow() {
-   if (mSubWindow != nullptr) {
+void cxScrolledWindow::reCreateSubWindow()
+{
+   if (mSubWindow != nullptr)
+   {
       //werase(mSubWindow);
       //wclear(mSubWindow);
       delwin(mSubWindow);
@@ -416,20 +468,24 @@ void cxScrolledWindow::reCreateSubWindow() {
 
    mSubWinHeight = height();
    mSubWinWidth = width();
-   if (getBorderStyle() == eBS_NOBORDER) {
+   if (getBorderStyle() == eBS_NOBORDER)
+   {
       mSubWindow = derwin(mWindow, mSubWinHeight, mSubWinWidth, 0, 0);
       // If mSubWindow is nullptr, that means derwin() had an error..
-      if (mSubWindow == nullptr) {
+      if (mSubWindow == nullptr)
+      {
          // Free up the other memory used
          cxWindow::freeWindow();
          throw(cxWidgetsException("Couldn't re-create the ncurses subwindow (cxMenu)."));
       }
    }
-   else {
+   else
+   {
       mSubWinHeight -= 2;
       mSubWinWidth -= 2;
       mSubWindow = derwin(mWindow, mSubWinHeight, mSubWinWidth, 1, 1);
-      if (mSubWindow == nullptr) {
+      if (mSubWindow == nullptr)
+      {
          // Free up the other memory used
          cxWindow::freeWindow();
          throw(cxWidgetsException("Couldn't re-create the ncurses subwindow (cxMenu)."));
@@ -442,23 +498,29 @@ void cxScrolledWindow::reCreateSubWindow() {
 void cxScrolledWindow::init(int pRow, int pCol, int pHeight, int pWidth,
                         const string& pTitle, const string& pMessage,
                         const string& pStatus, cxWindow *pParentWindow,
-                        bool pResizeVertically) {
+                        bool pResizeVertically)
+                        {
    cxWindow::init(pRow, pCol, pHeight, pWidth, pTitle, pMessage,
                   pStatus, pParentWindow, pResizeVertically);
 } // init
 
-void cxScrolledWindow::copyCxScrolledWindowStuff(const cxScrolledWindow* pThatWindow) {
-   if ((pThatWindow != nullptr) && (pThatWindow != this)) {
-      if (mSubWindow != nullptr) {
+void cxScrolledWindow::copyCxScrolledWindowStuff(const cxScrolledWindow* pThatWindow)
+{
+   if ((pThatWindow != nullptr) && (pThatWindow != this))
+   {
+      if (mSubWindow != nullptr)
+      {
          delwin(mSubWindow);
          mSubWindow = nullptr;
       }
 
       // Copy the parent cxWindow stuff, then the stuff for this class.
-      try {
+      try
+      {
          copyCxWinStuff((const cxWindow*)pThatWindow);
       }
-      catch (const cxWidgetsException& exc) {
+      catch (const cxWidgetsException& exc)
+      {
          // Free up the other memory used
          cxWindow::freeWindow();
          throw(cxWidgetsException("Couldn't copy base cxWindow stuff (copying a cxScrolledWindow)."));
@@ -470,18 +532,22 @@ void cxScrolledWindow::copyCxScrolledWindowStuff(const cxScrolledWindow* pThatWi
 
       mSubWinHeight = pThatWindow->mSubWinHeight;
       mSubWinWidth = pThatWindow->mSubWinWidth;
-      if (getBorderStyle() == eBS_NOBORDER) {
+      if (getBorderStyle() == eBS_NOBORDER)
+      {
          mSubWindow = derwin(mWindow, mSubWinHeight, mSubWinWidth, 0, 0);
          // If mSubWindow is nullptr, that means derwin() had an error..
-         if (mSubWindow == nullptr) {
+         if (mSubWindow == nullptr)
+         {
             // Free up the other memory used
             cxWindow::freeWindow();
             throw(cxWidgetsException("Couldn't re-create the ncurses subwindow (cxMenu)."));
          }
       }
-      else {
+      else
+      {
          mSubWindow = derwin(mWindow, mSubWinHeight, mSubWinWidth, 1, 1);
-         if (mSubWindow == nullptr) {
+         if (mSubWindow == nullptr)
+         {
             // Free up the other memory used
             cxWindow::freeWindow();
             throw(cxWidgetsException("Couldn't re-create the ncurses subwindow (cxMenu)."));
@@ -495,21 +561,25 @@ void cxScrolledWindow::copyCxScrolledWindowStuff(const cxScrolledWindow* pThatWi
    }
 } // copyCxScrolledWindowStuff
 
-int cxScrolledWindow::getLineNumber() const {
+int cxScrolledWindow::getLineNumber() const
+{
    return(mLineNumber);
 } // getLineNumber
 
-int cxScrolledWindow::getSubWinHeight() const {
+int cxScrolledWindow::getSubWinHeight() const
+{
    return(mSubWinHeight);
 } // getSubWinHeight
 
-int cxScrolledWindow::getSubWinWidth() const {
+int cxScrolledWindow::getSubWinWidth() const
+{
    return(mSubWinWidth);
 } // getSubWinWidth()
 
 //// Private functions
 
-long cxScrolledWindow::doInputLoop(bool& pRunOnLeaveFunction) {
+long cxScrolledWindow::doInputLoop(bool& pRunOnLeaveFunction)
+{
    pRunOnLeaveFunction = true;
    long returnCode = cxID_EXIT;
 
@@ -520,11 +590,14 @@ long cxScrolledWindow::doInputLoop(bool& pRunOnLeaveFunction) {
 
    int lastKey = NOKEY;
    bool continueOn = true;
-   while (continueOn) {
+   while (continueOn)
+   {
       // Run the loop start function, if it's set
-      if (mLoopStartFunction != nullptr && mLoopStartFunction->functionIsSet()) {
+      if (mLoopStartFunction != nullptr && mLoopStartFunction->functionIsSet())
+      {
          mLoopStartFunction->runFunction();
-         if (mLoopStartFunction->getExitAfterRun()) {
+         if (mLoopStartFunction->getExitAfterRun())
+         {
             break;
          }
       }
@@ -544,37 +617,48 @@ long cxScrolledWindow::doInputLoop(bool& pRunOnLeaveFunction) {
       //   - If the mouse button event was outside the window, then:
       //     - If the parent window is a cxPanel, then exit.
       //     - If this menu is in at least 1 parent menu, then exit.
-      if (lastKey == KEY_MOUSE) {
-         if (getmouse(&mMouse) == OK) {
+      if (lastKey == KEY_MOUSE)
+      {
+         if (getmouse(&mMouse) == OK)
+         {
             // Run a function that may exist for the mouse state.  If
             //  no function exists for the mouse state, then process
             //  it here.
             bool mouseFuncExists = false;
             continueOn = handleFunctionForLastMouseState(&mouseFuncExists,
                                                         &pRunOnLeaveFunction);
-            if (!mouseFuncExists) {
+            if (!mouseFuncExists)
+            {
                // If the mouse event was inside the window, then handle it.
-               if (mouseEvtWasInWindow()) {
-                  switch (mMouse.bstate) {
+               if (mouseEvtWasInWindow())
+               {
+                  switch (mMouse.bstate)
+                  {
                      case BUTTON1_CLICKED:
                         // If there are borders, handle scrolling.
-                        if (hasBorder()) {
+                        if (hasBorder())
+                        {
                            // Do up/down scrolling if the user clicked on the
                            //  right spot on the right border
-                           if (mMouse.x == right()) {
-                              if (mMouse.y == top()+1) {
+                           if (mMouse.x == right())
+                           {
+                              if (mMouse.y == top()+1)
+                              {
                                  // Scroll up by 1 line
                                  scrollWin(-1, 0, true);
                               }
-                              else if (mMouse.y == bottom()-1) {
+                              else if (mMouse.y == bottom()-1)
+                              {
                                  // Scroll down by 1 line
                                  scrollWin(1, 0, true);
                               }
-                              else {
+                              else
+                              {
                                  // Do pagewise scrolling (note: the window should
                                  //  be at least 6 characters high to have room
                                  //  for the areas to click in on the border).
-                                 if (height() >= 6) {
+                                 if (height() >= 6)
+                                 {
                                     // Find the vertical boundaries of the click
                                     //  areas
                                     int upperHalfTop = top() + 2;
@@ -585,12 +669,14 @@ long cxScrolledWindow::doInputLoop(bool& pRunOnLeaveFunction) {
                                     //  do a page up.  If the mouse was clicked in
                                     //  the bottom half, do a page down.
                                     if ((mMouse.y >= upperHalfTop) &&
-                                          (mMouse.y <= upperHalfBottom)) {
+                                          (mMouse.y <= upperHalfBottom))
+                                          {
                                        // Page up
                                        scrollWin(-mSubWinHeight, 0, true);
                                     }
                                     else if ((mMouse.y >= bottomHalfTop) &&
-                                          (mMouse.y <= bottomHalfBottom)) {
+                                          (mMouse.y <= bottomHalfBottom))
+                                          {
                                        // Page down
                                        scrollWin(mSubWinHeight, 0, true);
                                     }
@@ -599,21 +685,26 @@ long cxScrolledWindow::doInputLoop(bool& pRunOnLeaveFunction) {
                            }
                            // Do left/right scrolling if the user clicked on the
                            //  right spot on the bottom border
-                           else if (mMouse.y == bottom()) {
-                              if (mMouse.x == left()+1) {
+                           else if (mMouse.y == bottom())
+                           {
+                              if (mMouse.x == left()+1)
+                              {
                                  // Scroll left by 1 character
                                  scrollWin(0, -1, true);
                               }
-                              else if (mMouse.x == right()-1) {
+                              else if (mMouse.x == right()-1)
+                              {
                                  // Scroll right by 1 character
                                  scrollWin(0, 1, true);
                               }
-                              else {
+                              else
+                              {
                                  // Do pagewise left-right scrolling.  (Note: the
                                  //  window should be at least 6 characters wide
                                  //  to have room for the areas to click on the
                                  //  border.)
-                                 if (width() >= 6) {
+                                 if (width() >= 6)
+                                 {
                                     // Find the horizontal boundaries of the click
                                     //  areas
                                     int leftHalfLeft = left() + 2;
@@ -624,12 +715,14 @@ long cxScrolledWindow::doInputLoop(bool& pRunOnLeaveFunction) {
                                     //  do a page left.  If the mouse was clicked
                                     //  in the right half, do a page right.
                                     if ((mMouse.x >= leftHalfLeft) &&
-                                          (mMouse.x <= leftHalfRight)) {
+                                          (mMouse.x <= leftHalfRight))
+                                          {
                                        // Do a page left
                                        scrollWin(0, -mSubWinWidth, true);
                                     }
                                     else if ((mMouse.x >= rightHalfLeft) &&
-                                          (mMouse.x <= rightHalfRight)) {
+                                          (mMouse.x <= rightHalfRight))
+                                          {
                                        // Do a page right
                                        scrollWin(0, mSubWinWidth, true);
                                     }
@@ -650,18 +743,21 @@ long cxScrolledWindow::doInputLoop(bool& pRunOnLeaveFunction) {
                      case BUTTON1_RELEASED:
                         // If the user is moving the window, then go ahead and
                         //  move it.
-                        if (movingWin) {
+                        if (movingWin)
+                        {
                            moveRelative(mMouse.y - pressedY, mMouse.x - pressedX, true);
                            movingWin = false; // reset the moving of the window
                         }
                         break;
                   }
                }
-               else {
+               else
+               {
                   // The mouse button event was outside the window.  If the parent
                   //  window is a cxPanel, then quit the input loop.  This allows
                   //  the user to go to another window in the panel.
-                  if (parentIsCxPanel()) {
+                  if (parentIsCxPanel())
+                  {
                      returnCode = cxID_EXIT;
                      continueOn = false;
                   }
@@ -673,22 +769,26 @@ long cxScrolledWindow::doInputLoop(bool& pRunOnLeaveFunction) {
       // This is defined for versions of ncurses without mouse support.
       // This is here because the next block starts with "else if".  The
       //  code will go onto the next block because of the false.
-      if (false) {
+      if (false)
+      {
       }
 #endif
       // If the last key is a quit key, then quit and return
       //  cxID_QUIT.  If the key isn't there, see if it's an exit key
       //  (if it is, quit and return cxID_EXIT).  If not there either,
       //  handle the key normally.
-      else if (hasQuitKey(lastKey)) {
+      else if (hasQuitKey(lastKey))
+      {
          returnCode = cxID_QUIT;
          continueOn = false;
       }
-      else if (hasExitKey(lastKey)) {
+      else if (hasExitKey(lastKey))
+      {
          returnCode = cxID_EXIT;
          continueOn = false;
       }
-      else {
+      else
+      {
          // Run a function that may be associated with the last
          //  keypress.
          bool functionExists = false;
@@ -696,12 +796,15 @@ long cxScrolledWindow::doInputLoop(bool& pRunOnLeaveFunction) {
                                                &pRunOnLeaveFunction);
          // Quit the input loop if continueOn was set false or if
          //  mLeaveNow was set true
-         if (!continueOn || mLeaveNow) {
+         if (!continueOn || mLeaveNow)
+         {
             break;
          }
 
-         if (!functionExists) {
-            switch (lastKey) {
+         if (!functionExists)
+         {
+            switch (lastKey)
+            {
                case KEY_UP: // Scroll up by 1 line
                   scrollWin(-1, 0, true);
                   break;
@@ -740,19 +843,24 @@ long cxScrolledWindow::doInputLoop(bool& pRunOnLeaveFunction) {
                   // What can we do in this case?
                   break;
                default:
-                  if (lastKey == mGoToKey) {
+                  if (lastKey == mGoToKey)
+                  {
                      doGoToLine();
                   }
-                  else if (lastKey == mSearchKey) {
+                  else if (lastKey == mSearchKey)
+                  {
                      doSearch();
                   }
-                  else if (lastKey == mAltPgUpKey) {
+                  else if (lastKey == mAltPgUpKey)
+                  {
                      scrollWin(-mSubWinHeight, 0, true);
                   }
-                  else if (lastKey == mAltPgDownKey) {
+                  else if (lastKey == mAltPgDownKey)
+                  {
                      scrollWin(mSubWinHeight, 0, true);
                   }
-                  else {
+                  else
+                  {
                      continueOn = false;
                   }
                   break;
@@ -761,7 +869,8 @@ long cxScrolledWindow::doInputLoop(bool& pRunOnLeaveFunction) {
       }
 
       // Run the end loop function, if it's set
-      if (mLoopEndFunction != nullptr && mLoopEndFunction->functionIsSet()) {
+      if (mLoopEndFunction != nullptr && mLoopEndFunction->functionIsSet())
+      {
          mLoopEndFunction->runFunction();
          continueOn = (continueOn && !(mLoopEndFunction->getExitAfterRun()));
       }
@@ -773,27 +882,35 @@ long cxScrolledWindow::doInputLoop(bool& pRunOnLeaveFunction) {
    return(returnCode);
 } // doInputLoop
 
-string cxScrolledWindow::getLine(int pLineNumber) {
-   if (pLineNumber >= 0 && (unsigned)pLineNumber < mMessageLines.size()) {
-      if (mHScrollOffset < (int)mMessageLines[pLineNumber].length()) {
+string cxScrolledWindow::getLine(int pLineNumber)
+{
+   if (pLineNumber >= 0 && (unsigned)pLineNumber < mMessageLines.size())
+   {
+      if (mHScrollOffset < (int)mMessageLines[pLineNumber].length())
+      {
          return(mMessageLines[pLineNumber].substr(mHScrollOffset, mSubWinWidth));
       }
-      else {
+      else
+      {
          return("");
       }
    }
-   else {
+   else
+   {
       return("");
    }
 } // getLine
 
-inline void cxScrolledWindow::goToLine(int pLineNum) {
-   if (pLineNum != mLineNumber) {
+inline void cxScrolledWindow::goToLine(int pLineNum)
+{
+   if (pLineNum != mLineNumber)
+   {
       scrollWin(pLineNum - mLineNumber, 0, true);
    }
 } // goToLine
 
-void cxScrolledWindow::doGoToLine() {
+void cxScrolledWindow::doGoToLine()
+{
    // Prompt the user to go to a specific line
    cxMultiLineInput goToInput(this, 1, 1, 1, 15, "Line #:", eBS_SINGLE_LINE);
    goToInput.setTitle("Go To Line", false);
@@ -802,7 +919,8 @@ void cxScrolledWindow::doGoToLine() {
    goToInput.setLabelColor(eBRTCYAN_BLUE);
    // Ensure that the user can only type integers.
    goToInput.setOnKeyFunction(cxValidators::intOnKeyValidator, &goToInput, nullptr);
-   if (goToInput.showModal() != ESC) {
+   if (goToInput.showModal() != ESC)
+   {
       // Subtract 1 from the user's line# (because the index to
       //  mMessageLines is 0-based).
       int lineNo = cxStringUtils::stringTo(goToInput.getValue()) - 1;
@@ -811,19 +929,22 @@ void cxScrolledWindow::doGoToLine() {
    goToInput.hide();
 } // doGoToLine
 
-void cxScrolledWindow::doSearch() {
+void cxScrolledWindow::doSearch()
+{
    // Prompt the user for text
    int winWidth = (cxBase::width() > 45 ? 45 : cxBase::width());
    cxMultiLineInput searchInput(this, 1, 1, 1, winWidth, "Keyword:", eBS_SINGLE_LINE);
    searchInput.setTitle("Search", false);
-   if (mUseLastKeyword) {
+   if (mUseLastKeyword)
+   {
       // Set the current keyword in the search input
       searchInput.setValue(mSearchKeyword);
    }
    searchInput.center(false);
    searchInput.setBorderColor(eYELLOW_BLUE);
    searchInput.setLabelColor(eBRTCYAN_BLUE);
-   if (searchInput.showModal() != ESC) {
+   if (searchInput.showModal() != ESC)
+   {
       // Get the keyword entered into the input
       string keyword = searchInput.getValue();
       // The search should start from line 0; however, if
@@ -831,11 +952,13 @@ void cxScrolledWindow::doSearch() {
       //  we should do a new search or repeat the last
       //  search.
       int startLine = 0;
-      if (mUseLastKeyword) {
+      if (mUseLastKeyword)
+      {
          // Start searching from one past the current line number;
          //  however, if the user enters a new keyword, start from
          //  the first line.
-         if (keyword == mSearchKeyword) {
+         if (keyword == mSearchKeyword)
+         {
             startLine = mLineNumber + 1;
          }
          mSearchKeyword = keyword;
@@ -844,33 +967,39 @@ void cxScrolledWindow::doSearch() {
       // Go through mMessageLines looking for the user's keyword
       int numLines = (int)mMessageLines.size();
       bool found = false;
-      // make sure we are case-insensitive 
+      // make sure we are case-insensitive
       keyword=strToLower(keyword);
       string tmp;
-      for (int i = startLine; i < numLines; ++i) {
-         // make sure we are case-insensitive 
+      for (int i = startLine; i < numLines; ++i)
+      {
+         // make sure we are case-insensitive
          tmp = strToLower(mMessageLines[i]);
-         if (tmp.find(keyword, 0) != string::npos) {
+         if (tmp.find(keyword, 0) != string::npos)
+         {
             // If found, scroll to this line
             goToLine(i);
             found = true;
             break;
          }
       }
-      if (!found) {
+      if (!found)
+      {
          cxBase::messageBox("Not found");
       }
    }
    searchInput.hide();
 } // doSearch
 
-void cxScrolledWindow::drawHorizontalScrollArrows() {
+void cxScrolledWindow::drawHorizontalScrollArrows()
+{
    // Make sure the window has a border and there is enough space
    //  to draw the arrows.
-   if (hasBorder() && (width() > 4)) {
+   if (hasBorder() && (width() > 4))
+   {
       // Enable the border attributes
       enableAttrs(mWindow, eBORDER);
-      if (useColors) {
+      if (useColors)
+      {
          wcolor_set(mWindow, mBorderColorPair, nullptr);
       }
 
@@ -879,7 +1008,8 @@ void cxScrolledWindow::drawHorizontalScrollArrows() {
 
       // Disable the border attributes
       disableAttrs(mWindow, eBORDER);
-      if (useColors) {
+      if (useColors)
+      {
          wcolor_set(mWindow, 0, nullptr);
       }
    }

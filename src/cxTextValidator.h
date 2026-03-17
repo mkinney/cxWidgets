@@ -19,7 +19,8 @@
  * \version $Revision: 1.10 $
  * \date $Date: 2007/12/04 00:23:46 $
 */
-class cxTextValidator {
+class cxTextValidator
+{
    public:
       /**
        * Default constructor; takes a text string and a validator string

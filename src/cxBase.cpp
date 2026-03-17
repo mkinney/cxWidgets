@@ -41,7 +41,8 @@ using cxStringUtils::isPrintable;
 // mInitialized is used to store whether cxBase::init() has been called.
 //  It's declared here because the compiler gives a warning if it is declared
 //  in cxBase.h.
-namespace cxBase {
+namespace cxBase
+{
 
    bool mInitialized = false;
 
@@ -76,9 +77,11 @@ namespace cxBase {
    e_cxColors mDefaultBorderColor = eGRAY_BLUE;
 }
 
-void cxBase::init(bool pEnableMouse) {
+void cxBase::init(bool pEnableMouse)
+{
    WINDOW* tmpWindow=initscr();         // initialize the curses library
-   if (tmpWindow == nullptr) {
+   if (tmpWindow == nullptr)
+   {
       cerr << "Warning: initscr() returned a nullptr pointer" << endl;
       throw(cxWidgetsException("Warning: initscr() returned a nullptr pointer."));
    }
@@ -94,7 +97,8 @@ void cxBase::init(bool pEnableMouse) {
    //trace(TRACE_MAXIMUM); // turn on maximum trace debugging
 
    // Initialize the colors listed in cxColors.h
-   if (has_colors()) {
+   if (has_colors())
+   {
       start_color();
       // The following are the init_pair calls with the foreground
       //  color followed by the background color, as stated in
@@ -214,7 +218,8 @@ void cxBase::init(bool pEnableMouse) {
 
 #ifdef NCURSES_MOUSE_VERSION
    // Initialize the mouse if pEnableMouse is true
-   if (pEnableMouse) {
+   if (pEnableMouse)
+   {
       mousemask(ALL_MOUSE_EVENTS, nullptr);
    }
 #endif
@@ -224,10 +229,12 @@ void cxBase::init(bool pEnableMouse) {
    cxBase::mInitialized = true;
 } // init
 
-void cxBase::cleanup() {
+void cxBase::cleanup()
+{
    // Only do this if cxWidgets is initialized, or else the program will
    //  segfault.
-   if (cxInitialized()) {
+   if (cxInitialized())
+   {
       curs_set(1); // Enable the cursor
       mvcur(0, COLS - 1, LINES - 1, 0); // Move the cursor to lower left
       erase();
@@ -237,20 +244,23 @@ void cxBase::cleanup() {
    }
 } // cleanup
 
-int cxBase::top() {
+int cxBase::top()
+{
    int row = 0, col = 0;
    getbegyx(stdscr, row, col);
    return(row);
 } // top
 
-int cxBase::centerRow() {
+int cxBase::centerRow()
+{
    int row = 0, col = 0, center = 0;
    getmaxyx(stdscr, row, col);
    center=row/2;
    return(center);
 } // centerRow
 
-int cxBase::bottom() {
+int cxBase::bottom()
+{
    // getmaxyx() returns the screen size, but the column numbers are 0-based,
    //  so we need to subtract 1.
    int theHeight = 0, theWidth = 0;
@@ -258,83 +268,103 @@ int cxBase::bottom() {
    return(theHeight - 1);
 } // bottom
 
-int cxBase::left() {
+int cxBase::left()
+{
    int row = 0, col = 0;
    getbegyx(stdscr, row, col);
+   (void)row;
    return(col);
 } // left
 
-int cxBase::centerCol() {
+int cxBase::centerCol()
+{
    int theHeight = 0, theWidth = 0;
    getmaxyx(stdscr, theHeight, theWidth);
+   (void)theHeight;
    return(theWidth / 2);
 } // centerCol
 
-int cxBase::right() {
+int cxBase::right()
+{
    // getmaxyx() returns the screen size, but the column numbers are 0-based,
    //  so we need to subtract 1.
    int theHeight = 0, theWidth = 0;
    getmaxyx(stdscr, theHeight, theWidth);
+   (void)theHeight;
    return(theWidth - 1);
 } // right
 
-int cxBase::width() {
+int cxBase::width()
+{
    // getmaxyx() returns the screen size
    int theHeight = 0, theWidth = 0;
    getmaxyx(stdscr, theHeight, theWidth);
+   (void)theHeight;
    return(theWidth);
 } // width
 
-int cxBase::height() {
+int cxBase::height()
+{
    int theHeight = 0, theWidth = 0;
    getmaxyx(stdscr, theHeight, theWidth);
    return(theHeight);
 } // height
 
-void cxBase::getTermDimentions(int& pHeight, int& pWidth) {
+void cxBase::getTermDimentions(int& pHeight, int& pWidth)
+{
    pHeight = cxBase::height();
    pWidth = cxBase::width();
 } // getTermDimentions
 
-bool cxBase::resizeTerm(int pNewHeight, int pNewWidth) {
+bool cxBase::resizeTerm(int pNewHeight, int pNewWidth)
+{
    return(resize_term(pNewHeight, pNewWidth) == OK);
 } // resizeTerm
 
-e_cxColors cxBase::getDefaultMessageColor() {
+e_cxColors cxBase::getDefaultMessageColor()
+{
    return(cxBase::mDefaultMessageColor);
 } // getDefaultMessageColor
 
-void cxBase::setDefaultMessageColor(e_cxColors pColor) {
+void cxBase::setDefaultMessageColor(e_cxColors pColor)
+{
    cxBase::mDefaultMessageColor = pColor;
 } // setDefaultMessageColor
 
-e_cxColors cxBase::getDefaultTitleColor() {
+e_cxColors cxBase::getDefaultTitleColor()
+{
    return(cxBase::mDefaultTitleColor);
 } // getDefaultTitleColor
 
-void cxBase::setDefaultTitleColor(e_cxColors pColor) {
+void cxBase::setDefaultTitleColor(e_cxColors pColor)
+{
    cxBase::mDefaultTitleColor = pColor;
 } // setDefaultTitleColor
 
-e_cxColors cxBase::getDefaultStatusColor() {
+e_cxColors cxBase::getDefaultStatusColor()
+{
    return(cxBase::mDefaultStatusColor);
 } // getDefaultStatusColor
 
-void cxBase::setDefaultStatusColor(e_cxColors pColor) {
+void cxBase::setDefaultStatusColor(e_cxColors pColor)
+{
    cxBase::mDefaultStatusColor = pColor;
 } // setDefaultStatusColor
 
-e_cxColors cxBase::getDefaultBorderColor() {
+e_cxColors cxBase::getDefaultBorderColor()
+{
    return(cxBase::mDefaultBorderColor);
 } // getDefaultBorderColor
 
-void cxBase::setDefaultBorderColor(e_cxColors pColor) {
+void cxBase::setDefaultBorderColor(e_cxColors pColor)
+{
    cxBase::mDefaultBorderColor = pColor;
 } // setDefaultBorderColor
 
 void cxBase::messageBox(int pRow, int pCol, int pHeight, int pWidth,
                         const string& pTitle, const string& pMessage,
-                        const string& pStatus, eBorderStyle pBorderStyle) {
+                        const string& pStatus, eBorderStyle pBorderStyle)
+                        {
    cxWindow aWindow(nullptr, pRow, pCol, pHeight, pWidth, pTitle, pMessage, pStatus, pBorderStyle);
    aWindow.showModal(true, true, false);
    aWindow.hide(); // Hide the window so it doesn't show anymore
@@ -342,27 +372,31 @@ void cxBase::messageBox(int pRow, int pCol, int pHeight, int pWidth,
 
 void cxBase::messageBox(int pRow, int pCol, const string& pTitle,
                         const string& pMessage,
-                        const string& pStatus) {
+                        const string& pStatus)
+                        {
    cxWindow aWindow(nullptr, pRow, pCol, pTitle, pMessage, pStatus);
    aWindow.showModal(true, true, false);
    aWindow.hide(); // Hide the window so it doesn't show anymore
 } // messageBox
 
-void cxBase::messageBox(int pRow, int pCol, const string& pMessage) {
+void cxBase::messageBox(int pRow, int pCol, const string& pMessage)
+{
    cxWindow aWindow(nullptr, pRow, pCol, "", pMessage, "");
    aWindow.showModal(true, true, false);
    aWindow.hide(); // Hide the window so it doesn't show anymore
 } // messageBox
 
 void cxBase::messageBox(const string& pTitle, const string& pMessage,
-                        const string& pStatus) {
+                        const string& pStatus)
+                        {
    cxMessageDialog msgDlg(nullptr, pTitle, pMessage);
    msgDlg.setStatus(pStatus);
    msgDlg.showModal();
    msgDlg.hide(); // Hide the window so it doesn't show anymore
 } // messageBox
 
-void cxBase::messageBox(const string& pMessage, const string& pStatus) {
+void cxBase::messageBox(const string& pMessage, const string& pStatus)
+{
    cxMessageDialog msgDlg(nullptr, "Info", pMessage);
    msgDlg.setStatus(pStatus);
    msgDlg.showModal();
@@ -371,7 +405,8 @@ void cxBase::messageBox(const string& pMessage, const string& pStatus) {
 
 void cxBase::messageBox(const string& pMessage, e_cxColors pMessageColor,
                         attr_t pMessageAttr, e_cxColors pTitleColor,
-                        e_cxColors pStatusColor, e_cxColors pBorderColor) {
+                        e_cxColors pStatusColor, e_cxColors pBorderColor)
+                        {
    cxMessageDialog msgDlg(nullptr, "Info", pMessage);
    msgDlg.setMessageColor(pMessageColor);
    msgDlg.setAttr(eMESSAGE, pMessageAttr);
@@ -381,13 +416,15 @@ void cxBase::messageBox(const string& pMessage, e_cxColors pMessageColor,
    msgDlg.showModal();
 } // messageBox
 
-void cxBase::messageDialog(const string& pMessage) {
+void cxBase::messageDialog(const string& pMessage)
+{
    cxMessageDialog msgDlg(nullptr, "Info", pMessage);
    msgDlg.showModal();
    msgDlg.hide(); // Hide the window so it doesn't show anymore
 } // messageDialog
 
-void cxBase::messageDialog(const list<string>& pMessages) {
+void cxBase::messageDialog(const list<string>& pMessages)
+{
    cxMessageDialog msgDlg(nullptr, 0, 0, height(), width(), "Info", "");
    msgDlg.addMessageLinesBelow(pMessages);
    msgDlg.center(false);
@@ -395,14 +432,16 @@ void cxBase::messageDialog(const list<string>& pMessages) {
    msgDlg.hide(); // Hide the window so it doesn't show anymore
 } // messageDialog
 
-void cxBase::splash(const string& pTitle, const string& pMessage, int pSleep) {
+void cxBase::splash(const string& pTitle, const string& pMessage, int pSleep)
+{
    cxWindow aWindow(nullptr, pTitle, pMessage, "");
    aWindow.show();
    sleep(pSleep);
    aWindow.hide();
 } // splash
 
-void cxBase::splash(const string& pMessage, int pSleep) {
+void cxBase::splash(const string& pMessage, int pSleep)
+{
    cxWindow aWindow(nullptr, pMessage);
    aWindow.show();
    sleep(pSleep);
@@ -410,25 +449,30 @@ void cxBase::splash(const string& pMessage, int pSleep) {
 } // splash
 
 // Erases the screen
-void cxBase::eraseScreen() {
+void cxBase::eraseScreen()
+{
    // Only do this if cxWidgets is initialized, or else the program will
    //  segfault.
-   if (cxInitialized()) {
+   if (cxInitialized())
+   {
       werase(stdscr);
       wrefresh(stdscr);
    }
 } // eraseScreen
 
-void cxBase::updateWindows() {
+void cxBase::updateWindows()
+{
    // Only do this if cxWidgets is initialized, or else the program will
    //  segfault.
-   if (cxInitialized()) {
+   if (cxInitialized())
+   {
       update_panels();
       doupdate();
    }
 } // updateWindows
 
-bool cxBase::isFunctionKey(int pKey) {
+bool cxBase::isFunctionKey(int pKey)
+{
    return((pKey == KEY_F(1)) ||
           (pKey == KEY_F(2)) ||
           (pKey == KEY_F(3)) ||
@@ -445,14 +489,16 @@ bool cxBase::isFunctionKey(int pKey) {
           (pKey == KEY_PPAGE));
 } // isFunctionKey
 
-bool cxBase::toggleCursor(bool pToggleCursor) {
+bool cxBase::toggleCursor(bool pToggleCursor)
+{
    // If pToggleCursor is true, use 1; otherwise, use 0.
    int previous = curs_set(pToggleCursor ? 1 : 0);
    return(previous != 0); // Return the previous cursor state
 } // toggleCursor
 
-string cxBase::getTermType() {
-   // NOTE: Do not re-write this to be one line. 
+string cxBase::getTermType()
+{
+   // NOTE: Do not re-write this to be one line.
    // If you run a program from cron, you may not
    // have *ANY* environment variables "set".
    // If you do something like :
@@ -462,25 +508,31 @@ string cxBase::getTermType() {
    //   what():  basic_string::_S_construct nullptr not valid
    string retval;
    char *term =getenv("TERM");
-   if (term != nullptr) {
+   if (term != nullptr)
+   {
       retval = term;
    }
    return(retval);
 } // getTermType
 
-bool cxBase::colorIsBright(e_cxColors pColor) {
-   return(pColor & cxCOLOR_BRIGHT == cxCOLOR_BRIGHT);
+bool cxBase::colorIsBright(e_cxColors pColor)
+{
+   return((pColor & cxCOLOR_BRIGHT) == cxCOLOR_BRIGHT);
 } // colorIsBright
 
-int cxBase::countHotkeys(const string& pStr) {
+int cxBase::countHotkeys(const string& pStr)
+{
    int hotkeyCount = 0;
 
    unsigned strLen = pStr.length();
-   for (unsigned i = 0; i < strLen; ++i) {
+   for (unsigned i = 0; i < strLen; ++i)
+   {
       // Check for an ampersand (&) followed by
       //  a non-space
-      if (i < (strLen-1)) {
-         if ((pStr[i] == HOTKEY_CHAR) && (pStr[i+1] != ' ')) {
+      if (i < (strLen-1))
+      {
+         if ((pStr[i] == HOTKEY_CHAR) && (pStr[i+1] != ' '))
+         {
             ++hotkeyCount;
          }
       }
@@ -489,16 +541,21 @@ int cxBase::countHotkeys(const string& pStr) {
    return(hotkeyCount);
 } // countHotkeys
 
-string cxBase::stringWithoutHotkeyChars(const string& pStr) {
+string cxBase::stringWithoutHotkeyChars(const string& pStr)
+{
    string updatedStr(pStr);
    unsigned strLen = 0;
-   while (countHotkeys(updatedStr) > 0) {
+   while (countHotkeys(updatedStr) > 0)
+   {
       strLen = updatedStr.length();
-      for (unsigned i = 0; i < strLen; ++i) {
+      for (unsigned i = 0; i < strLen; ++i)
+      {
          // Check for an ampersand (&) followed by
          //  a non-space
-         if (i < (strLen-1)) {
-            if ((updatedStr[i] == HOTKEY_CHAR) && (updatedStr[i+1] != ' ')) {
+         if (i < (strLen-1))
+         {
+            if ((updatedStr[i] == HOTKEY_CHAR) && (updatedStr[i+1] != ' '))
+            {
                updatedStr.erase(i, 1);
                break;
             }
@@ -509,12 +566,15 @@ string cxBase::stringWithoutHotkeyChars(const string& pStr) {
    return(updatedStr);
 } // stringWithoutHotkeyChars
 
-unsigned cxBase::visualStrLen(const string& pStr) {
+unsigned cxBase::visualStrLen(const string& pStr)
+{
    return(stringWithoutHotkeyChars(pStr).length());
 } // visualStrLen
 
-string cxBase::bringToTop(void *theWindow, void* unused) {
-   if (theWindow != nullptr) {
+string cxBase::bringToTop(void *theWindow, void* unused)
+{
+   if (theWindow != nullptr)
+   {
       cxWindow* pWindow = (cxWindow*)theWindow;
       pWindow->show(true, false);
    }
@@ -522,10 +582,12 @@ string cxBase::bringToTop(void *theWindow, void* unused) {
    return("");
 } // bringToTop
 
-string cxBase::cxFormShowModal(void* theForm, void* unused) {
+string cxBase::cxFormShowModal(void* theForm, void* unused)
+{
    string retval = toString(cxID_QUIT);
 
-   if (nullptr != theForm) {
+   if (nullptr != theForm)
+   {
       cxForm *iForm = (cxForm*)theForm;
       retval = toString(iForm->showModal());
    }
@@ -533,10 +595,12 @@ string cxBase::cxFormShowModal(void* theForm, void* unused) {
    return(retval);
 } // cxFormShowModal
 
-string cxBase::cxMenuShowModal(void* theMenu, void* unused) {
+string cxBase::cxMenuShowModal(void* theMenu, void* unused)
+{
    string retval = toString(cxID_QUIT);
 
-   if (nullptr != theMenu) {
+   if (nullptr != theMenu)
+   {
       cxMenu *iMenu = (cxMenu*)theMenu;
       retval = toString(iMenu->showModal());
    }
@@ -544,15 +608,18 @@ string cxBase::cxMenuShowModal(void* theMenu, void* unused) {
    return(retval);
 } // cxFormShowModal
 
-string cxBase::noOp(void *p1, void *p2) {
+string cxBase::noOp(void *p1, void *p2)
+{
    return("");
 } // noOp
 
-string cxBase::noOp(void *p1, void *p2, void *p3, void *p4) {
+string cxBase::noOp(void *p1, void *p2, void *p3, void *p4)
+{
    return("");
 } // noOp
 
-int cxBase::runSystemCmd(const string& pCmd) {
+int cxBase::runSystemCmd(const string& pCmd)
+{
    cxBase::cleanup();
    int retval = system(pCmd.c_str());
    cxBase::init();
@@ -561,10 +628,12 @@ int cxBase::runSystemCmd(const string& pCmd) {
 } // runSystemCmd
 
 void cxBase::writeText(int pRow, int pCol, const string& pText,
-                       attr_t pAttr, e_cxColors pColor) {
+                       attr_t pAttr, e_cxColors pColor)
+                       {
    // Only do this if cxWidgets is initialized, or else the program will
    //  segfault.
-   if (cxInitialized()) {
+   if (cxInitialized())
+   {
       // TODO: Implement the color stuff
       // TODO: Check to see whther the attribute & color are already used in
       //  stdscr, and if so, don't add/remove them.
@@ -578,22 +647,28 @@ void cxBase::writeText(int pRow, int pCol, const string& pText,
 } // writeText
 
 void cxBase::getHotkeyChars(const string& pStr, set<char>& pHotkeys,
-                            bool pConvertCase, bool pToUpper) {
+                            bool pConvertCase, bool pToUpper)
+                            {
    pHotkeys.clear();
 
    unsigned strLen = pStr.length();
-   for (unsigned i = 0; i < strLen; ++i) {
+   for (unsigned i = 0; i < strLen; ++i)
+   {
       // Add the hotkey if the ampersand is not the last character
       //  and the next character is not a space.
-      if ((pStr[i] == HOTKEY_CHAR) && (i+1 < strLen) && (pStr[i+1] != ' ')) {
+      if ((pStr[i] == HOTKEY_CHAR) && (i+1 < strLen) && (pStr[i+1] != ' '))
+      {
          // Get the hotkey character
          char hotkey = pStr[i+1];
          // Convert its case if we need to.
-         if (pConvertCase) {
-            if (pToUpper) {
+         if (pConvertCase)
+         {
+            if (pToUpper)
+            {
                hotkey = toupper(hotkey);
             }
-            else {
+            else
+            {
                hotkey = tolower(hotkey);
             }
          }
@@ -605,21 +680,25 @@ void cxBase::getHotkeyChars(const string& pStr, set<char>& pHotkeys,
    }
 } // getHotkeyChars
 
-void cxBase::showAllWindows(bool pBringToTop) {
+void cxBase::showAllWindows(bool pBringToTop)
+{
    // Only do this if cxWidgets is initialized, or else the program will
    //  segfault.
-   if (cxInitialized()) {
+   if (cxInitialized())
+   {
       // Get a pointer to the bottom panel in the stack
       PANEL *panel = panel_above(nullptr);
       // For each panel, get the cxWindow object it points
       //  to, and show it.
       cxWindow *window = nullptr;
-      while (panel != nullptr) {
+      while (panel != nullptr)
+      {
          window = (cxWindow*)panel_userptr(panel);
          // The pointer returned by panel_userptr for the
          //  panels shouldn't be nullptr, but check just in
          //  case.
-         if (window != nullptr) {
+         if (window != nullptr)
+         {
             // Show the window.  Don't show its subwindows
             //  (because they'll be shown too, eventually).
             window->show(pBringToTop, false);
@@ -630,35 +709,41 @@ void cxBase::showAllWindows(bool pBringToTop) {
    }
 } // showAllWindows
 
-cxWindow* cxBase::getTopWindow() {
+cxWindow* cxBase::getTopWindow()
+{
    cxWindow *topWindow = nullptr;
 
    // With a nullptr parameter, panel_below() returns a pointer to the topmost
    //  panel in the stack.
    PANEL *panel = panel_below(nullptr);
-   if (nullptr != panel) {
+   if (nullptr != panel)
+   {
       topWindow = const_cast<cxWindow*>(static_cast<const cxWindow*>(panel_userptr(panel)));
    }
 
    return(topWindow);
 } // getTopWindow
 
-cxWindow* cxBase::getBottomWindow() {
+cxWindow* cxBase::getBottomWindow()
+{
    cxWindow *bottomWindow = nullptr;
 
    // With a nullptr parameter, panel_above() returns a pointer to the bottom
    //  panel in the stack.
    PANEL *panel = panel_above(nullptr);
-   if (nullptr != panel) {
+   if (nullptr != panel)
+   {
       bottomWindow = const_cast<cxWindow*>(static_cast<const cxWindow*>(panel_userptr(panel)));
    }
 
    return(bottomWindow);
 } // getTopWindow
 
-string cxBase::getKeyStr(int pKey) {
+string cxBase::getKeyStr(int pKey)
+{
    string keyStr;
-   switch(pKey) {
+   switch(pKey)
+   {
       case KEY_F(1):
          keyStr = "F1";
          break;
@@ -871,11 +956,13 @@ string cxBase::getKeyStr(int pKey) {
          break;
 #endif
       default:
-         if (isPrintable(pKey)) {
+         if (isPrintable(pKey))
+         {
             keyStr = "";
             keyStr += pKey;
          }
-         else {
+         else
+         {
             keyStr = cxStringUtils::toString(pKey);
          }
          break;
@@ -884,9 +971,11 @@ string cxBase::getKeyStr(int pKey) {
    return(keyStr);
 } // getKeyStr
 
-string cxBase::getMouseStateStr(int pMouseState) {
+string cxBase::getMouseStateStr(int pMouseState)
+{
    string mouseStateStr;
-   switch(pMouseState) {
+   switch(pMouseState)
+   {
 #ifdef NCURSES_MOUSE_VERSION
       case BUTTON1_PRESSED:
          mouseStateStr = "Button 1 down";
@@ -958,10 +1047,12 @@ string cxBase::getMouseStateStr(int pMouseState) {
    return(mouseStateStr);
 } // getMouseStateStr
 
-string cxBase::getReturnCodeStr(long pReturnCode) {
+string cxBase::getReturnCodeStr(long pReturnCode)
+{
    string retval;
 
-   switch(pReturnCode) {
+   switch(pReturnCode)
+   {
       case cxID_OK:
          retval = "cxID_OK";
          break;
@@ -985,10 +1076,12 @@ string cxBase::getReturnCodeStr(long pReturnCode) {
    return(retval);
 } // getReturnCodeStr
 
-string cxBase::getInputOptionStr(eInputOptions pInputOption) {
+string cxBase::getInputOptionStr(eInputOptions pInputOption)
+{
    string retval;
 
-   switch(pInputOption) {
+   switch(pInputOption)
+   {
       case eINPUT_EDITABLE:
          retval = "eINPUT_EDITABLE";
          break;
@@ -1003,10 +1096,12 @@ string cxBase::getInputOptionStr(eInputOptions pInputOption) {
    return(retval);
 } // getInputKindStr
 
-string cxBase::getBorderStyleStr(eBorderStyle pBorderStyle) {
+string cxBase::getBorderStyleStr(eBorderStyle pBorderStyle)
+{
    string retval;
 
-   switch(pBorderStyle) {
+   switch(pBorderStyle)
+   {
       case eBS_NOBORDER:
          retval = "eBS_NOBORDER";
          break;
@@ -1024,10 +1119,12 @@ string cxBase::getBorderStyleStr(eBorderStyle pBorderStyle) {
    return(retval);
 } // getBorderStyleStr
 
-string cxBase::getInputTypeStr(eInputTypes pInputType) {
+string cxBase::getInputTypeStr(eInputTypes pInputType)
+{
    string retval;
 
-   switch (pInputType) {
+   switch (pInputType)
+   {
       case eINPUT_TYPE_TEXT:
          retval = "eINPUT_TYPE_TEXT";
          break;
@@ -1045,8 +1142,10 @@ string cxBase::getInputTypeStr(eInputTypes pInputType) {
    return(retval);
 } // getInputTypeStr
 
-void cxBase::signalHandler(int pSignal) {
-   switch (pSignal) {
+void cxBase::signalHandler(int pSignal)
+{
+   switch (pSignal)
+   {
       case SIGWINCH:  // Window attributes changed
          break;
    }
@@ -1055,15 +1154,18 @@ void cxBase::signalHandler(int pSignal) {
 // TODO: There's a problem with this method.  If the user presses ESC instead
 //  of choosing yes or no, this will return false, as if the user chose "No".
 bool cxBase::promptYesNo(const string& pMessage, const string& pTitle,
-                         long pButtons) {
+                         long pButtons)
+                         {
    bool retval = false;
    // Only do this if cxWidgets is initialized, or else the program will
    //  segfault.
    string title = pTitle;
-   if (pTitle == "") {
+   if (pTitle == "")
+   {
       title = "Question";
    }
-   if (cxInitialized()) {
+   if (cxInitialized())
+   {
       cxMessageDialog iDlg(nullptr, 0, 0, 8, 25, title, pMessage,
             (eMessageDialogStyles)pButtons);
       iDlg.center(false);
@@ -1073,16 +1175,19 @@ bool cxBase::promptYesNo(const string& pMessage, const string& pTitle,
    return(retval);
 } // promptYesNo
 
-bool cxBase::cxInitialized() {
+bool cxBase::cxInitialized()
+{
    return(cxBase::mInitialized);
 } // cxInitialized
 
-void cxBase::addAttr(e_WidgetItems pItem, attr_t pAttr) {
+void cxBase::addAttr(e_WidgetItems pItem, attr_t pAttr)
+{
    // attrSet is a pointer that will be set to point to the correct attribute
    //  set, depending on the value of pItem.
    set<attr_t>* attrSet = nullptr;
 
-   switch(pItem) {
+   switch(pItem)
+   {
       case eMESSAGE:        // Message
          attrSet = &cxBase::mMessageAttrs;
          break;
@@ -1114,17 +1219,20 @@ void cxBase::addAttr(e_WidgetItems pItem, attr_t pAttr) {
    }
 
    // Insert the attribute, if attrSet was set.
-   if (nullptr != attrSet) {
+   if (nullptr != attrSet)
+   {
       attrSet->insert(pAttr);
    }
 } // addAttr
 
-void cxBase::setAttr(e_WidgetItems pItem, attr_t pAttr) {
+void cxBase::setAttr(e_WidgetItems pItem, attr_t pAttr)
+{
    // attrSet is a pointer that will be set to point to the correct attribute
    //  set, depending on the value of pItem.
    set<attr_t>* attrSet = nullptr;
 
-   switch(pItem) {
+   switch(pItem)
+   {
       case eMESSAGE:        // Message
          attrSet = &cxBase::mMessageAttrs;
          break;
@@ -1156,18 +1264,21 @@ void cxBase::setAttr(e_WidgetItems pItem, attr_t pAttr) {
    }
 
    // Set the attribute, if attrSet was set.
-   if (nullptr != attrSet) {
+   if (nullptr != attrSet)
+   {
       attrSet->clear();
       attrSet->insert(pAttr);
    }
 } // setAttr
 
-void cxBase::removeAttr(e_WidgetItems pItem, attr_t pAttr) {
+void cxBase::removeAttr(e_WidgetItems pItem, attr_t pAttr)
+{
    // attrSet is a pointer that will be set to point to the correct attribute
    //  set, depending on the value of pItem.
    set<attr_t>* attrSet = nullptr;
 
-   switch(pItem) {
+   switch(pItem)
+   {
       case eMESSAGE:        // Message
          attrSet = &cxBase::mMessageAttrs;
          break;
@@ -1199,17 +1310,20 @@ void cxBase::removeAttr(e_WidgetItems pItem, attr_t pAttr) {
    }
 
    // Remove the attribute, if attrSet was set.
-   if (nullptr != attrSet) {
+   if (nullptr != attrSet)
+   {
       attrSet->erase(pAttr);
    }
 } // removeAttr
 
-void cxBase::removeAttrs(e_WidgetItems pItem) {
+void cxBase::removeAttrs(e_WidgetItems pItem)
+{
    // attrSet is a pointer that will be set to point to the correct attribute
    //  set, depending on the value of pItem.
    set<attr_t>* attrSet = nullptr;
 
-   switch(pItem) {
+   switch(pItem)
+   {
       case eMESSAGE:        // Message
          attrSet = &cxBase::mMessageAttrs;
          break;
@@ -1241,15 +1355,18 @@ void cxBase::removeAttrs(e_WidgetItems pItem) {
    }
 
    // Remove all of the attributes, if attrSet was set.
-   if (nullptr != attrSet) {
+   if (nullptr != attrSet)
+   {
       attrSet->clear();
    }
 } // removeAttrs
 
-void cxBase::getAttrs(e_WidgetItems pItem, set<attr_t>& pAttrs) {
+void cxBase::getAttrs(e_WidgetItems pItem, set<attr_t>& pAttrs)
+{
    pAttrs.clear();
 
-   switch(pItem) {
+   switch(pItem)
+   {
       case eMESSAGE:        // Message
          pAttrs = cxBase::mMessageAttrs;
          break;
@@ -1281,7 +1398,8 @@ void cxBase::getAttrs(e_WidgetItems pItem, set<attr_t>& pAttrs) {
    }
 } // getAttrs
 
-bool cxBase::hasAttr(e_WidgetItems pItem, attr_t pAttr) {
+bool cxBase::hasAttr(e_WidgetItems pItem, attr_t pAttr)
+{
    bool retval=false;
    set<attr_t> attrs;
    getAttrs(pItem, attrs);
@@ -1290,13 +1408,16 @@ bool cxBase::hasAttr(e_WidgetItems pItem, attr_t pAttr) {
    return(retval);
 } // hasAttr
 
-void cxBase::enableAttrs(WINDOW *pWindow, e_WidgetItems pItem) {
-   if (nullptr != pWindow) {
+void cxBase::enableAttrs(WINDOW *pWindow, e_WidgetItems pItem)
+{
+   if (nullptr != pWindow)
+   {
       // attrSet is a pointer that will be set to point to the correct attribute
       //  set, depending on the value of pItem.
       set<attr_t>* attrSet = nullptr;
 
-      switch(pItem) {
+      switch(pItem)
+      {
          case eMESSAGE:        // Message
             attrSet = &cxBase::mMessageAttrs;
             break;
@@ -1328,22 +1449,27 @@ void cxBase::enableAttrs(WINDOW *pWindow, e_WidgetItems pItem) {
       }
 
       // Enable the attributes, if attrSet was set.
-      if (nullptr != attrSet) {
+      if (nullptr != attrSet)
+      {
          set<attr_t>::const_iterator iter = attrSet->begin();
-         for (; iter != attrSet->end(); ++iter) {
+         for (; iter != attrSet->end(); ++iter)
+         {
             wattron(pWindow, *iter);
          }
       }
    }
 } // enableAttrs
 
-void cxBase::disableAttrs(WINDOW *pWindow, e_WidgetItems pItem) {
-   if (nullptr != pWindow) {
+void cxBase::disableAttrs(WINDOW *pWindow, e_WidgetItems pItem)
+{
+   if (nullptr != pWindow)
+   {
       // attrSet is a pointer that will be set to point to the correct attribute
       //  set, depending on the value of pItem.
       set<attr_t>* attrSet = nullptr;
 
-      switch(pItem) {
+      switch(pItem)
+      {
          case eMESSAGE:        // Message
             attrSet = &cxBase::mMessageAttrs;
             break;
@@ -1375,42 +1501,53 @@ void cxBase::disableAttrs(WINDOW *pWindow, e_WidgetItems pItem) {
       }
 
       // Disable the attributes, if attrSet was set.
-      if (nullptr != attrSet) {
+      if (nullptr != attrSet)
+      {
          set<attr_t>::const_iterator iter = attrSet->begin();
-         for (; iter != attrSet->end(); ++iter) {
+         for (; iter != attrSet->end(); ++iter)
+         {
             wattroff(pWindow, *iter);
          }
       }
    }
 } // disableAttrs
 
-attr_t cxBase::getAttr(const string& pAttr) {
+attr_t cxBase::getAttr(const string& pAttr)
+{
    attr_t retval=A_NORMAL;
-   if (pAttr == "NORMAL") {
+   if (pAttr == "NORMAL")
+   {
       retval=A_NORMAL;
    }
-   else if (pAttr == "STANDOUT") {
+   else if (pAttr == "STANDOUT")
+   {
       retval=A_STANDOUT;
    }
-   else if (pAttr == "UNDERLINE") {
+   else if (pAttr == "UNDERLINE")
+   {
       retval=A_UNDERLINE;
    }
-   else if (pAttr == "REVERSE") {
+   else if (pAttr == "REVERSE")
+   {
       retval=A_REVERSE;
    }
-   else if (pAttr == "DIM") {
+   else if (pAttr == "DIM")
+   {
       retval=A_DIM;
    }
-   else if (pAttr == "BOLD") {
+   else if (pAttr == "BOLD")
+   {
       retval=A_BOLD;
    }
    return(retval);
 } // getAttr
 
-string cxBase::getAttrStr(attr_t pAttr) {
+string cxBase::getAttrStr(attr_t pAttr)
+{
    string attrStr = "Unknown";
 
-   switch (pAttr) {
+   switch (pAttr)
+   {
       case A_NORMAL:
          attrStr = "NORMAL";
          break;
@@ -1436,10 +1573,12 @@ string cxBase::getAttrStr(attr_t pAttr) {
    return(attrStr);
 } // getAttrStr
 
-string cxBase::getWidgetItemStr(e_WidgetItems pItem) {
+string cxBase::getWidgetItemStr(e_WidgetItems pItem)
+{
    string itemStr;
 
-   switch (pItem) {
+   switch (pItem)
+   {
       case eMESSAGE:        // Message
          itemStr = "eMESSAGE";
          break;
@@ -1475,20 +1614,24 @@ string cxBase::getWidgetItemStr(e_WidgetItems pItem) {
    return(itemStr);
 } // getWidgetItemStr
 
-void cxBase::setMenuClearKeywordKey(int pKey) {
+void cxBase::setMenuClearKeywordKey(int pKey)
+{
    cxBase::mMenuClearKeywordKey = pKey;
 } // setMenuClearKeywordKey
 
-int cxBase::getMenuClearKeywordKey() {
+int cxBase::getMenuClearKeywordKey()
+{
    return(cxBase::mMenuClearKeywordKey);
 } // getMenuClearKeywordKey
 
 // Note: This works, but prints even HIDDEN panel's border characters.
-string cxBase::dump(bool pFancy, const string& pFilename) {
+string cxBase::dump(bool pFancy, const string& pFilename)
+{
    string retval;
 
    string filename="temp.scn";
-   if (pFilename != "") {
+   if (pFilename != "")
+   {
       filename=pFilename;
    }
 
@@ -1502,7 +1645,8 @@ string cxBase::dump(bool pFancy, const string& pFilename) {
 
    // set all of the screen characters to spaces
    arow.assign(mainWidth, ' '); // Give the row mainWidth spaces
-   for (int row=0; row < mainHeight; ++row) {
+   for (int row=0; row < mainHeight; ++row)
+   {
       theScreen.push_back(arow);
    }
 
@@ -1514,79 +1658,104 @@ string cxBase::dump(bool pFancy, const string& pFilename) {
    bool hasBorder=false;
    bool doBorder=true;
 
-   if (theFile.good()) {
+   if (theFile.good())
+   {
       // Allocate an array to store a line from the screen, with the longest
       //  length we'd need (+1 to account for the nullptr termination character).
       chtype *line = new chtype[width() + 1];
-      if (nullptr != line) {
+      if (nullptr != line)
+      {
          // Get a pointer to the bottom panel in the stack
          cxWindow* cxWindowPtr = nullptr;
          // For each panel, get the cxWindow object it points
          //  to, and show it.
          PANEL *panel = panel_above(nullptr);
-         while (panel != nullptr) {
+         while (panel != nullptr)
+         {
             cxWindowPtr = (cxWindow*)panel_userptr(panel);
             // If the window isn't hidden, grab each character from it and update
             //  the corresponding character in theScreen (which represents the
             //  whole screen)
-            if (!cxWindowPtr->isHidden()) {
-               try {
+            if (!cxWindowPtr->isHidden())
+            {
+               try
+               {
                   WINDOW *windowPtr=panel_window(panel);
                   hasBorder = cxWindowPtr->hasBorder();
 
                   const int lineLength = cxWindowPtr->width();
-                  if (nullptr != line) {
+                  if (nullptr != line)
+                  {
                      int bottomRow = cxWindowPtr->height();
                      int numChars = 0; // # of chars read for each line
 
-                     for (int row = 0; row < bottomRow; ++row) {
+                     for (int row = 0; row < bottomRow; ++row)
+                     {
                         numChars = mvwinchnstr(windowPtr, row, 0, line, lineLength);
-                        if (numChars != ERR) {
+                        if (numChars != ERR)
+                        {
                            // in order to extract the characters from line, we have to AND each one with A_CHARTEXT.
-                           for (int col = 0; col < numChars; ++col) {
+                           for (int col = 0; col < numChars; ++col)
+                           {
 
                               c=line[col] & A_CHARTEXT;
 
                               // If pFancy and the attribute is "underline" and the value
                               // is a space ' ', then set it to an underline
-                              if (pFancy) {
+                              if (pFancy)
+                              {
                                  u=line[col] & A_ATTRIBUTES;
-                                 if (c == ' ') {
-                                    if (u & A_UNDERLINE) {
+                                 if (c == ' ')
+                                 {
+                                    if (u & A_UNDERLINE)
+                                    {
                                        c='_';
                                     }
                                  }
                               }
 
-                              if ((hasBorder) && (doBorder)) {
-                                 if (col == 0) {
-                                    if (row == 0) {
+                              if ((hasBorder) && (doBorder))
+                              {
+                                 if (col == 0)
+                                 {
+                                    if (row == 0)
+                                    {
                                        c = '+' ; // upper left
                                     }
-                                    else {
-                                       if (row == bottomRow-1) {
-                                          c = '+' ; // lower left 
+                                    else
+                                    {
+                                       if (row == bottomRow-1)
+                                       {
+                                          c = '+' ; // lower left
                                        }
-                                       else {
+                                       else
+                                       {
                                           c = '|'; // left border
                                        }
                                     }
-                                 } 
-                                 else if (col == lineLength-1) {
-                                    if (row == 0) {
+                                 }
+                                 else if (col == lineLength-1)
+                                 {
+                                    if (row == 0)
+                                    {
                                        c = '+' ; // upper right
                                     }
-                                    else {
-                                       if (row == bottomRow-1) {
+                                    else
+                                    {
+                                       if (row == bottomRow-1)
+                                       {
                                           c = '+' ; // bottom right
                                        }
-                                       else {
+                                       else
+                                       {
                                           c = '|'; // right border
                                        }
                                     }
-                                 } 
-                                 else {
-                                    if ((row == 0) || (row == bottomRow-1)) {
+                                 }
+                                 else
+                                 {
+                                    if ((row == 0) || (row == bottomRow-1))
+                                    {
                                        c = '-' ; // horizontal character
                                     }
                                  }
@@ -1598,14 +1767,17 @@ string cxBase::dump(bool pFancy, const string& pFilename) {
                   }
 
                   // re-do the tile/status
-                  if (hasBorder) {
+                  if (hasBorder)
+                  {
 
                      // title line
                      map<int, string>titles = cxWindowPtr->getTitleStrings();
                      map<int, string>::iterator titleIter=titles.begin();
-                     for (; titleIter != titles.end(); ++titleIter) {
+                     for (; titleIter != titles.end(); ++titleIter)
+                     {
                         string tmp=titleIter->second;
-                        for (unsigned i=0; i < tmp.length(); i++) {
+                        for (unsigned i=0; i < tmp.length(); i++)
+                        {
                            theScreen[cxWindowPtr->top()][cxWindowPtr->left()+titleIter->first+i]=tmp[i];
                         }
                      }
@@ -1613,18 +1785,22 @@ string cxBase::dump(bool pFancy, const string& pFilename) {
                      // status line
                      map<int, string>statii = cxWindowPtr->getStatusStrings();
                      map<int, string>::iterator statusIter=statii.begin();
-                     for (; statusIter != statii.end(); ++statusIter) {
+                     for (; statusIter != statii.end(); ++statusIter)
+                     {
                         string tmp=statusIter->second;
-                        for (unsigned i=0; i < tmp.length(); i++) {
+                        for (unsigned i=0; i < tmp.length(); i++)
+                        {
                            theScreen[cxWindowPtr->bottom()][cxWindowPtr->left()+statusIter->first+i]=tmp[i];
                         }
                      }
                   }
                }
-               catch (const std::bad_alloc& e) {
+               catch (const std::bad_alloc& e)
+               {
                   // Couldn't dynamically allocate some memory..
                }
-               catch (const std::exception& e) {
+               catch (const std::exception& e)
+               {
                   // Oh No!
                }
             }
@@ -1638,15 +1814,18 @@ string cxBase::dump(bool pFancy, const string& pFilename) {
       }
 
       // dump theScreen to the file
-      for (int row=0; row < mainHeight; ++row) {
-         for (int col=0; col < mainWidth; ++col) {
+      for (int row=0; row < mainHeight; ++row)
+      {
+         for (int col=0; col < mainWidth; ++col)
+         {
             theFile << theScreen[row][col];
          }
          theFile << endl;
       }
       theFile.close();
    }
-   else {
+   else
+   {
       retval="Warning: Could not write to file(" + filename + ")";
    }
 
@@ -1677,7 +1856,7 @@ string cxBase::dump(const string& pFilename) {
       int numChars = 0; // # of chars read for each line
 
       for (int row = 0; row < bottomRow; ++row) {
-   
+
          numChars = mvwinchnstr(curscr, row, 0, line, lineLength);
          if (numChars != ERR) {
             // in order to extract the characters from line, we have to AND each one with A_CHARTEXT.
@@ -1699,33 +1878,41 @@ string cxBase::dump(const string& pFilename) {
 } // dump
 */
 
-bool cxBase::isNavKey(int pKey) {
+bool cxBase::isNavKey(int pKey)
+{
    return(mNavKeys.find(pKey) != mNavKeys.end());
 } // isNavigationalKey
 
-void cxBase::addNavKey(int pKey) {
+void cxBase::addNavKey(int pKey)
+{
    mNavKeys.insert(pKey);
 } // addNavKey
 
-void cxBase::removeNavKey(int pKey) {
+void cxBase::removeNavKey(int pKey)
+{
    mNavKeys.erase(pKey);
 } // removeNavKey
 
-string cxBase::getString(int pRow, int pCol, int pNumber, WINDOW *pWin) {
+string cxBase::getString(int pRow, int pCol, int pNumber, WINDOW *pWin)
+{
    string retval;
 
-   if (pWin == nullptr) {
+   if (pWin == nullptr)
+   {
       pWin = curscr;
    }
 
    // Ensure we don't go looking for info outside of our own window
-   if ((pRow >= 0) && (pCol >= 0)) {
+   if ((pRow >= 0) && (pCol >= 0))
+   {
 
       // Ensure they want *some* characters
-      if (pNumber > 0) {
+      if (pNumber > 0)
+      {
          chtype * line = new chtype[pNumber + 1]; // nullptr terminated
          int numChars = mvwinchnstr(pWin, pRow, pCol, line, pNumber);
-         if (numChars == pNumber) {
+         if (numChars == pNumber)
+         {
             for (int i=0; i < pNumber; ++i) { // eliminate the nullptr at the end
                retval.push_back((line[i] & A_CHARTEXT));
             }
@@ -1733,31 +1920,33 @@ string cxBase::getString(int pRow, int pCol, int pNumber, WINDOW *pWin) {
          delete [] line;
       }
    }
-    
+
    return(retval);
 } // getString
 
-bool cxBase::findString(const string& pSearch, int& pRow, int& pCol, WINDOW *pWin) {
+bool cxBase::findString(const string& pSearch, int& pRow, int& pCol, WINDOW *pWin)
+{
    bool retval=false;
    pRow=-1;
    pCol=-1;
 
-   if (pWin == nullptr) {
+   if (pWin == nullptr)
+   {
       pWin = curscr;
    }
 
    chtype * line = new chtype[width() + 1]; // nullptr terminated
-   int numChars=0;
    size_t pos = 0;
    string lineString;
 
-   for (int row=0; row < height(); ++row) {
+   for (int row=0; row < height(); ++row)
+   {
 
       // reset the line
       lineString="";
 
       // go get the characters from the screen
-      numChars = mvwinchnstr(pWin, row, 0, line, width());
+      (void)mvwinchnstr(pWin, row, 0, line, width());
 
       // move them into a std::string
       for (int i=0; i < width(); ++i) { // eliminate the nullptr at the end
@@ -1766,13 +1955,14 @@ bool cxBase::findString(const string& pSearch, int& pRow, int& pCol, WINDOW *pWi
 
       // search
       pos=lineString.find(pSearch);
-      if (pos != string::npos) {
+      if (pos != string::npos)
+      {
          // found!
          pRow=row;
          pCol=pos;
          retval=true;
       }
-      
+
    }
    delete [] line;
 

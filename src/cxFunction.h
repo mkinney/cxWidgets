@@ -2,7 +2,7 @@
 #define __CXFUNCTION_H__
 
 /*
- * cxFunction.h - function  
+ * cxFunction.h - function
  *
  * Copyright (C) 2005-2007 Michael H. Kinney
  *
@@ -26,7 +26,8 @@ typedef std::string (*funcPtr4)(void *p1, void *p2, void *p3, void *p4);
  * \brief virtual, and this can be used in collections where a set of
  * \brief cxFunction2 and/or cxFunction4 objects are needed.
  */
-class cxFunction {
+class cxFunction
+{
    public:
       /**
        * \brief Constructor
@@ -137,7 +138,8 @@ class cxFunction {
  * \version $Revision: 1.16 $
  * \date $Date: 2007/12/04 00:23:46 $
 */
-class cxFunction0 : public cxFunction {
+class cxFunction0 : public cxFunction
+{
    public:
       /**
        * \brief Default constructor.  All parameters have default values
@@ -232,7 +234,8 @@ class cxFunction0 : public cxFunction {
  * \version $Revision: 1.16 $
  * \date $Date: 2007/12/04 00:23:46 $
 */
-class cxFunction2 : public cxFunction {
+class cxFunction2 : public cxFunction
+{
    public:
       /**
        * \brief Default constructor.  All parameters have default values
@@ -342,7 +345,8 @@ class cxFunction2 : public cxFunction {
  * \brief  with 4 void pointer parameters instead of 2.
  *
 */
-class cxFunction4 : public cxFunction {
+class cxFunction4 : public cxFunction
+{
    public:
       /**
        * \brief Default constructor.  All parameters have default values
@@ -485,7 +489,8 @@ class cxFunction4 : public cxFunction {
  *
 */
 template<typename T1, typename T2>
-class cxFunction2Templated : public cxFunction {
+class cxFunction2Templated : public cxFunction
+{
    public:
       using FuncPtr = std::string (*)(T1 *, T2 *);
 
@@ -494,7 +499,8 @@ class cxFunction2Templated : public cxFunction {
        */
       static std::shared_ptr<cxFunction2Templated<T1, T2>> create(FuncPtr pFuncPtr, T1 *pParam1, T2 *pParam2,
                                       bool pUseReturnVal = false, bool pExitAfterRun = false,
-                                      bool pRunOnLeaveFunction = true) {
+                                      bool pRunOnLeaveFunction = true)
+                                      {
          return std::make_shared<cxFunction2Templated<T1, T2>>(pFuncPtr, pParam1, pParam2,
                                       pUseReturnVal, pExitAfterRun, pRunOnLeaveFunction);
       }
@@ -537,7 +543,8 @@ class cxFunction2Templated : public cxFunction {
        * Returns whether the internal funtion pointer is set.
        * @return Returns true if the internal function pointer is set (not null), or false otherwise.
        */
-      virtual bool functionIsSet() const override {
+      virtual bool functionIsSet() const override
+      {
          return (mFunction != nullptr);
       }
 
@@ -545,7 +552,8 @@ class cxFunction2Templated : public cxFunction {
        * Sets the internal function pointer
        * @param pFuncPtr The function to which to point
        */
-      void setFunction(FuncPtr pFuncPtr) {
+      void setFunction(FuncPtr pFuncPtr)
+      {
          mFunction = pFuncPtr;
       }
 
@@ -554,7 +562,8 @@ class cxFunction2Templated : public cxFunction {
        *
        * @return The internal function pointer
        */
-      FuncPtr getFunction() const {
+      FuncPtr getFunction() const
+      {
          return mFunction;
       }
 
@@ -563,7 +572,8 @@ class cxFunction2Templated : public cxFunction {
        * @param pParam1 First parameter to pass to function
        * @param pParam2 Second parameter to pass to function
        */
-      void setParams(T1 *pParam1, T2 *pParam2) {
+      void setParams(T1 *pParam1, T2 *pParam2)
+      {
          mParam1 = pParam1;
          mParam2 = pParam2;
       }
@@ -572,7 +582,8 @@ class cxFunction2Templated : public cxFunction {
        * Sets the first parameter
        * @param pParam First parameter to pass to function
        */
-      void setParam1(T1 *pParam) {
+      void setParam1(T1 *pParam)
+      {
          mParam1 = pParam;
       }
 
@@ -580,7 +591,8 @@ class cxFunction2Templated : public cxFunction {
        * Sets the second parameter
        * @param pParam Second parameter to pass to function
        */
-      void setParam2(T2 *pParam) {
+      void setParam2(T2 *pParam)
+      {
          mParam2 = pParam;
       }
 
@@ -588,7 +600,8 @@ class cxFunction2Templated : public cxFunction {
        * Accessor for the first function parameter
        * @return Returns pointer to first parameter
        */
-      T1* getParam1() const {
+      T1* getParam1() const
+      {
          return mParam1;
       }
 
@@ -596,7 +609,8 @@ class cxFunction2Templated : public cxFunction {
        * Accessor for the second function parameter
        * @return Returns pointer to second parameter
        */
-      T2* getParam2() const {
+      T2* getParam2() const
+      {
          return mParam2;
       }
 
@@ -606,16 +620,20 @@ class cxFunction2Templated : public cxFunction {
        * @return Returns return value of function pointed to if pointer is not null,
        *    otherwise returns empty string
        */
-      virtual std::string runFunction() const override {
-         if (mFunction != nullptr) {
+      virtual std::string runFunction() const override
+      {
+         if (mFunction != nullptr)
+         {
             return(mFunction(mParam1, mParam2));
          }
-         else {
+         else
+         {
             return("");
          }
       }
 
-      virtual void* getFuncPtr() const override {
+      virtual void* getFuncPtr() const override
+      {
          return (void*)mFunction;
       }
 
@@ -626,7 +644,8 @@ class cxFunction2Templated : public cxFunction {
        *
        * @return The name of the cxWidgets class ("cxFunction2Templated").
        */
-      virtual std::string cxTypeStr() const override {
+      virtual std::string cxTypeStr() const override
+      {
          return("cxFunction2Templated");
       }
 
@@ -641,13 +660,15 @@ class cxFunction2Templated : public cxFunction {
  *
 */
 template<typename T1>
-class cxFunction1RefTemplated : public cxFunction {
+class cxFunction1RefTemplated : public cxFunction
+{
    public:
       using FuncPtr = std::string (*)(T1&);
 
       static std::shared_ptr<cxFunction1RefTemplated<T1>> create(FuncPtr pFuncPtr, T1& pParam1,
                                       bool pUseReturnVal = false, bool pExitAfterRun = false,
-                                      bool pRunOnLeaveFunction = true) {
+                                      bool pRunOnLeaveFunction = true)
+                                      {
          return std::make_shared<cxFunction1RefTemplated<T1>>(pFuncPtr, pParam1,
                                       pUseReturnVal, pExitAfterRun, pRunOnLeaveFunction);
       }
@@ -687,7 +708,8 @@ class cxFunction1RefTemplated : public cxFunction {
        * Returns whether the internal funtion pointer is set.
        * @return Returns true if the internal function pointer is set (not null), or false otherwise.
        */
-      virtual bool functionIsSet() const override {
+      virtual bool functionIsSet() const override
+      {
          return (mFunction != nullptr);
       }
 
@@ -695,7 +717,8 @@ class cxFunction1RefTemplated : public cxFunction {
        * Sets the internal function pointer
        * @param pFuncPtr The function to which to point
        */
-      void setFunction(FuncPtr pFuncPtr) {
+      void setFunction(FuncPtr pFuncPtr)
+      {
          mFunction = pFuncPtr;
       }
 
@@ -704,7 +727,8 @@ class cxFunction1RefTemplated : public cxFunction {
        *
        * @return The internal function pointer
        */
-      FuncPtr getFunction() const {
+      FuncPtr getFunction() const
+      {
          return mFunction;
       }
 
@@ -712,7 +736,8 @@ class cxFunction1RefTemplated : public cxFunction {
        * Sets the parameter to pass to the function.
        * @param pParam The parameter to pass to function
        */
-      void setParam(T1& pParam) {
+      void setParam(T1& pParam)
+      {
          mParam = pParam;
       }
 
@@ -720,7 +745,8 @@ class cxFunction1RefTemplated : public cxFunction {
        * Accessor for the function parameter
        * @return Returns the first parameter
        */
-      const T1& getParam() const {
+      const T1& getParam() const
+      {
          return mParam;
       }
 
@@ -730,16 +756,20 @@ class cxFunction1RefTemplated : public cxFunction {
        * @return Returns return value of function pointed to if pointer is not null,
        *    otherwise returns empty string
        */
-      virtual std::string runFunction() const override {
-         if (mFunction != nullptr) {
+      virtual std::string runFunction() const override
+      {
+         if (mFunction != nullptr)
+         {
             return(mFunction(mParam));
          }
-         else {
+         else
+         {
             return("");
          }
       }
 
-      virtual void* getFuncPtr() const override {
+      virtual void* getFuncPtr() const override
+      {
          return (void*)mFunction;
       }
 
@@ -750,7 +780,8 @@ class cxFunction1RefTemplated : public cxFunction {
        *
        * @return The name of the cxWidgets class ("cxFunction1RefTemplated").
        */
-      virtual std::string cxTypeStr() const override {
+      virtual std::string cxTypeStr() const override
+      {
          return("cxFunction1RefTemplated");
       }
 
@@ -765,16 +796,18 @@ class cxFunction1RefTemplated : public cxFunction {
  *
 */
 template<typename T1, typename T2>
-class cxFunction2RefTemplated : public cxFunction {
+class cxFunction2RefTemplated : public cxFunction
+{
    public:
       using FuncPtr = std::string (*)(T1&, T2&);
 
-      /** 
+      /**
        * \brief Static create method for cxFunction2RefTemplated.  This is the recommended way to create a cxFunction2RefTemplated, as it returns a shared pointer to the created object.
        */
       static std::shared_ptr<cxFunction2RefTemplated<T1, T2>> create(FuncPtr pFuncPtr, T1& pParam1, T2& pParam2,
                                       bool pUseReturnVal = false, bool pExitAfterRun = false,
-                                      bool pRunOnLeaveFunction = true) {
+                                      bool pRunOnLeaveFunction = true)
+                                      {
          return std::make_shared<cxFunction2RefTemplated<T1, T2>>(pFuncPtr, pParam1, pParam2,
                                       pUseReturnVal, pExitAfterRun, pRunOnLeaveFunction);
       }
@@ -817,7 +850,8 @@ class cxFunction2RefTemplated : public cxFunction {
        * Returns whether the internal funtion pointer is set.
        * @return Returns true if the internal function pointer is set (not null), or false otherwise.
        */
-      virtual bool functionIsSet() const override {
+      virtual bool functionIsSet() const override
+      {
          return (mFunction != nullptr);
       }
 
@@ -825,7 +859,8 @@ class cxFunction2RefTemplated : public cxFunction {
        * Sets the internal function pointer
        * @param pFuncPtr The function to which to point
        */
-      void setFunction(FuncPtr pFuncPtr) {
+      void setFunction(FuncPtr pFuncPtr)
+      {
          mFunction = pFuncPtr;
       }
 
@@ -834,7 +869,8 @@ class cxFunction2RefTemplated : public cxFunction {
        *
        * @return The internal function pointer
        */
-      FuncPtr getFunction() const {
+      FuncPtr getFunction() const
+      {
          return mFunction;
       }
 
@@ -843,7 +879,8 @@ class cxFunction2RefTemplated : public cxFunction {
        * @param pParam1 First parameter to pass to function
        * @param pParam2 Second parameter to pass to function
        */
-      void setParams(T1& pParam1, T2& pParam2) {
+      void setParams(T1& pParam1, T2& pParam2)
+      {
          mParam1 = pParam1;
          mParam2 = pParam2;
       }
@@ -852,7 +889,8 @@ class cxFunction2RefTemplated : public cxFunction {
        * Sets the first parameter
        * @param pParam First parameter to pass to function
        */
-      void setParam1(T1& pParam) {
+      void setParam1(T1& pParam)
+      {
          mParam1 = pParam;
       }
 
@@ -860,7 +898,8 @@ class cxFunction2RefTemplated : public cxFunction {
        * Sets the second parameter
        * @param pParam Second parameter to pass to function
        */
-      void setParam2(T2 &pParam) {
+      void setParam2(T2 &pParam)
+      {
          mParam2 = pParam;
       }
 
@@ -868,7 +907,8 @@ class cxFunction2RefTemplated : public cxFunction {
        * Accessor for the first function parameter
        * @return Returns the first parameter
        */
-      const T1& getParam1() const {
+      const T1& getParam1() const
+      {
          return mParam1;
       }
 
@@ -876,7 +916,8 @@ class cxFunction2RefTemplated : public cxFunction {
        * Accessor for the second function parameter
        * @return Returns the second parameter
        */
-      const T2& getParam2() const {
+      const T2& getParam2() const
+      {
          return mParam2;
       }
 
@@ -886,16 +927,20 @@ class cxFunction2RefTemplated : public cxFunction {
        * @return Returns return value of function pointed to if pointer is not null,
        *    otherwise returns empty string
        */
-      virtual std::string runFunction() const override {
-         if (mFunction != nullptr) {
+      virtual std::string runFunction() const override
+      {
+         if (mFunction != nullptr)
+         {
             return(mFunction(mParam1, mParam2));
          }
-         else {
+         else
+         {
             return("");
          }
       }
 
-      virtual void* getFuncPtr() const override {
+      virtual void* getFuncPtr() const override
+      {
          return (void*)mFunction;
       }
 
@@ -906,7 +951,8 @@ class cxFunction2RefTemplated : public cxFunction {
        *
        * @return The name of the cxWidgets class ("cxFunction2RefTemplated").
        */
-      virtual std::string cxTypeStr() const override {
+      virtual std::string cxTypeStr() const override
+      {
          return("cxFunction2RefTemplated");
       }
 
@@ -921,16 +967,18 @@ class cxFunction2RefTemplated : public cxFunction {
  *
 */
 template<typename T1, typename T2, typename T3>
-class cxFunction3RefTemplated : public cxFunction {
+class cxFunction3RefTemplated : public cxFunction
+{
    public:
       using FuncPtr = std::string (*)(T1&, T2&, T3&);
 
-      /** 
+      /**
        * \brief Static create method for cxFunction3RefTemplated.  This is the recommended way to create a cxFunction3RefTemplated, as it returns a shared pointer to the created object.
        */
       static std::shared_ptr<cxFunction3RefTemplated<T1, T2, T3>> create(FuncPtr pFuncPtr, T1& pParam1, T2& pParam2, T3& pParam3,
                                       bool pUseReturnVal = false, bool pExitAfterRun = false,
-                                      bool pRunOnLeaveFunction = true) {
+                                      bool pRunOnLeaveFunction = true)
+                                      {
          return std::make_shared<cxFunction3RefTemplated<T1, T2, T3>>(pFuncPtr, pParam1, pParam2, pParam3,
                                       pUseReturnVal, pExitAfterRun, pRunOnLeaveFunction);
       }
@@ -977,7 +1025,8 @@ class cxFunction3RefTemplated : public cxFunction {
        * Returns whether the internal funtion pointer is set.
        * @return Returns true if the internal function pointer is set (not null), or false otherwise.
        */
-      virtual bool functionIsSet() const override {
+      virtual bool functionIsSet() const override
+      {
          return (mFunction != nullptr);
       }
 
@@ -985,7 +1034,8 @@ class cxFunction3RefTemplated : public cxFunction {
        * Sets the internal function pointer
        * @param pFuncPtr The function to which to point
        */
-      void setFunction(FuncPtr pFuncPtr) {
+      void setFunction(FuncPtr pFuncPtr)
+      {
          mFunction = pFuncPtr;
       }
 
@@ -994,7 +1044,8 @@ class cxFunction3RefTemplated : public cxFunction {
        *
        * @return The internal function pointer
        */
-      FuncPtr getFunction() const {
+      FuncPtr getFunction() const
+      {
          return mFunction;
       }
 
@@ -1004,7 +1055,8 @@ class cxFunction3RefTemplated : public cxFunction {
        * @param pParam2 Second parameter to pass to function
        * @param pParam3 Third parameter to pass to function
        */
-      void setParams(T1& pParam1, T2& pParam2, T3& pParam3) {
+      void setParams(T1& pParam1, T2& pParam2, T3& pParam3)
+      {
          mParam1 = pParam1;
          mParam2 = pParam2;
          mParam3 = pParam3;
@@ -1014,7 +1066,8 @@ class cxFunction3RefTemplated : public cxFunction {
        * Sets the first parameter
        * @param pParam First parameter to pass to function
        */
-      void setParam1(T1& pParam) {
+      void setParam1(T1& pParam)
+      {
          mParam1 = pParam;
       }
 
@@ -1022,7 +1075,8 @@ class cxFunction3RefTemplated : public cxFunction {
        * Sets the second parameter
        * @param pParam Second parameter to pass to function
        */
-      void setParam2(T2& pParam) {
+      void setParam2(T2& pParam)
+      {
          mParam2 = pParam;
       }
 
@@ -1030,7 +1084,8 @@ class cxFunction3RefTemplated : public cxFunction {
        * Sets the third parameter
        * @param pParam Second parameter to pass to function
        */
-      void setParam2(T3& pParam) {
+      void setParam2(T3& pParam)
+      {
          mParam3 = pParam;
       }
 
@@ -1038,7 +1093,8 @@ class cxFunction3RefTemplated : public cxFunction {
        * Accessor for the first function parameter
        * @return Returns the first parameter
        */
-      const T1& getParam1() const {
+      const T1& getParam1() const
+      {
          return mParam1;
       }
 
@@ -1046,7 +1102,8 @@ class cxFunction3RefTemplated : public cxFunction {
        * Accessor for the second function parameter
        * @return Returns the second parameter
        */
-      const T2& getParam2() const {
+      const T2& getParam2() const
+      {
          return mParam2;
       }
 
@@ -1054,7 +1111,8 @@ class cxFunction3RefTemplated : public cxFunction {
        * Accessor for the third function parameter
        * @return Returns the second parameter
        */
-      const T3& getParam3() const {
+      const T3& getParam3() const
+      {
          return mParam3;
       }
 
@@ -1064,16 +1122,20 @@ class cxFunction3RefTemplated : public cxFunction {
        * @return Returns return value of function pointed to if pointer is not null,
        *    otherwise returns empty string
        */
-      virtual std::string runFunction() const override {
-         if (mFunction != nullptr) {
+      virtual std::string runFunction() const override
+      {
+         if (mFunction != nullptr)
+         {
             return(mFunction(mParam1, mParam2));
          }
-         else {
+         else
+         {
             return("");
          }
       }
 
-      virtual void* getFuncPtr() const override {
+      virtual void* getFuncPtr() const override
+      {
          return (void*)mFunction;
       }
 
@@ -1084,7 +1146,8 @@ class cxFunction3RefTemplated : public cxFunction {
        *
        * @return The name of the cxWidgets class ("cxFunction3RefTemplated").
        */
-      virtual std::string cxTypeStr() const override {
+      virtual std::string cxTypeStr() const override
+      {
          return("cxFunction3RefTemplated");
       }
 
@@ -1100,7 +1163,8 @@ class cxFunction3RefTemplated : public cxFunction {
  *
 */
 template<typename T1, typename T2, typename T3, typename T4>
-class cxFunction4Templated : public cxFunction {
+class cxFunction4Templated : public cxFunction
+{
    public:
       using FuncPtr = std::string (*)(T1 *, T2 *, T3 *, T4 *);
 
@@ -1109,7 +1173,8 @@ class cxFunction4Templated : public cxFunction {
        */
       static std::shared_ptr<cxFunction4Templated<T1, T2, T3, T4>> create(FuncPtr pFuncPtr, T1 *pParam1, T2 *pParam2,
                                       T3 *pParam3, T4 *pParam4, bool pUseReturnVal = false,
-                                      bool pExitAfterRun = false, bool pRunOnLeaveFunction = true) {
+                                      bool pExitAfterRun = false, bool pRunOnLeaveFunction = true)
+                                      {
          return std::make_shared<cxFunction4Templated<T1, T2, T3, T4>>(pFuncPtr, pParam1, pParam2,
                                       pParam3, pParam4, pUseReturnVal, pExitAfterRun,
                                       pRunOnLeaveFunction);
@@ -1160,7 +1225,8 @@ class cxFunction4Templated : public cxFunction {
        * Returns whether the internal funtion pointer is set.
        * @return Returns true if the internal function pointer is set (not null), or false otherwise.
        */
-      virtual bool functionIsSet() const override {
+      virtual bool functionIsSet() const override
+      {
          return (mFunction != nullptr);
       }
 
@@ -1168,7 +1234,8 @@ class cxFunction4Templated : public cxFunction {
        * Sets the internal function pointer
        * @param pFuncPtr The function to which to point
        */
-      void setFunction(FuncPtr pFuncPtr) {
+      void setFunction(FuncPtr pFuncPtr)
+      {
          mFunction = pFuncPtr;
       }
 
@@ -1177,7 +1244,8 @@ class cxFunction4Templated : public cxFunction {
        *
        * @return The internal function pointer
        */
-      FuncPtr getFunction() const {
+      FuncPtr getFunction() const
+      {
          return mFunction;
       }
 
@@ -1188,7 +1256,8 @@ class cxFunction4Templated : public cxFunction {
        * @param pParam3 3rd parameter to pass to function
        * @param pParam4 4th parameter to pass to function
        */
-      void setParams(T1 *pParam1, T2 *pParam2, T3 *pParam3, T4 *pParam4) {
+      void setParams(T1 *pParam1, T2 *pParam2, T3 *pParam3, T4 *pParam4)
+      {
          mParam1 = pParam1;
          mParam2 = pParam2;
          mParam3 = pParam3;
@@ -1199,7 +1268,8 @@ class cxFunction4Templated : public cxFunction {
        * Sets the first parameter
        * @param pParam First parameter to pass to function
        */
-      void setParam1(T1 *pParam) {
+      void setParam1(T1 *pParam)
+      {
          mParam1 = pParam;
       }
 
@@ -1207,7 +1277,8 @@ class cxFunction4Templated : public cxFunction {
        * Sets the second parameter
        * @param pParam Second parameter to pass to function
        */
-      void setParam2(T2 *pParam) {
+      void setParam2(T2 *pParam)
+      {
          mParam2 = pParam;
       }
 
@@ -1215,7 +1286,8 @@ class cxFunction4Templated : public cxFunction {
        * Sets the 3rd parameter
        * @param pParam 3rd parameter to pass to function
        */
-      void setParam3(T3 *pParam) {
+      void setParam3(T3 *pParam)
+      {
          mParam3 = pParam;
       }
 
@@ -1223,7 +1295,8 @@ class cxFunction4Templated : public cxFunction {
        * Sets the 4th parameter
        * @param pParam 4th parameter to pass to function
        */
-      void setParam4(T4 *pParam) {
+      void setParam4(T4 *pParam)
+      {
          mParam4 = pParam;
       }
 
@@ -1231,7 +1304,8 @@ class cxFunction4Templated : public cxFunction {
        * Accessor for the first function parameter
        * @return Returns pointer to first parameter
        */
-      T1* getParam1() const {
+      T1* getParam1() const
+      {
          return mParam1;
       }
 
@@ -1239,7 +1313,8 @@ class cxFunction4Templated : public cxFunction {
        * Accessor for the second function parameter
        * @return Returns pointer to second parameter
        */
-      T2* getParam2() const {
+      T2* getParam2() const
+      {
          return mParam2;
       }
 
@@ -1247,7 +1322,8 @@ class cxFunction4Templated : public cxFunction {
        * Accessor for the 3rd function parameter
        * @return Returns pointer to first parameter
        */
-      T3* getParam3() const {
+      T3* getParam3() const
+      {
          return mParam3;
       }
 
@@ -1255,7 +1331,8 @@ class cxFunction4Templated : public cxFunction {
        * Accessor for the 4th function parameter
        * @return Returns pointer to second parameter
        */
-      T4* getParam4() const {
+      T4* getParam4() const
+      {
          return mParam4;
       }
 
@@ -1265,16 +1342,20 @@ class cxFunction4Templated : public cxFunction {
        * @return Returns return value of function pointed to if pointer is not null,
        *    otherwise returns empty string
        */
-      virtual std::string runFunction() const override {
-         if (mFunction != nullptr) {
+      virtual std::string runFunction() const override
+      {
+         if (mFunction != nullptr)
+         {
             return(mFunction(mParam1, mParam2, mParam3, mParam4));
          }
-         else {
+         else
+         {
             return("");
          }
       }
 
-      virtual void* getFuncPtr() const override {
+      virtual void* getFuncPtr() const override
+      {
          return (void*)mFunction;
       }
 
@@ -1285,7 +1366,8 @@ class cxFunction4Templated : public cxFunction {
        *
        * @return The name of the cxWidgets class ("cxFunction4Templated").
        */
-      virtual std::string cxTypeStr() const override {
+      virtual std::string cxTypeStr() const override
+      {
          return("cxFunction4Templated");
       }
 
@@ -1302,7 +1384,8 @@ class cxFunction4Templated : public cxFunction {
  *
 */
 template<typename T1, typename T2, typename T3, typename T4>
-class cxFunction4RefTemplated : public cxFunction {
+class cxFunction4RefTemplated : public cxFunction
+{
    public:
       using FuncPtr = std::string (*)(T1&, T2&, T3&, T4&);
 
@@ -1311,7 +1394,8 @@ class cxFunction4RefTemplated : public cxFunction {
        */
       static std::shared_ptr<cxFunction4RefTemplated<T1, T2, T3, T4>> create(FuncPtr pFuncPtr, T1& pParam1, T2& pParam2,
                                       T3& pParam3, T4& pParam4, bool pUseReturnVal = false,
-                                      bool pExitAfterRun = false, bool pRunOnLeaveFunction = true) {
+                                      bool pExitAfterRun = false, bool pRunOnLeaveFunction = true)
+                                      {
          return std::make_shared<cxFunction4RefTemplated<T1, T2, T3, T4>>(pFuncPtr, pParam1, pParam2,
                                       pParam3, pParam4, pUseReturnVal, pExitAfterRun,
                                       pRunOnLeaveFunction);
@@ -1362,7 +1446,8 @@ class cxFunction4RefTemplated : public cxFunction {
        * Returns whether the internal funtion pointer is set.
        * @return Returns true if the internal function pointer is set (not null), or false otherwise.
        */
-      virtual bool functionIsSet() const override {
+      virtual bool functionIsSet() const override
+      {
          return (mFunction != nullptr);
       }
 
@@ -1370,7 +1455,8 @@ class cxFunction4RefTemplated : public cxFunction {
        * Sets the internal function pointer
        * @param pFuncPtr The function to which to point
        */
-      void setFunction(FuncPtr pFuncPtr) {
+      void setFunction(FuncPtr pFuncPtr)
+      {
          mFunction = pFuncPtr;
       }
 
@@ -1379,7 +1465,8 @@ class cxFunction4RefTemplated : public cxFunction {
        *
        * @return The internal function pointer
        */
-      FuncPtr getFunction() const {
+      FuncPtr getFunction() const
+      {
          return mFunction;
       }
 
@@ -1390,7 +1477,8 @@ class cxFunction4RefTemplated : public cxFunction {
        * @param pParam3 Third parameter to pass to function
        * @param pParam4 Fourth parameter to pass to function
        */
-      void setParams(T1& pParam1, T2& pParam2, T3& pParam3, T4& pParam4) {
+      void setParams(T1& pParam1, T2& pParam2, T3& pParam3, T4& pParam4)
+      {
          mParam1 = pParam1;
          mParam2 = pParam2;
          mParam3 = pParam3;
@@ -1401,7 +1489,8 @@ class cxFunction4RefTemplated : public cxFunction {
        * Sets the first parameter
        * @param pParam First parameter to pass to function
        */
-      void setParam1(T1& pParam) {
+      void setParam1(T1& pParam)
+      {
          mParam1 = pParam;
       }
 
@@ -1409,7 +1498,8 @@ class cxFunction4RefTemplated : public cxFunction {
        * Sets the second parameter
        * @param pParam Second parameter to pass to function
        */
-      void setParam2(T2& pParam) {
+      void setParam2(T2& pParam)
+      {
          mParam2 = pParam;
       }
 
@@ -1417,7 +1507,8 @@ class cxFunction4RefTemplated : public cxFunction {
        * Sets the 3rd parameter
        * @param pParam Third parameter to pass to function
        */
-      void setParam3(T3& pParam) {
+      void setParam3(T3& pParam)
+      {
          mParam3 = pParam;
       }
 
@@ -1425,7 +1516,8 @@ class cxFunction4RefTemplated : public cxFunction {
        * Sets the 4th parameter
        * @param pParam Fourth parameter to pass to function
        */
-      void setParam4(T4& pParam) {
+      void setParam4(T4& pParam)
+      {
          mParam4 = pParam;
       }
 
@@ -1433,7 +1525,8 @@ class cxFunction4RefTemplated : public cxFunction {
        * Accessor for the first function parameter
        * @return Returns the 1st parameter
        */
-      const T1& getParam1() const {
+      const T1& getParam1() const
+      {
          return mParam1;
       }
 
@@ -1441,7 +1534,8 @@ class cxFunction4RefTemplated : public cxFunction {
        * Accessor for the second function parameter
        * @return Returns the 2nd parameter
        */
-      const T2& getParam2() const {
+      const T2& getParam2() const
+      {
          return mParam2;
       }
 
@@ -1449,7 +1543,8 @@ class cxFunction4RefTemplated : public cxFunction {
        * Accessor for the 3rd function parameter
        * @return Returns the 3rd parameter
        */
-      const T3& getParam3() const {
+      const T3& getParam3() const
+      {
          return mParam3;
       }
 
@@ -1457,7 +1552,8 @@ class cxFunction4RefTemplated : public cxFunction {
        * Accessor for the 4th function parameter
        * @return Returns the 4th parameter
        */
-      const T4& getParam4() const {
+      const T4& getParam4() const
+      {
          return mParam4;
       }
 
@@ -1467,16 +1563,20 @@ class cxFunction4RefTemplated : public cxFunction {
        * @return Returns return value of function pointed to if pointer is not null,
        *    otherwise returns empty string
        */
-      virtual std::string runFunction() const override {
-         if (mFunction != nullptr) {
+      virtual std::string runFunction() const override
+      {
+         if (mFunction != nullptr)
+         {
             return(mFunction(mParam1, mParam2, mParam3, mParam4));
          }
-         else {
+         else
+         {
             return("");
          }
       }
 
-      virtual void* getFuncPtr() const override {
+      virtual void* getFuncPtr() const override
+      {
          return (void*)mFunction;
       }
 
@@ -1487,7 +1587,8 @@ class cxFunction4RefTemplated : public cxFunction {
        *
        * @return The name of the cxWidgets class ("cxFunction4RefTemplated").
        */
-      virtual std::string cxTypeStr() const override {
+      virtual std::string cxTypeStr() const override
+      {
          return("cxFunction4RefTemplated");
       }
 

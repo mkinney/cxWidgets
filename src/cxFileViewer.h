@@ -28,7 +28,8 @@
  * \version $Revision: 1.16 $
  * \date $Date: 2007/12/04 00:23:46 $
 */
-class cxFileViewer : public cxScrolledWindow {
+class cxFileViewer : public cxScrolledWindow
+{
 
    public:
       /**

@@ -1,7 +1,7 @@
 #ifndef __CXCOLORS__H__
 #define __CXCOLORS__H__
 
-/** 
+/**
  * \brief cxColors.h - contains an enumeration of the
  *  colors available for the cxWidgets objects.
  *
@@ -39,10 +39,11 @@
  */
 
 #define cxCOLOR_BRIGHT 1
-/** 
+/**
  * \enum e_cxColors These are the color definitions used in cxWidgets.
  */
-enum e_cxColors {
+enum e_cxColors
+{
    eDEFAULT = 0,
    // From the following line down,
    //  it's recommended that colors are
