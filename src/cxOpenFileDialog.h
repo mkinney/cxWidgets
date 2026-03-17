@@ -159,6 +159,13 @@ public:
    void setShowHiddenFiles(bool pShow);
    bool getShowHiddenFiles() const;
 
+   /// Set whether the user may type a filename for a file that does not yet
+   /// exist.  When true (the default), the dialog accepts any non-empty
+   /// filename.  When false, the dialog only accepts filenames that
+   /// correspond to an existing file.
+   void setAllowNewFile(bool pAllow);
+   bool getAllowNewFile() const;
+
 private:
    // -----------------------------------------------------------------------
    // Internal focus tracker
@@ -204,6 +211,7 @@ private:
    std::vector<FileFilter>  mFilters;
    int  mCurrentFilter = 0;
    bool mShowHidden    = false;
+   bool mAllowNewFile  = true;
 
    // -----------------------------------------------------------------------
    // Child widget
@@ -238,6 +246,9 @@ private:
    void enterSelectedDir();
    void activateFilenameInput();
    void cycleFilter(int pDelta);
+
+   // Validation
+   bool canAcceptSelection() const;
 
    // Utilities
    bool matchesFilter(const std::string& pFileName) const;

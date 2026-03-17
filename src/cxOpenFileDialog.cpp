@@ -220,6 +220,16 @@ bool cxOpenFileDialog::getShowHiddenFiles() const
    return mShowHidden;
 }
 
+void cxOpenFileDialog::setAllowNewFile(bool pAllow)
+{
+   mAllowNewFile = pAllow;
+}
+
+bool cxOpenFileDialog::getAllowNewFile() const
+{
+   return mAllowNewFile;
+}
+
 // ---------------------------------------------------------------------------
 // Private: widget creation
 // ---------------------------------------------------------------------------
@@ -333,7 +343,8 @@ void cxOpenFileDialog::loadDirectory()
 
 void cxOpenFileDialog::drawContent()
 {
-   if (!mWindow) return;
+   if (mWindow == nullptr)
+      return;
 
    wcolor_set(mWindow, mMessageColorPair, nullptr);
 
@@ -345,7 +356,11 @@ void cxOpenFileDialog::drawContent()
    drawFilenameRow();
    drawControlsRow();
 
-   wnoutrefresh(mWindow);
+   // Do NOT call wnoutrefresh(mWindow) here.  All callers follow up with
+   // update_panels() + doupdate(), which composites panels from bottom to
+   // top.  Calling wnoutrefresh first would clear the touch flags on this
+   // window, preventing update_panels() from re-compositing the dialog's
+   // cells on top of any lower panels.
 }
 
 void cxOpenFileDialog::drawPath()
@@ -484,7 +499,8 @@ void cxOpenFileDialog::drawFilenameRow()
    mvwaddnstr(mWindow, ROW_FILENAME, COL_VALUE, display.c_str(),
               FILENAME_INPUT_W);
 
-   if (focused) wattroff(mWindow, A_REVERSE);
+   if (focused)
+      wattroff(mWindow, A_REVERSE);
 }
 
 void cxOpenFileDialog::drawControlsRow()
@@ -529,9 +545,11 @@ void cxOpenFileDialog::drawControlsRow()
    // "[ Cancel ]" text button
    {
       bool focused = (mFocusItem == FocusItem::CANCEL_BTN);
-      if (focused) wattron(mWindow, A_REVERSE);
+      if (focused)
+         wattron(mWindow, A_REVERSE);
       mvwaddstr(mWindow, ROW_CONTROLS, COL_CANCEL_TEXT, "[ Cancel ]");
-      if (focused) wattroff(mWindow, A_REVERSE);
+      if (focused)
+         wattroff(mWindow, A_REVERSE);
    }
 }
 
@@ -665,7 +683,7 @@ long cxOpenFileDialog::doInputLoop()
          case FocusItem::OK_BTN:
             if (key == ENTER || key == KEY_ENTER || key == ' ')
             {
-               if (!mSelectedFileName.empty())
+               if (canAcceptSelection())
                {
                   returnCode = cxID_OK;
                   continueOn = false;
@@ -740,7 +758,7 @@ long cxOpenFileDialog::doInputLoop()
                         mx <  left() + COL_OK_TEXT + OK_TEXT_W)
                {
                   setFocusItem(FocusItem::OK_BTN);
-                  if (!mSelectedFileName.empty())
+                  if (canAcceptSelection())
                   {
                      returnCode = cxID_OK;
                      continueOn = false;
@@ -786,21 +804,7 @@ long cxOpenFileDialog::doInputLoop()
       } // KEY_MOUSE
 #endif
 
-      // Auto-update filename from file list selection (live preview)
-      if (continueOn && mFocusItem == FocusItem::FILE_LIST &&
-          !mFileEntries.empty() && mFileSelection >= 0 &&
-          mFileSelection < (int)mFileEntries.size())
-      {
-         string prevName = mSelectedFileName;
-         mSelectedFileName = mFileEntries[mFileSelection].name;
-         if (mSelectedFileName != prevName)
-         {
-            drawFilenameRow();
-            wnoutrefresh(mWindow);
-            update_panels();
-            doupdate();
-         }
-      }
+
 
    } // while (continueOn)
 
@@ -899,19 +903,21 @@ void cxOpenFileDialog::enterSelectedDir()
 
 void cxOpenFileDialog::activateFilenameInput()
 {
-   if (!mFileNameInput) return;
+   if (mFileNameInput == nullptr)
+      return;
 
    // Pre-populate with the current filename
    mFileNameInput->setValue(mSelectedFileName);
 
    // Show the input modally so the user can type
-   long rc = mFileNameInput->showModal(true, true, false);
-   string newVal = mFileNameInput->getValue(true, true);
+   /*long rc = */mFileNameInput->showModal(true, true, false);
    mFileNameInput->hide();
 
    // Only update if the user did not press Escape
-   if (rc != cxID_QUIT)
+   //if (rc != cxID_QUIT)
+   if (mFileNameInput->getLastKey() != ESCAPE)
    {
+      const string newVal = mFileNameInput->getValue(true, true);
       if (!newVal.empty())
       {
          try
@@ -931,7 +937,10 @@ void cxOpenFileDialog::activateFilenameInput()
                else
                {
                   // Full path to a file (or new file)
-                  mSelectedFileName = newVal;
+                  if (mAllowNewFile)
+                     mSelectedFileName = newVal;
+                  else
+                     mFileNameInput->clear();
                }
             }
             else
@@ -946,13 +955,19 @@ void cxOpenFileDialog::activateFilenameInput()
                }
                else
                {
-                  mSelectedFileName = newVal;
+                  if (mAllowNewFile)
+                     mSelectedFileName = newVal;
+                  else
+                     mFileNameInput->clear();
                }
             }
          }
          catch (...)
          {
-            mSelectedFileName = newVal;
+            if (mAllowNewFile)
+               mSelectedFileName = newVal;
+            else
+               mFileNameInput->clear();
          }
       }
       else
@@ -987,6 +1002,29 @@ void cxOpenFileDialog::cycleFilter(int pDelta)
 // ---------------------------------------------------------------------------
 // Private: filter matching
 // ---------------------------------------------------------------------------
+
+bool cxOpenFileDialog::canAcceptSelection() const
+{
+   if (mSelectedFileName.empty())
+      return false;
+   if (mAllowNewFile)
+      return true;
+
+   // When new files are not allowed, the selected file must exist
+   try
+   {
+      fs::path fullPath;
+      if (!mSelectedFileName.empty() && mSelectedFileName[0] == '/')
+         fullPath = mSelectedFileName;
+      else
+         fullPath = fs::path(mCurrentPath) / mSelectedFileName;
+      return fs::exists(fullPath) && fs::is_regular_file(fullPath);
+   }
+   catch (...)
+   {
+      return false;
+   }
+}
 
 bool cxOpenFileDialog::matchesFilter(const string& pFileName) const
 {

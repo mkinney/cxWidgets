@@ -6383,9 +6383,10 @@ void cxOpenFileDialogTest()
                       "Enter on a directory enters it; Enter on a file confirms. "
                       "Left/Right on File type cycles filters.");
 
-   cxOpenFileDialog dlg(nullptr);
+   cxOpenFileDialog dlg;
    dlg.addFilter("C/C++ Source (*.cpp;*.c;*.h)", "*.cpp;*.c;*.h");
    dlg.addFilter("Text Files (*.txt)", "*.txt");
+   dlg.setAllowNewFile(true); // This is the default, but enable it anyway
 
    long result = dlg.showModal();
    if (result == cxID_OK)
