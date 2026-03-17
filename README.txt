@@ -61,61 +61,9 @@ Authors:
    Mike Kinney (kinneym@redacesolutions.com)
    Glen Thorne (gthorne@whoneedsmicrosoft.com)
 
-License:
-  cxWidgets Library License
-  Copyright (c) 2005-2007 Michael H. Kinney
-
-  Everyone is permitted to copy and distribute verbatim copies of this 
-  license document, but changing it is not allowed.
-
-  CXWIDGETS LIBRARY LICENSE
-  TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
-
-  This library is free software; you can redistribute it and/or modify it 
-  under the terms of the GNU Library General Public License as published 
-  by the Free Software Foundation; either version 2 of the License, 
-  or (at your option) any later version.
-
-  This library is distributed in the hope that it will be useful, 
-  but WITHOUT ANY WARRANTY; without even the implied warranty of 
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
-  Library General Public License for more details.
-
-  You should have received a copy of the GNU Library General Public 
-  License along with this software, usually in a file named COPYING.LIB. 
-  If not, write to the Free Software Foundation, Inc., 59 Temple Place, 
-  Suite 330, Boston, MA 02111-1307 USA.
-
-  EXCEPTION NOTICE
-  1. As a special exception, the copyright holders of this library 
-  give permission for additional uses of the text contained in this 
-  release of the library as licensed under the cxWindows Library License, 
-  applying either this License, or (at your option) any 
-  later version of this License as published by the copyright holders 
-  of the License document.
-
-  2. The exception is that you may create binary object code versions 
-  of any works using this library or based on this library, 
-  and use, copy, modify, link and distribute such binary object code 
-  files unrestricted under terms of your choice.
-
-  3. If you copy code from files distributed under the terms of the 
-  GNU General Public License or the GNU Library General Public License 
-  into a copy of this library, as this license permits, the exception 
-  does not apply to the code that you add in this way. To avoid 
-  misleading anyone as to the status of such modified files, you must 
-  delete this exception notice from such code and/or adjust the 
-  licensing conditions notice accordingly.
-
-  4. If you write modifications of your own for this library, it is 
-  your choice whether to permit this exception to apply to your 
-  modifications. If you do not wish that, you must delete the 
-  exception notice from such code and/or adjust the licensing conditions 
-  notice accordingly. 
-
 Code standards:
 - every file must contain this at the top:
-   // Copyright (c) 2005-2007 Michael H. Kinney
+   // Copyright (c) 2005-2007 Michael H. Kinney, 2026 E. Oulashin
 - method variables are prefixed with "m" like mFoo
 - enums are prefixed with 'e' with the rest capitalized,
   i.e., eX_ABC
@@ -597,6 +545,4 @@ cxFieldFunction: Derived from cxObject
   functions).
 
 Possible future projects:
-- port "snakes" (game)
-- port "centipede-type" (game)
 - Screen saver (cxScreenSaver class?)
