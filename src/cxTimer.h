@@ -101,7 +101,7 @@ class cxTimer
       std::shared_ptr<cxFunction> mFunction; // The function to run after the delay
       unsigned int mDelay;                   // The delay in MS
       bool mWaitInSeparateThread;            // Whether or not to wait in a separate thread
-      int mPID = -1;                         // The process ID of wait()
+      //int mPID = -1;                         // The process ID of wait()
       std::atomic<bool> mIsWaiting{false};               // Status indicator for whether the timer is currently waiting for time to elapse
       std::atomic<bool> mRunFunctionAfterWaiting{true};  // Control for whether to run the function after the time elapses
       std::mutex mWaitMutex;                 // Mutex to be used in wait(), to lock anything used in there

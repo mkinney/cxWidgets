@@ -1966,7 +1966,7 @@ bool cxForm::getMasked(const string& pLabel, bool pIsLabel)
 {
    bool masked = false;
 
-   inputPtrContainer::iterator iter;
+   //inputPtrContainer::iterator iter;
    for (const auto& input : mInputs)
    {
       if ((input->getLabel() == pLabel) ||
@@ -2646,8 +2646,8 @@ void cxForm::setColor(e_WidgetItems pItem, e_cxColors pColor)
 {
    // For label & value colors, set those colors on all the inputs on the
    //  form; for any other colors, set those on the form.
-   if ((pItem == eLABEL) && (pItem == eDATA_READONLY) &&
-       (pItem == eDATA_EDITABLE) && (pItem == eDATA))
+   if ((pItem == eLABEL) || (pItem == eDATA_READONLY) ||
+       (pItem == eDATA_EDITABLE) || (pItem == eDATA))
        {
       // Label & value colors - Set these on all inputs on the form
       for (const auto& input : mInputs)

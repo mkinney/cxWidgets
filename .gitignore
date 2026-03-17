@@ -51,3 +51,6 @@ keys
 DevNotes.txt
 devNotes.txt
 devnotes.txt
+
+# IDE
+.idea/

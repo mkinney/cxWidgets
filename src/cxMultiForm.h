@@ -391,7 +391,7 @@ class cxMultiForm : public cxForm
        *
        * @return The last key typed by the user
        */
-      virtual int getLastKey() const;
+      virtual int getLastKey() const override;
 
       /**
        * \brief Returns whether any of the subforms contain
@@ -478,7 +478,7 @@ class cxMultiForm : public cxForm
                                   void *p1, void *p2,
                                   bool pUseReturnVal = false,
                                   bool pExitAfterRun = false,
-                                  bool pRunOnLeaveFunction = true);
+                                  bool pRunOnLeaveFunction = true) override;
 
       /**
        * Adds a function to call when the user presses some key.
@@ -503,7 +503,7 @@ class cxMultiForm : public cxForm
       virtual bool setKeyFunction(int pKey, funcPtr0 pFunction,
                                   bool pUseReturnVal = false,
                                   bool pExitAfterRun = false,
-                                  bool pRunOnLeaveFunction = true);
+                                  bool pRunOnLeaveFunction = true) override;
 
       /**
        * \brief Changes which subform is to have the focus (by index).
@@ -679,7 +679,7 @@ class cxMultiForm : public cxForm
        * @param pRefresh Whether or not to refresh the multiForm and the
        *  subforms as they are cleared (defaults to false).
        */
-      virtual void clear(bool pRefresh = false);
+      virtual void clear(bool pRefresh = false) override;
 
       /**
        * \brief Normally, if the cursor is on the last form when a cxMultiForm

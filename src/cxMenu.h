@@ -196,7 +196,7 @@ class cxMenu : public cxWindow
        *
        * @param pRefresh Whether or not to refresh the menu (defaults to false)
        */
-      virtual void clear(bool pRefresh = false);
+      virtual void clear(bool pRefresh = false) override;
 
       /**
        * \brief Shows the menu, waits for input, and returns the menu item's return

@@ -344,7 +344,7 @@ void cxTextValidator::addImpliedChars(string& pTextStr) const
                   {
                      // Only insert a decimal point if there isn't one already
                      //  in pTextStr.
-                     unsigned dotPos = pTextStr.find('.');
+                     auto dotPos = pTextStr.find('.');
                      if (dotPos == string::npos)
                      {
                         pTextStr.insert(pTextStr.begin()+i, 1, '.');
