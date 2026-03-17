@@ -852,7 +852,8 @@ long cxMenu::show(bool pBringToTop, bool pShowSubwindows)
    {
       returnCode = cxWindow::show(pBringToTop, pShowSubwindows);
       // Refresh the subwindow
-      wrefresh(mSubWindow);
+      if (mSubWindow != nullptr)
+         wrefresh(mSubWindow);
       update_panels();
    }
    else
@@ -1103,7 +1104,8 @@ cxMenu& cxMenu::operator =(const cxMenu& pThatMenu)
 void cxMenu::refreshMenuItems()
 {
    drawMessage();
-   wrefresh(mSubWindow);
+   if (mSubWindow != nullptr)
+      wrefresh(mSubWindow);
 } // refreshMenuItems
 
 bool cxMenu::setItemTextByReturnCode(long pReturnCode, const string& pItemText,

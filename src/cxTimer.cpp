@@ -58,7 +58,7 @@ bool cxTimer::waitInSeparateThread() const
 
 void cxTimer::start()
 {
-   if (!mIsWaiting && mFunction != nullptr)
+   if (!mIsWaiting.load() && mFunction != nullptr)
    {
       wait();
    }
@@ -66,13 +66,13 @@ void cxTimer::start()
 
 void cxTimer::stop(bool pRunFunction)
 {
-   mRunFunctionAfterWaiting = pRunFunction;
-   mIsWaiting = false;
+   mRunFunctionAfterWaiting.store(pRunFunction);
+   mIsWaiting.store(false);
 }
 
 bool cxTimer::isWaiting() const
 {
-   return(mIsWaiting);
+   return(mIsWaiting.load());
 }
 
 string cxTimer::cxTypeStr() const
@@ -131,6 +131,7 @@ void cxTimer::wait()
    if (mWaitInSeparateThread)
    {
       std::thread t(doWaitLoop);
+      t.detach();
    }
    else
    {

@@ -800,7 +800,7 @@ void cxSearchPanel::checkEventFunctionPointers(const cxSearchPanel& pPanel)
 
    // Same with the menu's onSelectMenuItem function
    shared_ptr<cxFunction> onSelectItemFunc = mMenu->getOnSelectItemFunction();
-   if (onSelectItemFunc->cxTypeStr() == "cxFunction2")
+   if (onSelectItemFunc != nullptr && onSelectItemFunc->cxTypeStr() == "cxFunction2")
    {
       const cxFunction2 *iFunc2 = dynamic_cast<cxFunction2*>(onSelectItemFunc.get());
       if (iFunc2 != nullptr)
@@ -818,7 +818,7 @@ void cxSearchPanel::checkEventFunctionPointers(const cxSearchPanel& pPanel)
                                         iFunc2->getRunOnLeaveFunction());
       }
    }
-   else if (onSelectItemFunc->cxTypeStr() == "cxFunction2")
+   else if (onSelectItemFunc != nullptr && onSelectItemFunc->cxTypeStr() == "cxFunction4")
    {
       const cxFunction4 *iFunc4 = dynamic_cast<cxFunction4*>(onSelectItemFunc.get());
       if (iFunc4 != nullptr)
@@ -918,7 +918,7 @@ void cxSearchPanel::checkEventFunctionPointers(const cxSearchPanel& pPanel)
                }
             }
             mMenu->setKeyFunction(funcIter->first, iFunction2->getFunction(),
-                           params[0], params[2], iFunction2->getUseReturnVal(),
+                           params[0], params[1], iFunction2->getUseReturnVal(),
                            iFunction2->getExitAfterRun(),
                            iFunction2->getRunOnLeaveFunction());
          }

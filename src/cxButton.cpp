@@ -137,7 +137,7 @@ long cxButton::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows)
                //  for the mouse event, then if this button has a cxPanel for a
                //  parent, and if the mouse event was outside the button
                //  window, then quit.
-               if (mouseEvent & !mouseFunctionExists)
+               if (mouseEvent && !mouseFunctionExists)
                {
                   if (parentIsCxPanel())
                   {
@@ -270,7 +270,7 @@ void cxButton::copyOnClickFunction(const cxButton& pButton)
             const cxFunction4* func4 = dynamic_cast<const cxFunction4*>(rawPtr);
             if (func4 != nullptr)
             {
-               void* params[] = { func4->getParam1(), func4->getParam4(),
+               void* params[] = { func4->getParam1(), func4->getParam2(),
                                   func4->getParam3(), func4->getParam4() };
                for (int i = 0; i < 4; ++i)
                {

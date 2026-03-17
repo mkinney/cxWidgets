@@ -351,7 +351,7 @@ string cxMultiForm::getValue(unsigned pFormIndex, int pInputIndex) const
 {
    string retval;
 
-   if ((pFormIndex >= 0) && (pFormIndex <= mForms.size()))
+   if ((pFormIndex >= 0) && (pFormIndex < mForms.size()))
    {
       retval = mForms[pFormIndex]->getValue((int)pInputIndex);
    }
@@ -363,7 +363,7 @@ string cxMultiForm::getValue(unsigned pFormIndex, const string& pLabel, bool pIs
 {
    string retval;
 
-   if ((pFormIndex >= 0) && (pFormIndex <= mForms.size()))
+   if ((pFormIndex >= 0) && (pFormIndex < mForms.size()))
    {
       retval = mForms[pFormIndex]->getValue(pLabel, pIsLabel);
    }
@@ -409,7 +409,7 @@ bool cxMultiForm::setValue(unsigned pFormIndex, int pInputIndex, const string& p
 {
    bool valueWasSet = false;
 
-   if ((pFormIndex >= 0) && (pFormIndex <= mForms.size()))
+   if ((pFormIndex >= 0) && (pFormIndex < mForms.size()))
    {
       valueWasSet = mForms[pFormIndex]->setValue(pInputIndex, pValue, pRefresh);
    }
@@ -421,7 +421,7 @@ bool cxMultiForm::setValue(unsigned pFormIndex, const string& pLabel, const stri
 {
    bool valueWasSet = false;
 
-   if ((pFormIndex >= 0) && (pFormIndex <= mForms.size()))
+   if ((pFormIndex >= 0) && (pFormIndex < mForms.size()))
    {
       valueWasSet = mForms[pFormIndex]->setValue(pLabel, pValue, pIsLabel, pRefresh);
    }

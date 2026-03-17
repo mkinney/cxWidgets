@@ -560,6 +560,8 @@ eWeekDays cxDate::dayOfWeek(int pYear, int pMonth, int pDay) noexcept
 {
    // Tomohiko Sakamoto's algorithm
    static const int t[] = {0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4};
+   if (pMonth < 1) pMonth = 1;
+   else if (pMonth > 12) pMonth = 12;
    if (pMonth < 3) --pYear;
    int dow = (pYear + pYear/4 - pYear/100 + pYear/400 + t[pMonth-1] + pDay) % 7;
    return static_cast<eWeekDays>(dow);

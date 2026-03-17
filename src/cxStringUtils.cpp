@@ -127,9 +127,8 @@ bool cxStringUtils::Find(const string& input, const string& regex, bool useBasic
    {
       if( regexec(&regEx, input.c_str(), 0, nullptr, 0) == 0 )
          found = true;
+      regfree(&regEx);
    }
-
-   regfree(&regEx);
 
    return found;
 }
@@ -147,6 +146,7 @@ void cxStringUtils::Find(const string& input, const string& regex, string& outpu
          output = input.substr(match.rm_so, match.rm_eo - match.rm_so);
       else
          output.erase();
+      regfree(&pattern);
    }
 }
 
@@ -616,11 +616,15 @@ void cxStringUtils::TrimSpaces(string& str)
 
       // Do the same from the reverse end of str.
       pos = string::npos;
-      i = str.size()-1;
-      while (str[i] == ' ')
+      if (!str.empty())
       {
-         pos = i;
-         --i;
+         i = str.size()-1;
+         while (str[i] == ' ')
+         {
+            pos = i;
+            if (i == 0) break;
+            --i;
+         }
       }
       if (pos != string::npos)
       {

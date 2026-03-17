@@ -152,36 +152,23 @@ void cxPanel::delWindow(unsigned int pIndex)
 {
    if ((pIndex >= 0) && (pIndex < mWindows.size()))
    {
-      // Free the memory used by the cxWindow pointer
-      // Note: If a cxWindow is in a cxPanel, cxWindow's destructor removes
-      // itself from the panel's mWindows, so we should not try to do
-      // that here.
+      // The cxWindow destructor removes itself from the panel's mWindows
+      // vector via erase(), so after reset() the element is already gone
+      // and the vector has shrunk. We just need to fix up mWindowIter
+      // based on the new vector state after the element is removed.
       mWindows[pIndex].reset();
-      // mWindowIter needs to be fixed.  Set it to the previous window,
-      //  if we can; if not, go to the next window.
-      if (mWindows.size() > 0)
+      // After the destructor ran, the element at pIndex was erased.
+      // Fix mWindowIter based on the current vector state.
+      if (mWindows.empty())
       {
-         if (pIndex == 0)
-         {
-            // Deleted the first window..  Set mWindowIter to point to the
-            //  current first window.
-            mWindowIter = mWindows.begin();
-         }
-         else
-         {
-            if (pIndex-1 < mWindows.size())
-            {
-               mWindowIter = mWindows.begin() + (pIndex-1);
-            }
-            else
-            {
-               mWindowIter = mWindows.begin(); // Default..
-            }
-         }
+         mWindowIter = mWindows.begin();
+      }
+      else if (pIndex > 0 && pIndex - 1 < mWindows.size())
+      {
+         mWindowIter = mWindows.begin() + (pIndex - 1);
       }
       else
       {
-         // There are no windows..  this is a default..
          mWindowIter = mWindows.begin();
       }
    }

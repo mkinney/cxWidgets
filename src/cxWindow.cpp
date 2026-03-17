@@ -824,9 +824,9 @@ string cxWindow::getStatus() const
 {
    string status;
 
-   if (mExtTitleWindow != nullptr)
+   if (mExtStatusWindow != nullptr)
    {
-      status = mExtTitleWindow->getMessage();
+      status = mExtStatusWindow->getMessage();
    }
    else
    {
@@ -1205,7 +1205,7 @@ void cxWindow::setExtStatusWindow(cxWindow *pWindow, bool pRefreshStatus)
          mExtStatusWindow->mStatusParent = nullptr;
       }
 
-      mExtTitleWindow = pWindow;
+      mExtStatusWindow = pWindow;
    }
 } // setExtStatusWindow
 
@@ -1216,6 +1216,7 @@ cxWindow* cxWindow::getExtStatusWindow() const
 
 bool cxWindow::isHidden() const
 {
+   if (mPanel == nullptr) return true;
    return(panel_hidden(mPanel) == TRUE);
 } // isHidden
 
@@ -1512,6 +1513,7 @@ void cxWindow::erase(bool pEraseSubwindows)
 
 void cxWindow::bringToTop(bool pRefresh)
 {
+   if (mPanel == nullptr) return;
    top_panel(mPanel);
    if (pRefresh)
    {
@@ -1521,6 +1523,7 @@ void cxWindow::bringToTop(bool pRefresh)
 
 void cxWindow::bringToBottom(bool pRefresh)
 {
+   if (mPanel == nullptr) return;
    bottom_panel(mPanel);
    if (pRefresh)
    {
@@ -1530,6 +1533,7 @@ void cxWindow::bringToBottom(bool pRefresh)
 
 bool cxWindow::isOnTop() const
 {
+   if (mPanel == nullptr) return false;
    // panel_above will return nullptr if there is no
    //  other panel above mPanel.
    return(panel_above(mPanel) == nullptr);
@@ -1537,6 +1541,7 @@ bool cxWindow::isOnTop() const
 
 bool cxWindow::isOnBottom() const
 {
+   if (mPanel == nullptr) return false;
    // panel_below will return nullptr if there is no
    //  other panel below mPanel.
    return(panel_below(mPanel) == nullptr);
@@ -1599,7 +1604,7 @@ bool cxWindow::isBelow(const cxWindow& pThatWindow) const
 void cxWindow::hide(bool pHideSubwindows)
 {
    // If not already hidden, hide the window.
-   if (panel_hidden(mPanel) == FALSE)
+   if (mPanel != nullptr && panel_hidden(mPanel) == FALSE)
    {
       hide_panel(mPanel);
    }

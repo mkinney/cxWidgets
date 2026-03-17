@@ -8,6 +8,7 @@
 #include <string>
 #include <memory>
 #include <mutex>
+#include <atomic>
 
 /**
  * \brief Represents a timer that will run a function after
@@ -101,8 +102,8 @@ class cxTimer
       unsigned int mDelay;                   // The delay in MS
       bool mWaitInSeparateThread;            // Whether or not to wait in a separate thread
       int mPID = -1;                         // The process ID of wait()
-      bool mIsWaiting = false;               // Status indicator for whether the timer is currently waiting for time to elapse
-      bool mRunFunctionAfterWaiting = true;  // Control for whether to run the function after the time elapses
+      std::atomic<bool> mIsWaiting{false};               // Status indicator for whether the timer is currently waiting for time to elapse
+      std::atomic<bool> mRunFunctionAfterWaiting{true};  // Control for whether to run the function after the time elapses
       std::mutex mWaitMutex;                 // Mutex to be used in wait(), to lock anything used in there
 
       // Waits a number of milliseconds equal to mDelay

@@ -149,7 +149,8 @@ long cxScrolledWindow::show(bool pBringToTop, bool pShowSubwindows)
 
       // Make sure this window is not hidden
       unhide();
-      wrefresh(mSubWindow);
+      if (mSubWindow != nullptr)
+         wrefresh(mSubWindow);
       if (pBringToTop)
       {
          bringToTop();

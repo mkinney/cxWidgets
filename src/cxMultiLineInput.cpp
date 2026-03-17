@@ -479,10 +479,11 @@ long cxMultiLineInput::showModal(bool pShowSelf, bool pBringToTop, bool pShowSub
                //  (so that if someone calls showModal() again, the cursor will
                //  be where the user left off).
                int index = (int)mInputs.size() - 1;
-               for (int index = 0; index < (int)mInputs.size(); ++index)
+               for (int j = 0; j < (int)mInputs.size(); ++j)
                {
-                  if (mInputs[index]->getValue() == "")
+                  if (mInputs[j]->getValue() == "")
                   {
+                     index = j;
                      break;
                   }
                }

@@ -14,6 +14,7 @@
 
 #include "cxObject.h"
 #include "cxFrame.h"
+#include <memory>
 
 /**
  * \brief Holds application setup & exit logic, as well as the application's main frame.
@@ -72,7 +73,7 @@ class cxApp : public cxObject
       virtual std::string cxTypeStr() const override;
 
    private:
-      cxFrame *mAppFrame = nullptr; // The application's frame
+      std::shared_ptr<cxFrame> mAppFrame; // The application's frame
 };
 
 #endif

@@ -544,12 +544,14 @@ string cxInput::getValue(bool pRemoveLeadingSpaces, bool pRemoveTrailingSpaces) 
          if (theValue[valueLen-1] == ' ')
          {
             unsigned i = valueLen - 1;
-            while (theValue[i] == ' ')
+            while (i > 0 && theValue[i] == ' ')
             {
                --i;
             }
-            ++i; // Correction for off-by-1
-            theValue.erase(i);
+            if (theValue[i] == ' ')
+               theValue.clear(); // entire string is spaces
+            else
+               theValue.erase(i + 1);
          }
       }
    }
@@ -788,6 +790,7 @@ void cxInput::getInputText(string& pValue, int pX, bool pCheckPrintable)
       // When cross compiling, the compiler did not like the above
       //  declaration.  Using calloc instead:
       chtype *buffer = (chtype*)calloc(mInputLen+1,sizeof(chtype));
+      if (buffer == nullptr) return;
       int numChars = 0;
       // Get the text in the window from mInputStartX up to the cursor
       //  position.  If there is a border, the input will be on row 1;
