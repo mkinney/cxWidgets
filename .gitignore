@@ -37,6 +37,9 @@
 *.out
 *.app
 
+# Log files
+*.log
+
 # debug information files
 *.dwo
 
@@ -46,6 +49,9 @@ cxWidgets.tag
 # Compiled binaries
 testApp
 keys
+cxUnitTest
+test_cxInput
+test_cxStringUtils
 
 # Misc. stuff
 DevNotes.txt

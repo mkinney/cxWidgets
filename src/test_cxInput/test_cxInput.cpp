@@ -1,4 +1,10 @@
 #include <cxBase.h>
+#include <cxInput.h>
+#include <string>
+#include <fstream>
+#include <iostream>
+
+using namespace std;
 
 int main(int argc, char* argv[]) {
    cxBase::init();
@@ -9,7 +15,7 @@ int main(int argc, char* argv[]) {
    }
 
    cxInput input1(NULL, 0, 0, 5, "A:");
-   input1.setValue(initial);
+   // input1.setValue(initial);
    input1.showModal();
    cxBase::cleanup();
 

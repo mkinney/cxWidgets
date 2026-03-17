@@ -66,7 +66,7 @@ endif
 WIDGETS_OBJS = cxApp.o cxBase.o cxButton.o cxComboBox.o cxDate.o cxDatePicker.o cxDialog.o cxFileViewer.o cxForm.o cxFunction.o cxInput.o cxMenu.o cxMessageDialog.o cxMultiForm.o cxMultiLineInput.o cxNotebook.o cxObject.o cxOpenFileDialog.o cxPanel.o cxScrolledWindow.o cxSearchPanel.o cxStringUtils.o cxTextValidator.o cxTimer.o cxValidators.o cxWidgetsException.o cxWindow.o cxBorderChars.o cxBorderStyles.o
 STATIC_LIB = libcxWidgets.a
 
-all: $(DYNAMIC_LIB) $(STATIC_LIB) testApp keys
+all: $(DYNAMIC_LIB) $(STATIC_LIB) testApp keys cxUnitTest test_cxStringUtils
 
 # Library file targets
 $(DYNAMIC_LIB): $(WIDGETS_OBJS)
@@ -204,11 +204,19 @@ testApp: testApp.cpp $(STATIC_LIB) floatingPtInputWithRightLabel.o
 test1: test1.cpp $(STATIC_LIB)
 	$(CC) -o test1 $(CFLAGS) test1.cpp $(STATIC_LIB) $(LIBS_OPT)
 
-alltest:
+test_cxStringUtils: test_cxStringUtils.cpp $(WIDGETS_OBJS)
+	$(CC) -o test_cxStringUtils $(CFLAGS) test_cxStringUtils.cpp $(WIDGETS_OBJS) $(LIBS_OPT)
+
+alltest: test_cxStringUtils
+	./test_cxStringUtils
+	@echo "Note: cxUnitTest requires ncurses tracing and might fail if not properly configured."
+	# ./cxUnitTest 
 	+make testcxInput
 
+test: alltest
+
 testcxInput:
-	+@ cd ./test_cxInput; make clean; make ; ./doit
+	+@ cd ./test_cxInput; make clean; make ; bash ./test_cxInput_nav.bash
 
 # Use this to print out a makefile var ....
 #  make print-<var>  ... where <var> is replaced with the variable name like: #  make print-GEN
@@ -234,4 +242,4 @@ cxWidgets_wrap.cxx: $(CXH)
 
 # Cleanup
 clean:
-	rm -f *.o *.a *.so *.dylib $(STATIC_LIB) $(DYNAMIC_LIB) testApp cxUnitTest test1 testcxInput keys trace
+	rm -f *.o *.a *.so *.dylib $(STATIC_LIB) $(DYNAMIC_LIB) testApp cxUnitTest test_cxStringUtils test1 testcxInput keys trace

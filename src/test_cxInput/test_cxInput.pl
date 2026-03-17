@@ -23,7 +23,8 @@ my $HOME = "OH";
 my $LEFT = "OD";
 my $PAGEDOWN = "[6~";
 my $PAGEUP = "[5~";
-my $RETURN = "";
+my $RETURN = "
+";
 my $RIGHT = "OC";
 my $sF11 = "[23;2~";
 my $sF1 = "O2P";
@@ -49,8 +50,12 @@ if ($#ARGV == 1) {
    $value =~ s/#LEFT#/${LEFT}/g;
    $value =~ s/#RIGHT#/${RIGHT}/g;
 
-   $exp->log_stdout(0); # turn off the input
+   unlink("test_cxInput.log") if -f "test_cxInput.log";
+   $exp->log_stdout(0);
    $exp->spawn($exe) or die "Warning: Could not run ($exe)";
+   # Wait for the process to start and ncurses to initialize
+   # If we don't wait, the first test's output might be lost or the process might not be ready for input
+   select(undef, undef, undef, 0.2);
    $exp->expect(1, 
       [ qr/$label/ =>
          sub {
@@ -60,5 +65,10 @@ if ($#ARGV == 1) {
       ],
    );
    $exp->soft_close();
+   # Wait a bit for the process to finish writing the log
+   for (my $i=0; $i<10; $i++) {
+      last if -f "test_cxInput.log";
+      select(undef, undef, undef, 0.05);
+   }
 }
 
