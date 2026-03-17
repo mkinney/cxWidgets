@@ -56,7 +56,3 @@ run_test 9 "A:" "ABC#HOME##RIGHT##RIGHT#D" "ABD" "should be:ABD: from:ABC#HOME##
 
 # test the BACKSPACE key 
 run_test 10 "A:" "ABC#LEFT##BACK#" "BC" "should be:BC: from:ABC#LEFT##BACK#:"
-
-echo "Note: If one or more tests do not pass, be sure to:"
-echo "      'git update'/'make install' of the library/'make clean'/'make' "
-echo "      then re-try running 'doit'."

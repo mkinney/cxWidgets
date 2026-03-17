@@ -51,7 +51,9 @@ testApp
 keys
 cxUnitTest
 test_cxInput
+test_cxDate
 test_cxStringUtils
+test_cxValidators
 
 # Misc. stuff
 DevNotes.txt

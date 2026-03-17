@@ -66,7 +66,7 @@ endif
 WIDGETS_OBJS = cxApp.o cxBase.o cxButton.o cxComboBox.o cxDate.o cxDatePicker.o cxDialog.o cxFileViewer.o cxForm.o cxFunction.o cxInput.o cxMenu.o cxMessageDialog.o cxMultiForm.o cxMultiLineInput.o cxNotebook.o cxObject.o cxOpenFileDialog.o cxPanel.o cxScrolledWindow.o cxSearchPanel.o cxStringUtils.o cxTextValidator.o cxTimer.o cxValidators.o cxWidgetsException.o cxWindow.o cxBorderChars.o cxBorderStyles.o
 STATIC_LIB = libcxWidgets.a
 
-all: $(DYNAMIC_LIB) $(STATIC_LIB) testApp keys cxUnitTest test_cxStringUtils
+all: $(DYNAMIC_LIB) $(STATIC_LIB) testApp keys cxUnitTest test_cxStringUtils test_cxDate test_cxValidators
 
 # Library file targets
 $(DYNAMIC_LIB): $(WIDGETS_OBJS)
@@ -207,8 +207,16 @@ test1: test1.cpp $(STATIC_LIB)
 test_cxStringUtils: test_cxStringUtils.cpp $(WIDGETS_OBJS)
 	$(CC) -o test_cxStringUtils $(CFLAGS) test_cxStringUtils.cpp $(WIDGETS_OBJS) $(LIBS_OPT)
 
-alltest: test_cxStringUtils
+test_cxDate: test_cxDate.cpp $(WIDGETS_OBJS)
+	$(CC) -o test_cxDate $(CFLAGS) test_cxDate.cpp $(WIDGETS_OBJS) $(LIBS_OPT)
+
+test_cxValidators: test_cxValidators.cpp $(WIDGETS_OBJS)
+	$(CC) -o test_cxValidators $(CFLAGS) test_cxValidators.cpp $(WIDGETS_OBJS) $(LIBS_OPT)
+
+alltest: test_cxStringUtils test_cxDate test_cxValidators
 	./test_cxStringUtils
+	./test_cxDate
+	./test_cxValidators
 	@echo "Note: cxUnitTest requires ncurses tracing and might fail if not properly configured."
 	# ./cxUnitTest 
 	+make testcxInput
@@ -242,4 +250,4 @@ cxWidgets_wrap.cxx: $(CXH)
 
 # Cleanup
 clean:
-	rm -f *.o *.a *.so *.dylib $(STATIC_LIB) $(DYNAMIC_LIB) testApp cxUnitTest test_cxStringUtils test1 testcxInput keys trace
+	rm -f *.o *.a *.so *.dylib $(STATIC_LIB) $(DYNAMIC_LIB) testApp cxUnitTest test_cxStringUtils test_cxDate test_cxValidators test1 testcxInput keys trace
