@@ -64,7 +64,7 @@ cxWindow::cxWindow(cxWindow *pParentWindow,
    //  screen can display, use the maximum height.
    else if ((pHeight > 0) && (pHeight > maxHeight))
    {
-      pHeight = (int)(cxBase::height());
+      pHeight = maxHeight;
    }
 
    if (pWidth < 0)
@@ -80,7 +80,7 @@ cxWindow::cxWindow(cxWindow *pParentWindow,
    }
    else if ((pWidth > 0) && (pWidth > maxWidth))
    {
-      pWidth = (int)(cxBase::width());
+      pWidth = maxWidth;
    }
 
    // Ensure that if pHeight or pWidth is 0, they are passed as 0 to init()

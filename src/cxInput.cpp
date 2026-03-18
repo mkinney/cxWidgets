@@ -105,9 +105,8 @@ cxInput::cxInput(cxWindow *pParentWindow, int pRow,
    }
 #endif
 
-   // Set mMaxInputLength to 0 (unlimited) by default, allowing text to
-   // scroll horizontally when it exceeds the visible input width.
-   mMaxInputLength = 0;
+   // Set mMaxInputLength to mInputLen by default.
+   mMaxInputLength = mInputLen;
 }
 
 // Copy constructor
@@ -2012,12 +2011,20 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
       ensureCursorVisible();
       redrawVisibleValue();
 
-      // If focus just started and mCursorAfterInput is false, place cursor
-      // at the start of the input area.
-      if (mJustStartedFocus && !mCursorAfterInput)
+      // If focus just started, place the cursor correctly
+      if (mJustStartedFocus)
       {
-         mCursorPos = 0;
+         if (mCursorAfterInput)
+         {
+            mCursorPos = (int)mValue.length();
+         }
+         else
+         {
+            mCursorPos = 0;
+         }
          mScrollOffset = 0;
+         ensureCursorVisible();
+         mJustStartedFocus = false;
       }
 
       // Place the screen cursor at the correct position
@@ -2167,7 +2174,6 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
             case '\b':
                if (mCursorPos > 0)
                {
-                  // Delete the character before the cursor
                   mValue.erase(mCursorPos - 1, 1);
                   --mCursorPos;
                   ensureCursorVisible();
@@ -2202,11 +2208,8 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
                }
                else if (mCursorPos > 0)
                {
-                  if (!mMasked)
-                  {
-                     --mCursorPos;
-                     ensureCursorVisible();
-                  }
+                  --mCursorPos;
+                  ensureCursorVisible();
                }
                else if (mExitOnArrowAtBoundary)
                {
@@ -2217,7 +2220,7 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
                }
                break;
             case KEY_RIGHT:
-               if (!mMasked && mCursorPos < (int)mValue.length())
+               if (mCursorPos < (int)mValue.length())
                {
                   ++mCursorPos;
                   ensureCursorVisible();
@@ -2243,16 +2246,42 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
                {
                   if (isPrintable(lastKey))
                   {
-                     // Check if we can insert (max length check)
+                     // Check if we can insert/overwrite
                      bool canInsert = true;
-                     if (mMaxInputLength > 0 && (int)mValue.length() >= mMaxInputLength)
-                        canInsert = false;
+                     if (mMaxInputLength > 0 && (int)mValue.length() >= mMaxInputLength && mCursorPos >= (int)mValue.length())
+                     {
+                        // Special case for overwrite-at-end when full: if we are at the very end
+                        // and mMaxInputLength is set, overwrite the LAST character of the string.
+                        // This allows "123" + "4" -> "124" when width is 3.
+                        if (mCursorPos == mMaxInputLength && mMaxInputLength > 0)
+                        {
+                           mCursorPos = mMaxInputLength - 1;
+                           canInsert = true;
+                        }
+                        else
+                        {
+                           canInsert = false;
+                        }
+                     }
 
                      if (canInsert)
                      {
-                        // Insert the character at mCursorPos
-                        mValue.insert(mCursorPos, 1, (char)lastKey);
+                        // Replace the character at mCursorPos (overwrite mode)
+                        if (mCursorPos < (int)mValue.length())
+                        {
+                           mValue[mCursorPos] = (char)lastKey;
+                        }
+                        else
+                        {
+                           mValue.append(1, (char)lastKey);
+                        }
                         ++mCursorPos;
+
+                        // Limit the cursor position so it doesn't go past mMaxInputLength
+                        if (mMaxInputLength > 0 && mCursorPos > mMaxInputLength)
+                        {
+                           mCursorPos = mMaxInputLength;
+                        }
 
                         // Validate the new text
                         int lastCapIndex = indexOfLastCap(mValidator.getValidatorStr());
@@ -2307,8 +2336,6 @@ long cxInput::doInputLoop(int x, int y, int rightLimit, bool updatePrevInput,
          }
 
          mJustStartedFocus = false;
-
-         // Check if input is full and should exit (for non-bordered inputs)
          if (isFull() && mExitOnFull)
          {
             setReturnCode(cxID_EXIT);

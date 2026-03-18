@@ -49,10 +49,10 @@ run_test 6 "A:" "A#HOME#BC" "BC" "should be:BC: from:A#HOME#BC:"
 run_test 7 "A:" "111#HOME#ABC" "ABC" "should be:ABC: from:111#HOME#ABC:"
 
 # test the BACKSPACE key 
-run_test 8 "A:" "ABC#BACK#D" "AD" "should be:AD: from:ABC#BACK#D:"
+run_test 8 "A:" "ABC#BACK#D" "ABD" "should be:ABD: from:ABC#BACK#D:"
 
 # test the RIGHT key 
 run_test 9 "A:" "ABC#HOME##RIGHT##RIGHT#D" "ABD" "should be:ABD: from:ABC#HOME##RIGHT##RIGHT#D:"
 
 # test the BACKSPACE key 
-run_test 10 "A:" "ABC#LEFT##BACK#" "BC" "should be:BC: from:ABC#LEFT##BACK#:"
+run_test 10 "A:" "ABC#LEFT##BACK#" "AC" "should be:AC: from:ABC#LEFT##BACK#:"

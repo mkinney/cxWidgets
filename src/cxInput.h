@@ -270,7 +270,7 @@ class cxInput : public cxWindow
        *
        * @return true if the input exits on outside mouse clicks
        */
-      bool getExitOnMouseOutside() const;
+      bool getExitOnMouseOutside() const override;
 
       /**
        * \brief Sets whether the input should exit its input loop when a
@@ -280,7 +280,7 @@ class cxInput : public cxWindow
        *
        * @param pExitOnMouseOutside Whether to exit on outside mouse clicks
        */
-      void setExitOnMouseOutside(bool pExitOnMouseOutside);
+      void setExitOnMouseOutside(bool pExitOnMouseOutside) override;
 
       /**
        * \brief Returns whether the input exits when the left arrow key is
