@@ -266,3 +266,4 @@ clean:
 	$(MAKE) -C ../examples/flashcard clean
 	$(MAKE) -C ../examples/centipede clean
 	$(MAKE) -C ../examples/snake clean
+

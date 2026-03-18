@@ -3521,6 +3521,8 @@ void cxWindow::drawMessage()
          leftmostCol = 1;
          currentRowInWindow = 1;
       }
+      // TODO: not sure if need this or not
+      // wmove(mWindow, currentRowInWindow, leftmostCol);
 
       // Adjust starting row based on vertical alignment
       int numMessageLines = (int)mMessageLines.size();
