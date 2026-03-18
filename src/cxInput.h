@@ -280,7 +280,7 @@ class cxInput : public cxWindow
        *
        * @param pExitOnMouseOutside Whether to exit on outside mouse clicks
        */
-      void setExitOnMouseOutside(bool pExitOnMouseOutside);
+      void setExitOnMouseOutside(bool pExitOnMouseOutside) override;
 
       /**
        * \brief Returns whether the input exits when the left arrow key is
