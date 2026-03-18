@@ -4,10 +4,15 @@ LIBDIR=-L/usr/local/lib -L/usr/lib -L..
 CFLAGS=-Wall -DWANT_TIMEOUT $(INCDIR) $(LIBDIR)
 LIBS=-L.. -lcxWidgets -lpanel -lncurses -lz
 
+OS = $(shell uname)
+
 all: test_cxInput 
 
 test_cxInput: test_cxInput.cpp
-	$(CC) -o test_cxInput $(CFLAGS) -Wl,-rpath,'$$ORIGIN' -Wl,-rpath,'$$ORIGIN/..' test_cxInput.cpp -L.. $(LIBS)
+	$(CC) -o test_cxInput $(CFLAGS) test_cxInput.cpp -L.. $(LIBS)
+ifeq ($(OS),Darwin)
+	install_name_tool -change libcxWidgets.dylib @executable_path/../libcxWidgets.dylib test_cxInput
+endif
 
 clean:
 	rm -f *.o test_cxInput 
