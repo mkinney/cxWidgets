@@ -34,7 +34,7 @@ jobs:
       - name: Build
         run: |
           cd src
-          make
+          make CFLAGS+="-Werror"
 
       - name: Test
         run: |
@@ -43,4 +43,4 @@ jobs:
           export TERM=xterm
           export COLUMNS=80
           export LINES=24
-          make alltest          
+          make alltest CFLAGS+="-Werror"
