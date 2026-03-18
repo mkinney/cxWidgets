@@ -3807,7 +3807,7 @@ bool cxMultiLineInput::scrDiff()
          // that point (which will be a border line).
          if ((line > 0) && (line < inputHeight-1))
          {
-            unique_ptr buffer2 = make_unique<chtype[]>(mInputs[line-1]->width()+1);
+            unique_ptr<chtype[]> buffer2 = make_unique<chtype[]>(mInputs[line-1]->width()+1);
             int inputChars = mvwinchnstr(mInputs[line-1]->mWindow, 0, 0, buffer2.get(), mInputs[line-1]->width());
             for (int ch = 0; ch < inputChars; ++ch)
             {
