@@ -1,0 +1,46 @@
+name: CI Build and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: Build and Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libncurses5-dev libncursesw5-dev libpanel-dev libmenu-dev
+
+      - name: Install dependencies (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          # ncurses is usually pre-installed on macOS, but let's ensure we have everything
+          # Brew can be used if additional libraries are needed.
+          echo "Using pre-installed ncurses/panel/menu on macOS"
+
+      - name: Build
+        run: |
+          cd src
+          make
+
+      - name: Test
+        run: |
+          cd src
+          # Setting TERM, COLUMNS, and LINES for ncurses tests
+          export TERM=xterm
+          export COLUMNS=80
+          export LINES=24
+          make alltest          
