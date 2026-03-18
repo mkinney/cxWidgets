@@ -1,7 +1,7 @@
 CC = g++
 INCDIR=-I/usr/local/include -I/usr/include -I/usr/local/include/cx -I..
 LIBDIR=-L/usr/local/lib -L/usr/lib -L..
-CFLAGS=-Wall $(INCDIR) $(LIBDIR)
+CFLAGS=-Wall -DWANT_TIMEOUT $(INCDIR) $(LIBDIR)
 LIBS=-L.. -lcxWidgets -lpanel -lncurses -lz
 
 OS = $(shell uname)
