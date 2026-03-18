@@ -22,7 +22,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libncurses5-dev libncursesw5-dev libpanel-dev libmenu-dev
+          sudo apt-get install -y libncurses-dev libpanel-dev
 
       - name: Install dependencies (macOS)
         if: matrix.os == 'macos-latest'
