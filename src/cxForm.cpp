@@ -1838,6 +1838,7 @@ bool cxForm::setValue(const string& pLabel, const string& pValue, bool pIsLabel,
              (stringWithoutHotkeyChars(mInputs[i]->getLabel()) == pLabel))
              {
             setValue(i, pValue, pRefresh);
+            returnVal = true;
          }
       }
    }
@@ -1848,6 +1849,7 @@ bool cxForm::setValue(const string& pLabel, const string& pValue, bool pIsLabel,
          if (mInputs[i]->getName() == pLabel)
          {
             setValue(i, pValue, pRefresh);
+            returnVal = true;
          }
       }
    }

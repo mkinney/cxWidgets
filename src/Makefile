@@ -230,7 +230,7 @@ alltest: test_cxStringUtils test_cxDate test_cxValidators test_wordwrap
 	./test_cxValidators
 	./test_wordwrap
 	@echo "Note: cxUnitTest requires ncurses tracing and might fail if not properly configured."
-	# ./cxUnitTest 
+	./cxUnitTest
 	+make testcxInput
 
 test: alltest
