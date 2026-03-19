@@ -15,7 +15,7 @@ else
     LIBS = -lmenu -lpanel -lncurses
 endif
 
-CFLAGS = -Wall -std=$(CPP_STANDARD) -pedantic $(INCDIR)
+CFLAGS = -Wall -Werror -std=$(CPP_STANDARD) -pedantic $(INCDIR)
 STATIC_LIB = ../src/libcxWidgets.a
 
 TEST_SRCS = test_string_utils.cpp test_date.cpp test_validators.cpp test_ui_sizing.cpp test_cx_widgets.cpp

@@ -14,12 +14,12 @@ else
 	LIBS = -lmenu -lpanel -lncurses
 endif
 
-CFLAGS = -fPIC -DWANT_TIMEOUT -Wall -std=$(CPP_STANDARD) -pedantic $(INCDIR)
+CFLAGS = -fPIC -DWANT_TIMEOUT -Wall -Werror -std=$(CPP_STANDARD) -pedantic $(INCDIR)
 
 all: test_cxInput
 
 test_cxInput: test_cxInput.cpp $(STATIC_LIB)
-	$(CC) -o test_cxInput $(CFLAGS) test_cxInput.cpp $(STATIC_LIB) $(LIBDIR_OPT) $(LIBS)
+	$(CC) -o test_cxInput $(CFLAGS) test_cxInput.cpp $(STATIC_LIB) $(LIBS)
 
 clean:
 	rm -f *.o test_cxInput test_cxInput.log stderr.log

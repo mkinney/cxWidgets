@@ -28,6 +28,7 @@ ifeq ($(OS),Darwin)
 	INSTALL_INC=/usr/include/cx
 	DYNAMIC_LIB=libcxWidgets.dylib
 	# It appears that the debug versions of panel & ncurses are unavailable on MacOS X
+	INCDIR+=-I/opt/homebrew/opt/ncurses/include
 	LIBS=-lmenu -lpanel -lncurses
 else
 	LIBDIR=/usr/local/lib
@@ -49,12 +50,12 @@ CPP_STANDARD=c++17
 #  all the object code is put into a shared library.
 # But, AIX don't like -fPIC
 ifeq ($(OS),AIX)
-   CFLAGS=-Wall -DWANT_TIMEOUT -std=$(CPP_STANDARD) -pedantic $(INCDIR) $(LIBDIR_OPT)
+   CFLAGS=-Wall -Werror -DWANT_TIMEOUT -std=$(CPP_STANDARD) -pedantic $(INCDIR) $(LIBDIR_OPT)
 else
    ifeq ($(OS),SCO)
-      CFLAGS=-fPIC -Wall -std=$(CPP_STANDARD) -pedantic $(INCDIR) $(LIBDIR_OPT)
+      CFLAGS=-fPIC -Wall -Werror -std=$(CPP_STANDARD) -pedantic $(INCDIR) $(LIBDIR_OPT)
    else
-      CFLAGS=-fPIC -DWANT_TIMEOUT -Wall -std=$(CPP_STANDARD) -pedantic $(INCDIR)
+      CFLAGS=-fPIC -DWANT_TIMEOUT -Wall -Werror -std=$(CPP_STANDARD) -pedantic $(INCDIR)
    endif
 endif
 
