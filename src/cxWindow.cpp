@@ -757,50 +757,37 @@ cxWindow::~cxWindow()
             cxPanel *parentPanel = dynamic_cast<cxPanel*>(mParentWindow);
             if (parentPanel != nullptr)
             {
-               cxPanel::cxWindowPtrCollection::iterator iter = parentPanel->mWindows.begin();
-               for (; iter != parentPanel->mWindows.end(); ++iter)
+               cxPanel::cxWindowPtrCollection::iterator it = parentPanel->mWindows.begin();
+               while (it != parentPanel->mWindows.end())
                {
-                  if (iter->get() == this)
+                  if (it->get() == this)
                   {
-                     // A pointer to this window was found in the
-                     // panel's mWindows..  Remove it from its
-                     // mWindows (note: there should be only 1 pointer
-                     // to this window in a parent window).
-                     parentPanel->mWindows.erase(iter);
-                     break;
+                     it = parentPanel->mWindows.erase(it);
+                  }
+                  else
+                  {
+                     ++it;
                   }
                }
             }
          }
       }
-      catch (const std::bad_cast& e)
+      catch (...)
       {
-            // A dynamic_cast failed
-      }
-      catch (const std::bad_typeid& e)
-      {
-         // A typeid failed
       }
       mParentWindow->removeSubWindow(this);
    }
 
    // Set all the subwindows' parent windows to nullptr (so that they don't try
-   //  to do something with this window anymore).  Note: This is using a
-   //  while loop surrounding the for loop, because each time we remove a
-   //  window from mSubWindows, the iterator gets invalidated, so we need
-   //  to make sure it's set correctly.
-   while (anySubwinHasThisParent())
+   //  to do something with this window anymore).
+   for (cxWindow* subWin : mSubWindows)
    {
-      for (cxWindow*& subWin : mSubWindows)
+      if (subWin != nullptr && subWin->mParentWindow == this)
       {
-         if (subWin->mParentWindow == this)
-         {
-            //subWin->setParent(nullptr);
-            subWin->mParentWindow = nullptr;
-            break; // Exit the for loop; continue with the while loop
-         }
+         subWin->mParentWindow = nullptr;
       }
    }
+   mSubWindows.clear();
 
    // Hide the window (to make sure it doesn't show anymore), and then free
    // the memory used by mWindow and mPanel.
@@ -4893,16 +4880,20 @@ void cxWindow::removeSubWindow(const cxWindow *pSubWindow)
 {
    // Erase all instances of the subwindow pointer from mSubWindows. (A
    //  subwindow should only be in there once though.)
-   cxWindowPtrContainer::iterator iter =
-             find(mSubWindows.begin(), mSubWindows.end(), pSubWindow);
-   while (iter != mSubWindows.end())
+   for (cxWindowPtrContainer::iterator iter = mSubWindows.begin(); iter != mSubWindows.end(); )
    {
-      if ((*iter)->mParentWindow == this)
+      if (*iter == pSubWindow)
       {
-         (*iter)->mParentWindow = nullptr;
+         if ((*iter)->mParentWindow == this)
+         {
+            (*iter)->mParentWindow = nullptr;
+         }
+         iter = mSubWindows.erase(iter);
       }
-      mSubWindows.erase(iter);
-      iter = find(mSubWindows.begin(), mSubWindows.end(), pSubWindow);
+      else
+      {
+         ++iter;
+      }
    }
 } // removeSubWindow
 
