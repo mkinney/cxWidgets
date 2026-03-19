@@ -44,8 +44,14 @@ cxMultiForm::cxMultiForm(const cxMultiForm& pThatMultiForm)
 
 cxMultiForm::~cxMultiForm()
 {
+#ifdef DEBUG_TESTS
+   fprintf(stderr, "cxMultiForm::~cxMultiForm() started for %p (mForms.size=%zu)\n", (void*)this, mForms.size());
+#endif
    // Free the memory used by the subform pointers.
    freeSubforms();
+#ifdef DEBUG_TESTS
+   fprintf(stderr, "cxMultiForm::~cxMultiForm() finished for %p\n", (void*)this);
+#endif
 } // Destructor
 
 cxMultiForm& cxMultiForm::operator =(const cxMultiForm& pThatMultiForm)

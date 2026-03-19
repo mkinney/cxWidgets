@@ -95,6 +95,9 @@ cxForm::cxForm(const cxForm& pThatForm)
 
 cxForm::~cxForm()
 {
+#ifdef DEBUG_TESTS
+   fprintf(stderr, "cxForm::~cxForm() started for %p (mInputs.size=%zu)\n", (void*)this, mInputs.size());
+#endif
    // Anything based on cxWindow should disappear from the screen when it is
    //  destroyed (via ncurses or the cxWindow destructor).  But I ran into a
    //  situation where a cxForm wasn't disappearing when it was destroyed for
@@ -104,6 +107,9 @@ cxForm::~cxForm()
       hide();
    }
    freeInputs();
+#ifdef DEBUG_TESTS
+   fprintf(stderr, "cxForm::~cxForm() finished for %p\n", (void*)this);
+#endif
 } // dtor
 
 shared_ptr<cxMultiLineInput> cxForm::append(int pRow, int pCol, int pHeight, int pWidth,

@@ -37,6 +37,16 @@ cxPanel::cxPanel(cxWindow *pParentWindow, int pRow, int pCol, int pHeight,
 
 cxPanel::~cxPanel()
 {
+#ifdef DEBUG_TESTS
+   fprintf(stderr, "cxPanel::~cxPanel() started for %p (mWindows.size=%zu)\n", (void*)this, mWindows.size());
+#endif
+   // Explicitly clear mWindows to ensure objects are destroyed while 
+   // this object is still a cxPanel (before base cxWindow dtor).
+   // This helps removeSubWindow find this panel via dynamic_cast or cxTypeStr.
+   mWindows.clear();
+#ifdef DEBUG_TESTS
+   fprintf(stderr, "cxPanel::~cxPanel() finished for %p\n", (void*)this);
+#endif
 } // destructor
 
 long cxPanel::showModal(bool pShowSelf, bool pBringToTop, bool pShowSubwindows)

@@ -4923,8 +4923,25 @@ void cxWindow::removeSubWindow(const cxWindow *pSubWindow)
    // This is actually good, as it prevents accessing potentially half-destroyed
    // collections during our own destruction.
    cxPanel *panel = dynamic_cast<cxPanel*>(this);
+   if (panel == nullptr)
+   {
+      // Fallback: use cxTypeStr() if dynamic_cast fails (common in destructors)
+      // Note: cxTypeStr() is virtual, so it might also return the base class
+      // name if called from the base class destructor.
+      string type = this->cxTypeStr();
+      if (type == "cxPanel" || type == "cxForm" || 
+          type == "cxSearchPanel" || type == "cxNotebook" ||
+          type == "cxMultiForm")
+      {
+         panel = static_cast<cxPanel*>(this);
+      }
+   }
+
    if (panel != nullptr)
    {
+      // Use a local copy of mWindows to avoid iterator invalidation if 
+      // resetting a shared_ptr triggers complex side effects.
+      // However, we must be careful: we WANT to remove it from the ACTUAL mWindows.
       for (auto it = panel->mWindows.begin(); it != panel->mWindows.end(); )
       {
          if (it->get() == pSubWindow)
