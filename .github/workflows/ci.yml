@@ -37,7 +37,7 @@ jobs:
       - name: Build
         run: |
           cd src
-          make
+          make CFLAGS+="-fPIC -DWANT_TIMEOUT -Werror -std=c++17 -pedantic -I. -I.. -I../../src -I/opt/homebrew/opt/ncurses/include"
 
       - name: Test
         run: |
@@ -48,4 +48,4 @@ jobs:
           export LINES=24
           # testcxInput requires Expect.pm which is installed in the Linux step.
           # On macOS, it might not be available by default.
-          make test
+          make test CFLAGS+="-fPIC -DWANT_TIMEOUT -Werror -std=c++17 -pedantic -I. -I.."
