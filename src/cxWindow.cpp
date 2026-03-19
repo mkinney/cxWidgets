@@ -762,7 +762,9 @@ cxWindow::~cxWindow()
 
    // Set all the subwindows' parent windows to nullptr (so that they don't try
    //  to do something with this window anymore).
-   for (cxWindow* subWin : mSubWindows)
+   // Copy subwindows to avoid iterator invalidation if they try to remove themselves
+   cxWindowPtrContainer subWins = mSubWindows;
+   for (cxWindow* subWin : subWins)
    {
       if (subWin != nullptr && subWin->mParentWindow == this)
       {
@@ -4885,7 +4887,28 @@ void cxWindow::removeSubWindow(const cxWindow *pSubWindow)
       return;
    }
 
-   // If this is a cxPanel, also remove from mWindows
+   // Erase all instances of the subwindow pointer from mSubWindows. (A
+   //  subwindow should only be in there once though.)
+   // Do this first to avoid accessing the subwindow if it gets deleted by the
+   // shared_ptr erase below.
+   for (cxWindowPtrContainer::iterator iter = mSubWindows.begin(); iter != mSubWindows.end(); )
+   {
+      if (*iter == pSubWindow)
+      {
+         if ((*iter)->mParentWindow == this)
+         {
+            (*iter)->mParentWindow = nullptr;
+         }
+         iter = mSubWindows.erase(iter);
+      }
+      else
+      {
+         ++iter;
+      }
+   }
+
+   // If this is a cxPanel, also remove from mWindows. This might be the last
+   // reference, so the object could be destroyed here.
    try
    {
       string myType = cxTypeStr();
@@ -4910,24 +4933,6 @@ void cxWindow::removeSubWindow(const cxWindow *pSubWindow)
    }
    catch (...)
    {
-   }
-
-   // Erase all instances of the subwindow pointer from mSubWindows. (A
-   //  subwindow should only be in there once though.)
-   for (cxWindowPtrContainer::iterator iter = mSubWindows.begin(); iter != mSubWindows.end(); )
-   {
-      if (*iter == pSubWindow)
-      {
-         if ((*iter)->mParentWindow == this)
-         {
-            (*iter)->mParentWindow = nullptr;
-         }
-         iter = mSubWindows.erase(iter);
-      }
-      else
-      {
-         ++iter;
-      }
    }
 } // removeSubWindow
 
