@@ -204,9 +204,15 @@ shared_ptr<cxWindow> cxPanel::removeWindow(unsigned int pIndex)
 {
    shared_ptr<cxWindow> removedWindow;
 
-   if ((pIndex >= 0) && (pIndex < mWindows.size()))
+   if (pIndex < mWindows.size())
    {
       removedWindow = mWindows[pIndex];
+      // Reset iterator if it points to the window being removed
+      if (mWindowIter != mWindows.end() && *mWindowIter == removedWindow)
+      {
+         mWindowIter = mWindows.end();
+      }
+
       // Remove the window pointer from mWindows
       mWindows.erase(mWindows.begin() + pIndex);
       // If the window had this panel as its parent window, then set its parent

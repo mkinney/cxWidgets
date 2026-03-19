@@ -4921,6 +4921,11 @@ void cxWindow::removeSubWindow(const cxWindow *pSubWindow)
             {
                if (it->get() == pSubWindow)
                {
+                  // Reset iterator if it points to the window being removed
+                  if (panel->mWindowIter != panel->mWindows.end() && panel->mWindowIter->get() == pSubWindow)
+                  {
+                     panel->mWindowIter = panel->mWindows.end();
+                  }
                   it = panel->mWindows.erase(it);
                }
                else
