@@ -8,6 +8,7 @@
 #include "../src/cxTextValidator.h"
 #include <string>
 #include <vector>
+#include <memory>
 
 using namespace std;
 
@@ -44,15 +45,15 @@ TEST_CASE("cxWindow coordinates") {
 
     SUBCASE("0 based") {
         try {
-            cxWindow w(nullptr, 0, 0, 10, 20, "Test", "Test", "Test");
-            CHECK(w.top()==0);
-            CHECK(w.left()==0);
-            CHECK(w.height()==10);
-            CHECK(w.bottom()==9); 
-            CHECK(w.right()==19);
-            CHECK(w.width()==20);
-            CHECK(w.centerRow()==4);
-            CHECK(w.centerCol()==9);
+            auto w = std::make_unique<cxWindow>(nullptr, 0, 0, 10, 20, "Test", "Test", "Test");
+            CHECK(w->top()==0);
+            CHECK(w->left()==0);
+            CHECK(w->height()==10);
+            CHECK(w->bottom()==9); 
+            CHECK(w->right()==19);
+            CHECK(w->width()==20);
+            CHECK(w->centerRow()==4);
+            CHECK(w->centerCol()==9);
         } catch (const std::exception& e) {
             MESSAGE("Could not create window, skipping subcase: ", e.what());
         }
@@ -60,15 +61,15 @@ TEST_CASE("cxWindow coordinates") {
 
     SUBCASE("with offsets") {
         try {
-            cxWindow w(nullptr, 1, 2, 10, 20, "Test", "Test", "Test");
-            CHECK(w.top()==1);
-            CHECK(w.left()==2);
-            CHECK(w.height()==10);
-            CHECK(w.bottom()==10);
-            CHECK(w.width()==20);
-            CHECK(w.right()==21);
-            CHECK(w.centerRow()==5);
-            CHECK(w.centerCol()==11);
+            auto w = std::make_unique<cxWindow>(nullptr, 1, 2, 10, 20, "Test", "Test", "Test");
+            CHECK(w->top()==1);
+            CHECK(w->left()==2);
+            CHECK(w->height()==10);
+            CHECK(w->bottom()==10);
+            CHECK(w->width()==20);
+            CHECK(w->right()==21);
+            CHECK(w->centerRow()==5);
+            CHECK(w->centerCol()==11);
         } catch (const std::exception& e) {
             MESSAGE("Could not create window, skipping subcase: ", e.what());
         }
@@ -90,26 +91,26 @@ TEST_CASE("cxWindow auto centering") {
     }
 
     try {
-        cxWindow w(nullptr, 0, 0, 24, 80, "Test", "Test", "Test");
+        auto w = std::make_unique<cxWindow>(nullptr, 0, 0, 24, 80, "Test", "Test", "Test");
 
         SUBCASE("parent centered") {
-            int expectedCenterRow = (w.height() - 1) / 2;
-            int expectedCenterCol = (w.width() - 1) / 2;
-            CHECK(w.top()==0);
-            CHECK(w.left()==0);
-            CHECK(w.height()==24);
-            CHECK(w.centerRow() == expectedCenterRow);
-            CHECK(w.centerCol() == expectedCenterCol);
+            int expectedCenterRow = (w->height() - 1) / 2;
+            int expectedCenterCol = (w->width() - 1) / 2;
+            CHECK(w->top()==0);
+            CHECK(w->left()==0);
+            CHECK(w->height()==24);
+            CHECK(w->centerRow() == expectedCenterRow);
+            CHECK(w->centerCol() == expectedCenterCol);
         }
 
         SUBCASE("auto centered subwindow") {
-            cxWindow w2(&w, "X", "X", "X");
-            int expectedTop = (w.height() - w2.height()) / 2 + w.top();
-            int expectedLeft = (w.width() - w2.width()) / 2 + w.left();
-            CHECK(w2.top() == expectedTop);
-            CHECK(w2.left() == expectedLeft);
-            CHECK(w2.height() == 3);
-            CHECK(w2.width() == 3);
+            auto w2 = std::make_unique<cxWindow>(w.get(), "X", "X", "X");
+            int expectedTop = (w->height() - w2->height()) / 2 + w->top();
+            int expectedLeft = (w->width() - w2->width()) / 2 + w->left();
+            CHECK(w2->top() == expectedTop);
+            CHECK(w2->left() == expectedLeft);
+            CHECK(w2->height() == 3);
+            CHECK(w2->width() == 3);
         }
     } catch (const std::exception& e) {
         MESSAGE("Could not create window, skipping test: ", e.what());
@@ -134,11 +135,11 @@ TEST_CASE("cxInput basic") {
 
     try {
         MESSAGE("Creating cxInput...");
-        cxInput input1(nullptr, 0, 0, 10, "Name:");
+        auto input1 = std::make_unique<cxInput>(nullptr, 0, 0, 10, "Name:");
         MESSAGE("cxInput created. Setting value...");
-        input1.setValue("This is a very long string.");
+        input1->setValue("This is a very long string.");
         MESSAGE("Value set. Checking value...");
-        CHECK(input1.getValue(false, false) == "This is a very long string.");
+        CHECK(input1->getValue(false, false) == "This is a very long string.");
         MESSAGE("Value checked.");
     } catch (const std::exception& e) {
         MESSAGE("Exception during cxInput test: ", e.what());
@@ -162,19 +163,19 @@ TEST_CASE("cxForm basic") {
     }
 
     try {
-        cxForm aForm(nullptr, 0, 0, 10, 50, "Title");
-        aForm.append(1, 1, 1, 20, "Name:");
-        aForm.append(2, 1, 1, 40, "City:");
+        auto aForm = std::make_unique<cxForm>(nullptr, 0, 0, 10, 50, "Title");
+        aForm->append(1, 1, 1, 20, "Name:");
+        aForm->append(2, 1, 1, 40, "City:");
         
-        CHECK(aForm.numInputs() == 2);
+        CHECK(aForm->numInputs() == 2);
         
-        aForm.setValue("Name:", "Glen");
-        CHECK(aForm.getValue("Name:") == "Glen");
-        CHECK(aForm.getValue(0) == "Glen");
+        aForm->setValue("Name:", "Glen");
+        CHECK(aForm->getValue("Name:") == "Glen");
+        CHECK(aForm->getValue(0) == "Glen");
 
-        aForm.remove("Name:");
-        CHECK(aForm.numInputs() == 1);
-        CHECK(aForm.inputLabel(0) == "City:");
+        aForm->remove("Name:");
+        CHECK(aForm->numInputs() == 1);
+        CHECK(aForm->inputLabel(0) == "City:");
     } catch (const std::exception& e) {
         MESSAGE("Could not create form, skipping test: ", e.what());
     }

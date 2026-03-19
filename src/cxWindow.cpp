@@ -702,9 +702,6 @@ cxWindow::cxWindow(const cxWindow& pThatWindow)
 
 cxWindow::~cxWindow()
 {
-#ifdef DEBUG_TESTS
-   fprintf(stderr, "cxWindow::~cxWindow() started for %p\n", (void*)this);
-#endif
    // Free the memory used by the key functions and mouse event functions
    clearKeyFunctions();
    clearMouseFunctions();
@@ -805,9 +802,6 @@ cxWindow::~cxWindow()
       }
    }
 
-#ifdef DEBUG_TESTS
-   fprintf(stderr, "cxWindow::~cxWindow() calling hide() for %p\n", (void*)this);
-#endif
    // Hide the window (to make sure it doesn't show anymore), and then free
    // the memory used by mWindow and mPanel.
    if (cxBase::cxInitialized() && !(isHidden()))
@@ -817,13 +811,7 @@ cxWindow::~cxWindow()
    // Update the physical screen
    //update_panels();
 
-#ifdef DEBUG_TESTS
-   fprintf(stderr, "cxWindow::~cxWindow() calling freeWindow() for %p\n", (void*)this);
-#endif
    freeWindow();
-#ifdef DEBUG_TESTS
-   fprintf(stderr, "cxWindow::~cxWindow() finished for %p\n", (void*)this);
-#endif
 } // dtor
 
 void cxWindow::centerHoriz(bool pRefresh)
@@ -5423,16 +5411,10 @@ void cxWindow::reCreatePanel()
 // Frees the memory used by mWindow
 void cxWindow::freeWindow()
 {
-#ifdef DEBUG_TESTS
-   fprintf(stderr, "cxWindow::freeWindow() started for %p (mPanel=%p, mWindow=%p)\n", (void*)this, (void*)mPanel, (void*)mWindow);
-#endif
    if (mPanel != nullptr)
    {
       if (cxBase::cxInitialized())
       {
-#ifdef DEBUG_TESTS
-         fprintf(stderr, "cxWindow::freeWindow() calling del_panel(%p)\n", (void*)mPanel);
-#endif
          del_panel(mPanel);
       }
       mPanel = nullptr;
@@ -5441,16 +5423,10 @@ void cxWindow::freeWindow()
    {
       if (cxBase::cxInitialized())
       {
-#ifdef DEBUG_TESTS
-         fprintf(stderr, "cxWindow::freeWindow() calling delwin(%p)\n", (void*)mWindow);
-#endif
          delwin(mWindow);
       }
       mWindow = nullptr;
    }
-#ifdef DEBUG_TESTS
-   fprintf(stderr, "cxWindow::freeWindow() finished for %p\n", (void*)this);
-#endif
 } // freeWindow
 
 // Combines all the messages lines into one
@@ -5488,8 +5464,11 @@ void cxWindow::addToParentWindow(cxWindow *pParentWindow)
 {
    if (pParentWindow != nullptr)
    {
-      // Add this window to the parent window.
-      pParentWindow->addSubwindow(this);
+      // Add this window to the parent window if it's not already there.
+      if (!pParentWindow->subWindowExists(this))
+      {
+         pParentWindow->addSubwindow(this);
+      }
       // It would be nice if there was a way to detect whether
       //  an object is created dynamically (i.e., with the 'new'
       //  operator)..  If so, then if the parent window is a
