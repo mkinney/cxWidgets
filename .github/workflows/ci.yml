@@ -22,7 +22,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libncurses-dev libpanel-dev expect
+          sudo apt-get install -y libncurses-dev libpanel-dev expect libexpect-perl
 
       - name: Install dependencies (macOS)
         if: matrix.os == 'macos-latest'
