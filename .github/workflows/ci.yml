@@ -34,7 +34,7 @@ jobs:
       - name: Build
         run: |
           cd src
-          make CFLAGS+="-fPIC -DWANT_TIMEOUT -Werror -std=c++17 -pedantic -I. -I/opt/homebrew/opt/ncurses/include"
+          make CFLAGS+="-fPIC -DWANT_TIMEOUT -Werror -std=c++17 -pedantic -I. -I../../src -I/opt/homebrew/opt/ncurses/include"
 
       - name: Test
         run: |
