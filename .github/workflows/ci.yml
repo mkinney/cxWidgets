@@ -43,4 +43,4 @@ jobs:
           export TERM=xterm
           export COLUMNS=80
           export LINES=24
-          make alltest CFLAGS+="-Werror -std=c++17"
+          make alltest CFLAGS+="-fPIC -DWANT_TIMEOUT -Werror -std=c++17 -pedantic -I. -I.."
