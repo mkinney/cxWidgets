@@ -703,7 +703,7 @@ cxWindow::cxWindow(const cxWindow& pThatWindow)
 cxWindow::~cxWindow()
 {
 #ifdef DEBUG_TESTS
-   fprintf(stderr, "cxWindow::~cxWindow() started for %p\n", (void*)this);
+   fprintf(stderr, "cxWindow::~cxWindow() started for %p (mPanel=%p, mWindow=%p)\n", (void*)this, (void*)mPanel, (void*)mWindow);
 #endif
    // Free the memory used by the key functions and mouse event functions
    clearKeyFunctions();
@@ -775,11 +775,17 @@ cxWindow::~cxWindow()
 
    // Hide the window (to make sure it doesn't show anymore), and then free
    // the memory used by mWindow and mPanel.
-   if (cxBase::cxInitialized() && !(isHidden()))
+   if (cxBase::cxInitialized() && mPanel != nullptr && !(isHidden()))
    {
+#ifdef DEBUG_TESTS
+      fprintf(stderr, "cxWindow::~cxWindow() calling hide() for %p\n", (void*)this);
+#endif
       hide();
    }
 
+#ifdef DEBUG_TESTS
+   fprintf(stderr, "cxWindow::~cxWindow() calling freeWindow() for %p\n", (void*)this);
+#endif
    freeWindow();
 #ifdef DEBUG_TESTS
    fprintf(stderr, "cxWindow::~cxWindow() finished for %p\n", (void*)this);
@@ -1760,6 +1766,10 @@ void cxWindow::hide(bool pHideSubwindows)
       return;
    }
 
+#ifdef DEBUG_TESTS
+   fprintf(stderr, "cxWindow::hide() started for %p (mPanel=%p)\n", (void*)this, (void*)mPanel);
+#endif
+
    // If not already hidden, hide the window.
    if (mPanel != nullptr && panel_hidden(mPanel) == FALSE)
    {
@@ -1769,9 +1779,11 @@ void cxWindow::hide(bool pHideSubwindows)
    // Tell each subwindow to hide itself
    if (pHideSubwindows)
    {
-      for (cxWindow* subWin : mSubWindows)
+      // Copy subwindows list to avoid iterator invalidation issues
+      cxWindowPtrContainer subWins = mSubWindows;
+      for (cxWindow* subWin : subWins)
       {
-         if (subWin != nullptr)
+         if (subWin != nullptr && subWin->mParentWindow == this)
          {
             subWin->hide(pHideSubwindows);
          }
@@ -1780,6 +1792,9 @@ void cxWindow::hide(bool pHideSubwindows)
 
    // Update the physical screen
    cxBase::updateWindows();
+#ifdef DEBUG_TESTS
+   fprintf(stderr, "cxWindow::hide() finished for %p\n", (void*)this);
+#endif
 } // hide
 
 void cxWindow::unhide(bool pUnhideSubwindows)
@@ -1788,6 +1803,10 @@ void cxWindow::unhide(bool pUnhideSubwindows)
    {
       return;
    }
+
+#ifdef DEBUG_TESTS
+   fprintf(stderr, "cxWindow::unhide() started for %p (mPanel=%p)\n", (void*)this, (void*)mPanel);
+#endif
 
    // Only let the window be un-hidden if it's
    //  enabled.
@@ -1801,9 +1820,11 @@ void cxWindow::unhide(bool pUnhideSubwindows)
       // Tell each subwindow to unhide itself
       if (pUnhideSubwindows)
       {
-         for (cxWindow* subWin : mSubWindows)
+         // Copy subwindows list to avoid iterator invalidation issues
+         cxWindowPtrContainer subWins = mSubWindows;
+         for (cxWindow* subWin : subWins)
          {
-            if (subWin != nullptr)
+            if (subWin != nullptr && subWin->mParentWindow == this)
             {
                subWin->unhide(pUnhideSubwindows);
             }
@@ -1813,6 +1834,9 @@ void cxWindow::unhide(bool pUnhideSubwindows)
       // Update the physical screen
       cxBase::updateWindows();
    }
+#ifdef DEBUG_TESTS
+   fprintf(stderr, "cxWindow::unhide() finished for %p\n", (void*)this);
+#endif
 } // unhide
 
 void cxWindow::drawBorder(int pRow, int pCol, int pHeight, int pWidth,
@@ -4776,8 +4800,14 @@ void cxWindow::init(int pRow, int pCol, int pHeight, int pWidth,
 
       // Free the memory used by mWindow and mPanel (just in case), and
       //  (re-)create them.
+#ifdef DEBUG_TESTS
+      fprintf(stderr, "cxWindow::init() calling freeWindow() for %p\n", (void*)this);
+#endif
       freeWindow();
       mWindow = newwin(newHeight, newWidth, pRow, pCol);
+#ifdef DEBUG_TESTS
+      fprintf(stderr, "cxWindow::init() newwin returned %p for %p\n", (void*)mWindow, (void*)this);
+#endif
       // If mWindow is nullptr, that means newwin() had an error..
       if (mWindow == nullptr)
       {
@@ -4838,6 +4868,13 @@ void cxWindow::removeAllSubwindows()
 
 void cxWindow::addSubwindow(cxWindow *pSubWindow)
 {
+   if (pSubWindow == nullptr)
+   {
+      return;
+   }
+#ifdef DEBUG_TESTS
+   fprintf(stderr, "cxWindow::addSubwindow() adding %p to %p\n", (void*)pSubWindow, (void*)this);
+#endif
    // Only add the subwindow if it doesn't already exist
    //  in mSubWindows.
    if (!subWindowExists(pSubWindow))
@@ -4852,6 +4889,10 @@ void cxWindow::removeSubWindow(const cxWindow *pSubWindow)
    {
       return;
    }
+
+#ifdef DEBUG_TESTS
+   fprintf(stderr, "cxWindow::removeSubWindow() removing %p from %p\n", (void*)pSubWindow, (void*)this);
+#endif
 
    // Erase all instances of the subwindow pointer from mSubWindows. (A
    //  subwindow should only be in there once though.)
@@ -5385,16 +5426,29 @@ inline int cxWindow::maxSubwindowHeight() const
 
 void cxWindow::reCreatePanel()
 {
+#ifdef DEBUG_TESTS
+   fprintf(stderr, "cxWindow::reCreatePanel() started for %p (mWindow=%p)\n", (void*)this, (void*)mWindow);
+#endif
    if (mPanel != nullptr)
    {
-      del_panel(mPanel);
+      void* tempPanel = mPanel;
       mPanel = nullptr;
+      if (cxBase::cxInitialized())
+      {
+#ifdef DEBUG_TESTS
+         fprintf(stderr, "cxWindow::reCreatePanel() calling del_panel(%p)\n", tempPanel);
+#endif
+         del_panel((PANEL*)tempPanel);
+      }
    }
    if (mWindow == nullptr)
    {
       throw cxWidgetsException("cxWindow::reCreatePanel mWindow should not be nullptr.");
    }
    mPanel = new_panel(mWindow);
+#ifdef DEBUG_TESTS
+   fprintf(stderr, "cxWindow::reCreatePanel() new_panel returned %p for %p\n", (void*)mPanel, (void*)this);
+#endif
    if (mPanel == nullptr)
    {
       throw cxWidgetsException("cxWindow::reCreatePanel could not run new_panel().");
@@ -5410,25 +5464,27 @@ void cxWindow::freeWindow()
 #endif
    if (mPanel != nullptr)
    {
+      void* tempPanel = mPanel;
+      mPanel = nullptr;
       if (cxBase::cxInitialized())
       {
 #ifdef DEBUG_TESTS
-         fprintf(stderr, "cxWindow::freeWindow() calling del_panel(%p)\n", (void*)mPanel);
+         fprintf(stderr, "cxWindow::freeWindow() calling del_panel(%p) for %p\n", tempPanel, (void*)this);
 #endif
-         del_panel(mPanel);
+         del_panel((PANEL*)tempPanel);
       }
-      mPanel = nullptr;
    }
    if (mWindow != nullptr)
    {
+      void* tempWin = mWindow;
+      mWindow = nullptr;
       if (cxBase::cxInitialized())
       {
 #ifdef DEBUG_TESTS
-         fprintf(stderr, "cxWindow::freeWindow() calling delwin(%p)\n", (void*)mWindow);
+         fprintf(stderr, "cxWindow::freeWindow() calling delwin(%p) for %p\n", tempWin, (void*)this);
 #endif
-         delwin(mWindow);
+         delwin((WINDOW*)tempWin);
       }
-      mWindow = nullptr;
    }
 #ifdef DEBUG_TESTS
    fprintf(stderr, "cxWindow::freeWindow() finished for %p\n", (void*)this);
@@ -5470,12 +5526,15 @@ void cxWindow::addToParentWindow(cxWindow *pParentWindow)
 {
    if (pParentWindow != nullptr)
    {
+#ifdef DEBUG_TESTS
+      fprintf(stderr, "cxWindow::addToParentWindow() started for %p (parent=%p)\n", (void*)this, (void*)pParentWindow);
+#endif
       // Add this window to the parent window if it's not already there.
       if (!pParentWindow->subWindowExists(this))
       {
          pParentWindow->addSubwindow(this);
       }
-      // It would be nice if there was a way to detect whether
+      mParentWindow = pParentWindow;
       //  an object is created dynamically (i.e., with the 'new'
       //  operator)..  If so, then if the parent window is a
       //  cxPanel, we could go ahead and add a pointer to this

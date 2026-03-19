@@ -151,13 +151,19 @@ bool cxPanel::append(const shared_ptr<cxWindow>& pWindow, int pRow, int pCol, bo
 
 void cxPanel::delWindow(unsigned int pIndex)
 {
-   if ((pIndex >= 0) && (pIndex < mWindows.size()))
+   if (pIndex < mWindows.size())
    {
+#ifdef DEBUG_TESTS
+      fprintf(stderr, "cxPanel::delWindow(index=%u) starting for %p from %p\n", pIndex, (void*)mWindows[pIndex].get(), (void*)this);
+#endif
       // The cxWindow destructor removes itself from the panel's mWindows
       // vector via erase(), so after reset() the element is already gone
       // and the vector has shrunk. We just need to fix up mWindowIter
       // based on the new vector state after the element is removed.
       mWindows[pIndex].reset();
+#ifdef DEBUG_TESTS
+      fprintf(stderr, "cxPanel::delWindow(index=%u) finished for %p\n", pIndex, (void*)this);
+#endif
       // After the destructor ran, the element at pIndex was erased.
       // Fix mWindowIter based on the current vector state.
       if (mWindows.empty())
@@ -207,6 +213,9 @@ shared_ptr<cxWindow> cxPanel::removeWindow(unsigned int pIndex)
    if (pIndex < mWindows.size())
    {
       removedWindow = mWindows[pIndex];
+#ifdef DEBUG_TESTS
+      fprintf(stderr, "cxPanel::removeWindow(index=%u) removing %p from %p\n", pIndex, (void*)removedWindow.get(), (void*)this);
+#endif
       // Reset iterator if it points to the window being removed
       if (mWindowIter != mWindows.end() && *mWindowIter == removedWindow)
       {
