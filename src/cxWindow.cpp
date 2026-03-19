@@ -747,35 +747,11 @@ cxWindow::~cxWindow()
    // Remove this window from the parent window's subwindow list.
    if (mParentWindow != nullptr)
    {
-      // If the parent window is a cxPanel or something deriving from cxPanel,
-      // remove this window from the cxPanel's mWindows.
-      try
-      {
-         string parentType = mParentWindow->cxTypeStr();
-         if ((parentType == "cxPanel") || (parentType == "cxSearchPanel"))
-         {
-            cxPanel *parentPanel = dynamic_cast<cxPanel*>(mParentWindow);
-            if (parentPanel != nullptr)
-            {
-               cxPanel::cxWindowPtrCollection::iterator it = parentPanel->mWindows.begin();
-               while (it != parentPanel->mWindows.end())
-               {
-                  if (it->get() == this)
-                  {
-                     it = parentPanel->mWindows.erase(it);
-                  }
-                  else
-                  {
-                     ++it;
-                  }
-               }
-            }
-         }
-      }
-      catch (...)
-      {
-      }
-      mParentWindow->removeSubWindow(this);
+      // If we are already being destroyed, we must be careful not to
+      // trigger redundant or dangerous cleanup in the parent.
+      cxWindow* parent = mParentWindow;
+      mParentWindow = nullptr; // Prevent re-entry or double-removal
+      parent->removeSubWindow(this);
    }
 
    // Set all the subwindows' parent windows to nullptr (so that they don't try
@@ -4878,6 +4854,38 @@ void cxWindow::addSubwindow(cxWindow *pSubWindow)
 
 void cxWindow::removeSubWindow(const cxWindow *pSubWindow)
 {
+   if (pSubWindow == nullptr)
+   {
+      return;
+   }
+
+   // If this is a cxPanel, also remove from mWindows
+   try
+   {
+      string myType = cxTypeStr();
+      if ((myType == "cxPanel") || (myType == "cxSearchPanel"))
+      {
+         cxPanel *panel = dynamic_cast<cxPanel*>(this);
+         if (panel != nullptr)
+         {
+            for (auto it = panel->mWindows.begin(); it != panel->mWindows.end(); )
+            {
+               if (it->get() == pSubWindow)
+               {
+                  it = panel->mWindows.erase(it);
+               }
+               else
+               {
+                  ++it;
+               }
+            }
+         }
+      }
+   }
+   catch (...)
+   {
+   }
+
    // Erase all instances of the subwindow pointer from mSubWindows. (A
    //  subwindow should only be in there once though.)
    for (cxWindowPtrContainer::iterator iter = mSubWindows.begin(); iter != mSubWindows.end(); )
