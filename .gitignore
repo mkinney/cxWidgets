@@ -45,6 +45,7 @@
 
 # Doxygen-related files
 cxWidgets.tag
+docs/html/
 
 # Compiled binaries
 testApp
@@ -57,16 +58,24 @@ test_cxValidators
 test_wordwrap
 test1
 test_sizing
+test_cx_widgets
+test_string_utils
+test_ui_sizing
+test_date
+test_validators
 
 # Test artifacts
 tests/*.dSYM/
 tests/test_sizing
+manual/cxInput/test_cxInput
+manual/cxInput/test_cxInput.log
 DevNotes.txt
 devNotes.txt
 devnotes.txt
 
 # IDE
 .idea/
+.junie/
 
 # Demo
 snake_demo
@@ -77,3 +86,4 @@ centipede_demo
 centipede_demo.dSYM
 spreadsheet
 spreadsheet.dSYM
+*.dSYM/

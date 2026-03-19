@@ -15,3 +15,4 @@ flashcard_demo: main.cpp FlashcardApp.h $(STATIC_LIB)
 
 clean:
 	rm -f flashcard_demo
+	rm -rf flashcard_demo.dSYM

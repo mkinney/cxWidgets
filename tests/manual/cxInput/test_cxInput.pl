@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 use strict;
-use lib "$ENV{HOME}/perl5/lib/perl5";
+# use lib "$ENV{HOME}/perl5/lib/perl5";
 
 my $BACK = "";
 my $cF2 = "O5Q";

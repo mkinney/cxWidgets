@@ -14,4 +14,5 @@ snake_demo: main.cpp SnakeGame.h $(STATIC_LIB)
 	$(CC) $(CFLAGS) -o snake_demo main.cpp $(STATIC_LIB) -lmenu -lpanel -lncurses
 
 clean:
-	rm -f snake_demo
+	rm -f snake_demo debug.log
+	rm -rf snake_demo.dSYM

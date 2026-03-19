@@ -15,3 +15,4 @@ spreadsheet: main.cpp $(STATIC_LIB)
 
 clean:
 	rm -f spreadsheet
+	rm -rf spreadsheet.dSYM

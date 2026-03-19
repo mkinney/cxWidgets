@@ -15,3 +15,4 @@ centipede_demo: main.cpp CentipedeGame.h $(STATIC_LIB)
 
 clean:
 	rm -f centipede_demo
+	rm -rf centipede_demo.dSYM

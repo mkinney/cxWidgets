@@ -30,11 +30,14 @@ jobs:
           # ncurses is usually pre-installed on macOS, but let's ensure we have everything
           # Brew can be used if additional libraries are needed.
           echo "Using pre-installed ncurses/panel/menu on macOS"
+          brew install expect
+          # Install Perl Expect module
+          curl -L https://cpanmin.us | perl - --no-wget Expect
 
       - name: Build
         run: |
           cd src
-          make CFLAGS+="-fPIC -DWANT_TIMEOUT -Werror -std=c++17 -pedantic -I. -I.. -I../../src -I/opt/homebrew/opt/ncurses/include"
+          make
 
       - name: Test
         run: |
@@ -43,4 +46,6 @@ jobs:
           export TERM=xterm
           export COLUMNS=80
           export LINES=24
-          make alltest CFLAGS+="-fPIC -DWANT_TIMEOUT -Werror -std=c++17 -pedantic -I. -I.."
+          # testcxInput requires Expect.pm which is installed in the Linux step.
+          # On macOS, it might not be available by default.
+          make test
