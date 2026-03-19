@@ -882,6 +882,13 @@ void cxInput::redrawVisibleValue()
          visibleLen = mInputLen;
       if (visibleLen < 0)
          visibleLen = 0;
+      if (visibleStart < 0)
+      {
+         visibleStart = 0;
+         visibleLen = totalLen;
+         if (visibleLen > mInputLen)
+            visibleLen = mInputLen;
+      }
       string maskedVisible(visibleLen, mMaskChar);
       int padLen = mInputLen - visibleLen;
       if (padLen > 0)
@@ -892,7 +899,11 @@ void cxInput::redrawVisibleValue()
    {
       string visibleText;
       if (mScrollOffset < (int)mValue.length())
+      {
+         if (mScrollOffset < 0)
+            mScrollOffset = 0;
          visibleText = mValue.substr(mScrollOffset, mInputLen);
+      }
       int padLen = mInputLen - (int)visibleText.length();
       if (padLen > 0)
          visibleText.append(padLen, ' ');
@@ -1247,6 +1258,13 @@ void cxInput::refreshValue(bool pRefresh)
          visibleLen = mInputLen;
       if (visibleLen < 0)
          visibleLen = 0;
+      if (visibleStart < 0)
+      {
+         visibleStart = 0;
+         visibleLen = totalMaskLen;
+         if (visibleLen > mInputLen)
+            visibleLen = mInputLen;
+      }
       string maskedVisible(visibleLen, mMaskChar);
       // Pad with spaces to fill the input area
       int padLen = mInputLen - visibleLen;
@@ -1259,7 +1277,11 @@ void cxInput::refreshValue(bool pRefresh)
       // Show mValue starting from mScrollOffset, up to mInputLen chars
       string visibleText;
       if (mScrollOffset < (int)mValue.length())
+      {
+         if (mScrollOffset < 0)
+            mScrollOffset = 0;
          visibleText = mValue.substr(mScrollOffset, mInputLen);
+      }
       // Pad with spaces to fill the input area
       int padLen = mInputLen - (int)visibleText.length();
       if (padLen > 0)
