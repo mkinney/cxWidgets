@@ -11,11 +11,32 @@
 
 using namespace std;
 
+// RAII class for ncurses initialization and cleanup
+struct NcursesGuard {
+    NcursesGuard() {
+        if (!cxBase::cxInitialized()) {
+            try {
+                cxBase::init();
+            } catch (...) {
+                // Ignore failure here, it will be handled by cxInitialized() checks
+            }
+        }
+    }
+    ~NcursesGuard() {
+        // We don't cleanup in between tests to avoid flickering or re-init issues in CI
+        // But we could if needed. For now, leave it initialized once.
+    }
+};
+
 TEST_CASE("cxWindow coordinates") {
-    try {
-        cxBase::init();
-        
-        SUBCASE("0 based") {
+    NcursesGuard guard;
+    if (!cxBase::cxInitialized()) {
+        MESSAGE("Could not initialize ncurses, skipping ncurses-dependent tests.");
+        return;
+    }
+
+    SUBCASE("0 based") {
+        try {
             cxWindow w(nullptr, 0, 0, 10, 20, "Test", "Test", "Test");
             CHECK(w.top()==0);
             CHECK(w.left()==0);
@@ -25,9 +46,13 @@ TEST_CASE("cxWindow coordinates") {
             CHECK(w.width()==20);
             CHECK(w.centerRow()==4);
             CHECK(w.centerCol()==9);
+        } catch (const std::exception& e) {
+            MESSAGE("Could not create window, skipping subcase: ", e.what());
         }
+    }
 
-        SUBCASE("with offsets") {
+    SUBCASE("with offsets") {
+        try {
             cxWindow w(nullptr, 1, 2, 10, 20, "Test", "Test", "Test");
             CHECK(w.top()==1);
             CHECK(w.left()==2);
@@ -37,19 +62,20 @@ TEST_CASE("cxWindow coordinates") {
             CHECK(w.right()==21);
             CHECK(w.centerRow()==5);
             CHECK(w.centerCol()==11);
+        } catch (const std::exception& e) {
+            MESSAGE("Could not create window, skipping subcase: ", e.what());
         }
-
-        cxBase::cleanup();
-    } catch (const std::exception& e) {
-        MESSAGE("Could not initialize ncurses or create window, skipping test: ", e.what());
-    } catch (...) {
-        MESSAGE("Could not initialize ncurses or create window, skipping test.");
     }
 }
 
 TEST_CASE("cxWindow auto centering") {
+    NcursesGuard guard;
+    if (!cxBase::cxInitialized()) {
+        MESSAGE("Could not initialize ncurses, skipping ncurses-dependent tests.");
+        return;
+    }
+
     try {
-        cxBase::init();
         cxWindow w(nullptr, 0, 0, 24, 80, "Test", "Test", "Test");
 
         SUBCASE("parent centered") {
@@ -71,33 +97,35 @@ TEST_CASE("cxWindow auto centering") {
             CHECK(w2.height() == 3);
             CHECK(w2.width() == 3);
         }
-
-        cxBase::cleanup();
     } catch (const std::exception& e) {
-        MESSAGE("Could not initialize ncurses or create window, skipping test: ", e.what());
-    } catch (...) {
-        MESSAGE("Could not initialize ncurses or create window, skipping test.");
+        MESSAGE("Could not create window, skipping test: ", e.what());
     }
 }
 
 TEST_CASE("cxInput basic") {
-    try {
-        cxBase::init();
+    NcursesGuard guard;
+    if (!cxBase::cxInitialized()) {
+        MESSAGE("Could not initialize ncurses, skipping ncurses-dependent tests.");
+        return;
+    }
 
+    try {
         cxInput input1(nullptr, 0, 0, 10, "Name:");
         input1.setValue("This is a very long string.");
         CHECK(input1.getValue(false, false) == "This is a very long string.");
-        cxBase::cleanup();
     } catch (const std::exception& e) {
-        MESSAGE("Could not initialize ncurses or create window, skipping test: ", e.what());
-    } catch (...) {
-        MESSAGE("Could not initialize ncurses or create window, skipping test.");
+        MESSAGE("Could not create input, skipping test: ", e.what());
     }
 }
 
 TEST_CASE("cxForm basic") {
+    NcursesGuard guard;
+    if (!cxBase::cxInitialized()) {
+        MESSAGE("Could not initialize ncurses, skipping ncurses-dependent tests.");
+        return;
+    }
+
     try {
-        cxBase::init();
         cxForm aForm(nullptr, 0, 0, 10, 50, "Title");
         aForm.append(1, 1, 1, 20, "Name:");
         aForm.append(2, 1, 1, 40, "City:");
@@ -111,12 +139,8 @@ TEST_CASE("cxForm basic") {
         aForm.remove("Name:");
         CHECK(aForm.numInputs() == 1);
         CHECK(aForm.inputLabel(0) == "City:");
-
-        cxBase::cleanup();
     } catch (const std::exception& e) {
-        MESSAGE("Could not initialize ncurses or create window, skipping test: ", e.what());
-    } catch (...) {
-        MESSAGE("Could not initialize ncurses or create window, skipping test.");
+        MESSAGE("Could not create form, skipping test: ", e.what());
     }
 }
 
