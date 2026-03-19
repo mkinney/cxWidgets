@@ -121,7 +121,7 @@ cxComboBox.o: cxComboBox.h cxComboBox.cpp cxMultiLineInput.o cxMenu.o cxBase.o
 	$(CC) -c $(CFLAGS) -o cxComboBox.o cxComboBox.cpp
 
 cxDate.o: cxDate.h cxDate.cpp
-	$(CC) -c $(CFLAGS) -o cxDate.o cxDate.cpp
+	$(CC) -c $(CFLAGS) -Wc++17-extensions -o cxDate.o cxDate.cpp
 
 cxDatePicker.o: cxDatePicker.h cxDatePicker.cpp cxWindow.o cxButton.o cxComboBox.o cxInput.o cxDate.o
 	$(CC) -c $(CFLAGS) -o cxDatePicker.o cxDatePicker.cpp
