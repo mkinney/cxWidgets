@@ -515,7 +515,7 @@ string cxInput::getValue(bool pRemoveLeadingSpaces, bool pRemoveTrailingSpaces) 
       unsigned valueLen = theValue.length();
       if (valueLen > 0)
       {
-         if (mValue[0] == ' ')
+         if (theValue[0] == ' ')
          {
             unsigned i = 0;
             while ((i < valueLen) && (theValue[i] == ' '))
