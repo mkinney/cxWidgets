@@ -2229,7 +2229,27 @@ cxWindow& cxWindow::operator =(const cxWindow& pThatWindow)
    // Only try to copy pThatWindow if it's a different instance.
    if (&pThatWindow != this)
    {
-      copyCxWinStuff(&pThatWindow);
+      // Re-initialize this window based on pThatWindow's properties.
+      // This will call freeWindow() first, ensuring we don't leak ncurses resources,
+      // and then it will create new window/panel objects.
+      string message;
+      const_cast<cxWindow&>(pThatWindow).combineMessageLines(message);
+      init(pThatWindow.top(), pThatWindow.left(), pThatWindow.height(), pThatWindow.width(),
+           pThatWindow.getTitle(), message, pThatWindow.getStatus(), pThatWindow.getParent());
+      
+      // Copy other attributes
+      mEnabled = pThatWindow.mEnabled;
+      mBorderStyle = pThatWindow.mBorderStyle;
+      mLastKey = pThatWindow.mLastKey;
+      mHotkeyHighlighting = pThatWindow.mHotkeyHighlighting;
+      mDisableCursorOnShow = pThatWindow.mDisableCursorOnShow;
+      mExitOnMouseOutside = pThatWindow.mExitOnMouseOutside;
+      mShowSubwinsForward = pThatWindow.mShowSubwinsForward;
+      mShowSelfBeforeSubwins = pThatWindow.mShowSelfBeforeSubwins;
+      mBorderColorPair = pThatWindow.mBorderColorPair;
+      mTitleColorPair = pThatWindow.mTitleColorPair;
+      mMessageColorPair = pThatWindow.mMessageColorPair;
+      mStatusColorPair = pThatWindow.mStatusColorPair;
    }
 
    return(*this);
@@ -4939,9 +4959,16 @@ void cxWindow::removeSubWindow(const cxWindow *pSubWindow)
 
    if (panel != nullptr)
    {
-      // Use a local copy of mWindows to avoid iterator invalidation if 
-      // resetting a shared_ptr triggers complex side effects.
-      // However, we must be careful: we WANT to remove it from the ACTUAL mWindows.
+      // Use a local copy of mWindows to safely check for the window
+      // while we modify the actual mWindows vector.
+      // IMPORTANT: If we erase from mWindows and it was the last shared_ptr,
+      // it will trigger destruction of the subwindow.
+      // If the subwindow is currently being destroyed (i.e. it called us from its dtor),
+      // then erase() is still safe because there's at least one other reference
+      // (the one in the dtor's 'this' pointer, or the unique_ptr in the test).
+      // BUT if we were the ONLY ones holding it, erase() would trigger a nested 
+      // destructor call, which we MUST avoid if it's already being destroyed.
+      
       for (auto it = panel->mWindows.begin(); it != panel->mWindows.end(); )
       {
          if (it->get() == pSubWindow)
@@ -4951,6 +4978,12 @@ void cxWindow::removeSubWindow(const cxWindow *pSubWindow)
             {
                panel->mWindowIter = panel->mWindows.end();
             }
+
+            // To prevent nested destruction if pSubWindow is already being destroyed,
+            // we can move the shared_ptr out of the vector and let it be destroyed
+            // at the end of this scope, OR we can check if it's the last reference.
+            // Since we don't easily know if it's being destroyed, we'll just erase it.
+            // If it's being destroyed, its use_count is already > 0 (from the dtor caller).
             it = panel->mWindows.erase(it);
          }
          else
@@ -5458,6 +5491,7 @@ void cxWindow::reCreatePanel()
 #ifdef DEBUG_TESTS
          fprintf(stderr, "cxWindow::reCreatePanel() calling del_panel(%p) for %p\n", (void*)tempPanel, (void*)this);
 #endif
+         set_panel_userptr(tempPanel, nullptr);
          del_panel(tempPanel);
       }
    }
@@ -5496,6 +5530,7 @@ void cxWindow::freeWindow()
 #ifdef DEBUG_TESTS
          fprintf(stderr, "cxWindow::freeWindow() calling del_panel(%p) for %p\n", tempPanel, (void*)this);
 #endif
+         set_panel_userptr((PANEL*)tempPanel, nullptr);
          del_panel((PANEL*)tempPanel);
       }
    }

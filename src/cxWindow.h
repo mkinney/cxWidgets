@@ -355,6 +355,7 @@ class cxWindow : public cxObject
        */
       cxWindow(const cxWindow& pThatWindow);
 
+
       /**
        * Destructor
        */

@@ -167,22 +167,31 @@ void cxPanel::delWindow(unsigned int pIndex)
       fprintf(stderr, "cxPanel::delWindow(index=%u) starting for %p from %p\n", pIndex, (void*)mWindows[pIndex].get(), (void*)this);
 #endif
       // The cxWindow destructor removes itself from the panel's mWindows
-      // vector via erase(), so after reset() the element is already gone
-      // and the vector has shrunk. We just need to fix up mWindowIter
-      // based on the new vector state after the element is removed.
+      // vector via erase() if it's called from within the destructor.
+      // However, here we are calling reset() which triggers the destructor.
+      // We must ensure that we don't end up with a double-erase or 
+      // corrupted iterator.
+      shared_ptr<cxWindow> win = mWindows[pIndex];
       mWindows[pIndex].reset();
 #ifdef DEBUG_TESTS
       fprintf(stderr, "cxPanel::delWindow(index=%u) finished for %p\n", pIndex, (void*)this);
 #endif
-      // After the destructor ran, the element at pIndex was erased.
+      // After the destructor ran, if it called removeSubWindow, 
+      // the element at pIndex might have been erased. 
+      // Let's check if it's still there.
+      for (auto it = mWindows.begin(); it != mWindows.end(); ++it)
+      {
+         if (it->get() == win.get())
+         {
+            mWindows.erase(it);
+            break;
+         }
+      }
+
       // Fix mWindowIter based on the current vector state.
       if (mWindows.empty())
       {
          mWindowIter = mWindows.begin();
-      }
-      else if (pIndex > 0 && pIndex - 1 < mWindows.size())
-      {
-         mWindowIter = mWindows.begin() + (pIndex - 1);
       }
       else
       {
@@ -234,6 +243,10 @@ shared_ptr<cxWindow> cxPanel::removeWindow(unsigned int pIndex)
 
       // Remove the window pointer from mWindows
       mWindows.erase(mWindows.begin() + pIndex);
+
+      // Reset mWindowIter to a safe state after erase
+      mWindowIter = mWindows.begin();
+
       // If the window had this panel as its parent window, then set its parent
       //  window pointer to nullptr
       if (removedWindow->getParent() == this)
